@@ -5,11 +5,10 @@ import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,26 +16,23 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-@Entity
+@Getter
+@Setter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-@Table(name = "roles")
-public class Role extends AbstractEntity {
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Table(name = "families")
+public class Family extends AbstractEntity {
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
+  @GeneratedValue(strategy = jakarta.persistence.GenerationType.UUID)
   String id;
 
   @Column
   String name;
 
   @ManyToMany
-  List<Permission> permissions;
+  List<Profile> profiles;
 
-  @ManyToMany
-  List<Account> accounts;
 }

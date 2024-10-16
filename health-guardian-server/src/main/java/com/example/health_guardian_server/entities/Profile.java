@@ -1,6 +1,8 @@
 package com.example.health_guardian_server.entities;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import com.example.health_guardian_server.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,22 +28,22 @@ public class Profile extends AbstractEntity {
   String id;
 
   @OneToOne(mappedBy = "profile")
-  @JoinColumn(name = "account_id")
+  @JoinColumn(name = "account_id", nullable = true)
   Account account;
 
-  @Column
+  @Column(nullable = false)
   String fullName;
 
   @Column
   String bio;
 
-  @Column
+  @Column(nullable = false)
   String phoneNunmber;
 
   @Column
   String address;
 
-  @Column
+  @Column(nullable = false)
   LocalDate dateOfBirth;
 
   @Column
@@ -49,5 +51,8 @@ public class Profile extends AbstractEntity {
 
   @Column
   Visibility visibility;
+
+  @ManyToMany
+  List<Family> families;
 
 }

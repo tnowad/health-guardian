@@ -1,10 +1,13 @@
 package com.example.health_guardian_server.dtos.requests;
 
+import com.example.health_guardian_server.entities.AbstractEntity;
+
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 
 @Getter
-public class SignUpRequest {
+
+public class SignUpRequest extends AbstractEntity {
 
     @NotNull(message = "null_name")
     @NotBlank(message = "blank_name")

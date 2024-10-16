@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,8 +47,10 @@ public class Account extends AbstractEntity {
   String email;
 
   @Column(nullable = false)
+  @Builder.Default
   boolean isActivated = false;
 
+  @Builder.Default
   @Column(nullable = false)
   boolean acceptTerms = false;
 

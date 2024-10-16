@@ -8,8 +8,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import static com.example.health_guardian_server.enums.Visibility.PUBLIC;
 import com.example.health_guardian_server.entities.Account;
+import com.example.health_guardian_server.entities.Doctor;
+import com.example.health_guardian_server.entities.Organization;
+import com.example.health_guardian_server.entities.Patient;
 import com.example.health_guardian_server.entities.Profile;
 import com.example.health_guardian_server.repositories.AccountRepository;
+import com.example.health_guardian_server.repositories.OrganizationRepository;
 import com.example.health_guardian_server.repositories.ProfileRepository;
 import com.github.javafaker.Faker;
 
@@ -23,6 +27,7 @@ import lombok.experimental.FieldDefaults;
 public class DataSeeder {
                         AccountRepository accountRepository;
                         ProfileRepository profileRepository;
+                        OrganizationRepository organizationRepository;
 
                         @Bean
                         public void seedData() {
@@ -33,6 +38,13 @@ public class DataSeeder {
                                                                                                 .email("nguyenthinhphat3009@gmail.com")
                                                                                                 .isActivated(false)
                                                                                                 .build();
+                                                for (int i = 0; i < 10; i++) {
+                                                                        Organization organization = Organization.builder()
+                                                                                                                        .name(faker.company().name())
+                                                                                                                        .address(faker.address().fullAddress())
+                                                                                                                        .build();
+                                                                        organizationRepository.save(organization);
+                                                }
                                                 accountRepository.save(admin);
                                                 for (int i = 0; i < 10; i++) {
                                                                         Account account = Account.builder()
@@ -42,7 +54,7 @@ public class DataSeeder {
                                                                                                                         .isActivated(true)
                                                                                                                         .build();
                                                                         accountRepository.save(account);
-                                                                        Profile profile = Profile.builder()
+                                                                        Patient patient = Patient.builder()
                                                                                                                         .account(account)
                                                                                                                         .fullName(faker.name().fullName())
                                                                                                                         .bio(faker.lorem().sentence())
@@ -54,9 +66,26 @@ public class DataSeeder {
                                                                                                                         .avatarUrl(faker.internet().avatar())
                                                                                                                         .visibility(PUBLIC)
                                                                                                                         .build();
-                                                                        profileRepository.save(profile);
+                                                                        profileRepository.save(patient);
                                                 }
 
+                                                for (int i = 0; i < 10; i++) {
+                                                                        Doctor doctor = Doctor.builder()
+                                                                                                                        .fullName(faker.name().fullName())
+                                                                                                                        .bio(faker.lorem().sentence())
+                                                                                                                        .phoneNunmber(faker.phoneNumber().cellPhone())
+                                                                                                                        .address(faker.address().fullAddress())
+                                                                                                                        .dateOfBirth(faker.date().birthday().toInstant().atZone(
+                                                                                                                                                                        ZoneId.systemDefault())
+                                                                                                                                                                        .toLocalDate())
+                                                                                                                        .avatarUrl(faker.internet().avatar())
+                                                                                                                        .visibility(PUBLIC)
+                                                                                                                        .specialization(faker.lorem().word())
+                                                                                                                        .organization(organizationRepository.findAll().get(
+                                                                                                                                                                        faker.random().nextInt(0, 9)))
+                                                                                                                        .build();
+                                                                        profileRepository.save(doctor);
+                                                }
                                                 for (int i = 0; i < 10; i++) {
                                                                         Profile profile = Profile.builder()
                                                                                                                         .fullName(faker.name().fullName())

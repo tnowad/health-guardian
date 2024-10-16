@@ -19,10 +19,10 @@ public class Organization extends AbstractEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
 
-  @Column
+  @Column(nullable = false)
   String name;
 
-  @Column
+  @Column(nullable = false)
   String address;
 
   @OneToMany(mappedBy = "organization")
