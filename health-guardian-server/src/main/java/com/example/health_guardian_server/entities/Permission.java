@@ -29,7 +29,7 @@ public class Permission {
   @GeneratedValue(strategy = jakarta.persistence.GenerationType.UUID)
   String id;
 
-  @Column
+  @Column(nullable = false)
   String name;
 
   @Column

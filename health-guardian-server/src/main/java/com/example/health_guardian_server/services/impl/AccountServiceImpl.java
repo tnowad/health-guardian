@@ -3,6 +3,7 @@ package com.example.health_guardian_server.services.impl;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.example.health_guardian_server.entities.Account;
@@ -29,6 +30,7 @@ public class AccountServiceImpl implements AccountService {
     return accountRepository.findByEmail(email);
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @Override
   public List<Account> findAll() {
     return accountRepository.findAll();

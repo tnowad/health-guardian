@@ -1,10 +1,5 @@
 package com.example.health_guardian_server.dtos.responses;
 
-import java.util.List;
-import java.util.Set;
-
-import com.example.health_guardian_server.entities.Role;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AccountInfoResponse {
-  private String username;
-  private String email;
+public class PermissionResponse {
+    private String name;
 }

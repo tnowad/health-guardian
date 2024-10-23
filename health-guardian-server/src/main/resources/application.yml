@@ -56,6 +56,11 @@ spring:
   application:
     name: health-guardian-server
 
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    default-locale: en
+
   config:
     import: file:env.properties
 

@@ -18,6 +18,6 @@ public class CommonResponse<T> {
 
   String message;
 
-  T result;
+  T results;
 
 }

@@ -1,14 +1,11 @@
 package com.example.health_guardian_server.services.impl;
 
-import static com.example.health_guardian_server.utils.Constants.ACCESS_TOKEN_SIGNATURE_ALGORITHM;
-import static com.example.health_guardian_server.utils.Constants.REFRESH_TOKEN_SIGNATURE_ALGORITHM;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.springframework.http.HttpStatus.*;
 import com.example.health_guardian_server.exceptions.AuthException;
 import com.example.health_guardian_server.exceptions.errorcodes.AuthenticationErrorCode;
-import com.example.health_guardian_server.exceptions.AppException;
 import static com.example.health_guardian_server.exceptions.errorcodes.AuthenticationErrorCode.*;
 import static com.example.health_guardian_server.exceptions.errorcodes.AppErrorCode.*;
 import static com.example.health_guardian_server.utils.Constants.*;
@@ -16,8 +13,10 @@ import static com.example.health_guardian_server.utils.Constants.*;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -29,6 +28,7 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.health_guardian_server.entities.Account;
@@ -122,7 +122,6 @@ public class AuthServiceImpl implements AuthService {
 
     List<Verification> verifications = verificationRepository.findByAccountAndVerificationType(account,
         verificationType);
-    log.info("verifications: {}", verifications);
     if (verificationType.equals(VerificationType.VERIFY_EMAIL_BY_CODE)
         || verificationType.equals(VerificationType.VERIFY_EMAIL_BY_TOKEN)) {
       if (account.isActivated())
@@ -220,7 +219,7 @@ public class AuthServiceImpl implements AuthService {
 
     if (!isRefresh) {
       jwtClaimsSet = new JWTClaimsSet.Builder(jwtClaimsSet)
-          .claim("more-info", "???????")
+          .claim("scope", buildScope(account))
           .build();
     }
 
@@ -242,6 +241,21 @@ public class AuthServiceImpl implements AuthService {
       log.error("Cannot create token", e);
       throw new RuntimeException(e);
     }
+  }
+
+  private String buildScope(Account account) {
+    StringJoiner joiner = new StringJoiner(" ");
+    if (!CollectionUtils.isEmpty(account.getRoles())) {
+      account.getRoles().forEach(role -> {
+        joiner.add("ROLE_" + role.getName());
+        if (CollectionUtils.isEmpty(role.getPermissions())) {
+          joiner.add(role.getName());
+        } else {
+          role.getPermissions().forEach(permission -> joiner.add(permission.getName()));
+        }
+      });
+    }
+    return joiner.toString();
   }
 
   @Override

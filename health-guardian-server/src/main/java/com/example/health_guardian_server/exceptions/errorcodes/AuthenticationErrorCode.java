@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum AuthenticationErrorCode {
+
   // Validation Errors
   VALIDATION_ERROR("auth/validation-error", "validation_error"),
   INVALID_EMAIL("auth/invalid-email", "invalid_email"),

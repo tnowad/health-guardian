@@ -31,7 +31,7 @@ public class Role extends AbstractEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
 
-  @Column
+  @Column(nullable = false)
   String name;
 
   @ManyToMany

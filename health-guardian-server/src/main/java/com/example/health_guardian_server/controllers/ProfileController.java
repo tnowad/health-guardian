@@ -34,21 +34,21 @@ public class ProfileController {
   @GetMapping("/find-all")
   public ResponseEntity<CommonResponse<List<Profile>>> getAll() {
     return ResponseEntity.status(HttpStatus.OK)
-        .body(CommonResponse.<List<Profile>>builder().errorCode("1231").message("oke").result(profileService.findAll())
+        .body(CommonResponse.<List<Profile>>builder().errorCode("1231").message("oke").results(profileService.findAll())
             .build());
   }
 
   @GetMapping("/get-my-all-profiles")
   public ResponseEntity<CommonResponse<List<Profile>>> getMyAllProfiles() {
     return ResponseEntity.status(HttpStatus.OK)
-        .body(CommonResponse.<List<Profile>>builder().errorCode("1231").message("oke").result(profileService.findAll())
+        .body(CommonResponse.<List<Profile>>builder().errorCode("1231").message("oke").results(profileService.findAll())
             .build());
   }
 
   @PostMapping("/create")
   public ResponseEntity<CommonResponse<Profile>> create(Profile profile) {
     return ResponseEntity.status(HttpStatus.OK)
-        .body(CommonResponse.<Profile>builder().errorCode("1231").message("oke").result(profileService.create(profile))
+        .body(CommonResponse.<Profile>builder().errorCode("1231").message("oke").results(profileService.create(profile))
             .build());
   }
 
