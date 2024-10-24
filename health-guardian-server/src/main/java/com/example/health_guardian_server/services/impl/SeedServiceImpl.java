@@ -1,16 +1,20 @@
-package com.example.health_guardian_server.components;
+package com.example.health_guardian_server.services.impl;
 
+import org.springframework.stereotype.Service;
+
+import com.example.health_guardian_server.repositories.AccountRepository;
+import com.example.health_guardian_server.repositories.OrganizationRepository;
+import com.example.health_guardian_server.repositories.PermissionRepository;
+import com.example.health_guardian_server.repositories.ProfileRepository;
+import com.example.health_guardian_server.repositories.RoleRepository;
+import com.example.health_guardian_server.services.SeedService;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import static com.example.health_guardian_server.enums.Visibility.PUBLIC;
 import com.example.health_guardian_server.entities.Account;
 import com.example.health_guardian_server.entities.Doctor;
@@ -19,29 +23,29 @@ import com.example.health_guardian_server.entities.Patient;
 import com.example.health_guardian_server.entities.Permission;
 import com.example.health_guardian_server.entities.Profile;
 import com.example.health_guardian_server.entities.Role;
-import com.example.health_guardian_server.repositories.AccountRepository;
-import com.example.health_guardian_server.repositories.OrganizationRepository;
-import com.example.health_guardian_server.repositories.PermissionRepository;
-import com.example.health_guardian_server.repositories.ProfileRepository;
-import com.example.health_guardian_server.repositories.RoleRepository;
 import com.github.javafaker.Faker;
-
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-@Component
+@Service
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
-public class DataSeeder {
+public class SeedServiceImpl implements SeedService {
     AccountRepository accountRepository;
     ProfileRepository profileRepository;
     OrganizationRepository organizationRepository;
     RoleRepository roleRepository;
     PermissionRepository permissionRepository;
 
-    @Bean
-    public void seedRolesPermission() {
-        // Map roles to their permissions
+    public void clear() {
+        accountRepository.deleteAllInBatch();
+        profileRepository.deleteAllInBatch();
+        organizationRepository.deleteAllInBatch();
+        roleRepository.deleteAllInBatch();
+        permissionRepository.deleteAllInBatch();
+    }
+
+    public void defaultSeed() {
         Map<String, List<String>> rolePermissionsMap = Map.of(
                 "ADMIN", List.of("READ", "WRITE", "DELETE", "UPDATE", "CREATE", "READ_ALL"),
                 "DOCTOR", List.of("READ", "WRITE", "DELETE", "CREATE", "READ_ALL"),
@@ -69,15 +73,15 @@ public class DataSeeder {
             role.setPermissions(rolePermissions);
             roleRepository.save(role);
         });
+
     }
 
-    @Bean
-    public void seedData() {
+    public void mockSeed() {
         Faker faker = new Faker();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         Account admin = Account.builder().username("admin").password(
-                passwordEncoder.encode("123456"))
-                .email("nguyenthinhphat3009@gmail.com")
+                passwordEncoder.encode("Password@123"))
+                .email("admin@health-guardian.com")
                 .isActivated(false)
                 .roles(Set.of(roleRepository.findByName("ADMIN").get()))
                 .build();
@@ -153,5 +157,6 @@ public class DataSeeder {
                     .build();
             profileRepository.save(profile);
         }
+
     }
 }
