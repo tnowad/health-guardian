@@ -21,23 +21,40 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
 import Link from "next/link";
+import { useSignInMutation } from "@/hooks/api/sign-in.mutation";
+import { SignInRequest, signInRequestSchema } from "@/lib/api/sign-in.api";
+import { useRouter } from "next/navigation";
 
-export default function Page() {
-  const form = useForm({
-    resolver: zodResolver(
-      z.object({ email: z.string(), password: z.string() }),
-    ),
+export default function SignInPage() {
+  const { toast } = useToast();
+  const router = useRouter();
+  const signInMutation = useSignInMutation();
+  const signInForm = useForm<SignInRequest>({
+    resolver: zodResolver(signInRequestSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "admin@health-guardian.com",
+      password: "Password@123",
     },
   });
 
-  const { toast } = useToast();
-
-  const onSubmit = form.handleSubmit((values) => {});
+  const onSubmit = signInForm.handleSubmit((values) => {
+    signInMutation.mutate(values, {
+      onSuccess: (data) => {
+        toast({
+          title: "Sign In Success",
+          description: data.message,
+        });
+        router.push("/");
+      },
+      onError: (error) => {
+        toast({
+          title: "Sign In Error",
+          description: error.message,
+        });
+      },
+    });
+  });
 
   return (
     <Card className="mx-auto w-full max-w-md space-y-6">
@@ -50,10 +67,10 @@ export default function Page() {
       </CardHeader>
 
       <CardContent className="space-y-4 py-0">
-        <Form {...form}>
+        <Form {...signInForm}>
           <form onSubmit={onSubmit}>
             <FormField
-              control={form.control}
+              control={signInForm.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
@@ -70,7 +87,7 @@ export default function Page() {
             />
 
             <FormField
-              control={form.control}
+              control={signInForm.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
@@ -114,7 +131,7 @@ export default function Page() {
             Forgot Password?
           </Link>
           <span className="text-sm">
-            Don't have an account?{" "}
+            {"Don't have an account? "}
             <Link href="/sign-up" className="hover:text-primary">
               Sign Up
             </Link>
