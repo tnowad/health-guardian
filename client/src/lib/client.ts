@@ -18,6 +18,16 @@ export const apiClient = {
   },
 };
 
+client.interceptors.request.use(
+  async (config) => {
+    return config;
+  },
+  null,
+  {
+    runWhen: (request) => !!!request.headers["No-Auth"],
+  },
+);
+
 client.interceptors.response.use(
   (response) => {
     return response;

@@ -1,15 +1,19 @@
+import { signInApi } from "@/lib/apis/sign-in.api";
 import {
-  signInApi,
-  SignInErrorResponse,
-  SignInRequest,
-  SignInResponse,
-} from "@/lib/api/sign-in.api";
+  SignInErrorResponseSchema,
+  SignInRequestSchema,
+  SignInResponseSchema,
+} from "@/lib/schemas/sign-in.schema";
 import { useMutation } from "@tanstack/react-query";
 
 export function useSignInMutation() {
-  return useMutation<SignInResponse, SignInErrorResponse, SignInRequest>({
+  return useMutation<
+    SignInResponseSchema,
+    SignInErrorResponseSchema,
+    SignInRequestSchema
+  >({
     mutationKey: ["sign-in"],
-    mutationFn: (data) => signInApi(data),
+    mutationFn: (body) => signInApi(body),
     onSuccess: (data) => {
       console.log(data);
     },

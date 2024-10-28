@@ -23,16 +23,20 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useSignInMutation } from "@/hooks/api/sign-in.mutation";
-import { SignInRequest, signInRequestSchema } from "@/lib/api/sign-in.api";
 import { useRouter } from "next/navigation";
+import {
+  signInRequestSchema,
+  SignInRequestSchema,
+} from "@/lib/schemas/sign-in.schema";
 
 export default function SignInPage() {
   const { toast } = useToast();
   const router = useRouter();
   const signInMutation = useSignInMutation();
-  const signInForm = useForm<SignInRequest>({
+  const signInForm = useForm<SignInRequestSchema>({
     resolver: zodResolver(signInRequestSchema),
     defaultValues: {
+      type: "Local",
       email: "admin@health-guardian.com",
       password: "Password@123",
     },
@@ -104,7 +108,9 @@ export default function SignInPage() {
             />
 
             <div className="flex flex-col space-y-4 mt-4">
-              <Button className="w-full">Sign In</Button>
+              <Button type="submit" className="w-full">
+                Sign In
+              </Button>
             </div>
           </form>
         </Form>
