@@ -2,6 +2,7 @@ package com.example.health_guardian_server.entities;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
@@ -34,7 +35,7 @@ public class Doctor extends Profile {
 
   @ManyToOne
   @JoinColumn(name = "organization_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_doctor_organization", foreignKeyDefinition = "FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE ON UPDATE CASCADE"), nullable = false, updatable = false)
-  @JsonManagedReference
+  @JsonBackReference
   Organization organization;
 
   @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)

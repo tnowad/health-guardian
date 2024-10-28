@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8080/health-guardian",
+      "url": "http://localhost:8080",
       "description": "Generated server url"
     }
   ],
@@ -21,6 +21,66 @@
     }
   ],
   "paths": {
+    "/seeds/mock": {
+      "post": {
+        "tags": [
+          "seed-controller"
+        ],
+        "operationId": "mockSeed",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seeds/default": {
+      "post": {
+        "tags": [
+          "seed-controller"
+        ],
+        "operationId": "defaultSeed",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seeds/clear": {
+      "post": {
+        "tags": [
+          "seed-controller"
+        ],
+        "operationId": "clear",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/profile/create": {
       "post": {
         "tags": [
@@ -29,17 +89,17 @@
         "operationId": "create",
         "parameters": [
           {
-            "name": "profile",
+            "name": "createProfileRequest",
             "in": "query",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/Profile"
+              "$ref": "#/components/schemas/CreateProfileRequest"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Created",
             "content": {
               "*/*": {
                 "schema": {
@@ -483,19 +543,21 @@
         }
       }
     },
-    "/profile/get-my-all-profiles": {
+    "/profile": {
       "get": {
         "tags": [
           "Profile Apis"
         ],
-        "operationId": "getMyAllProfiles",
+        "summary": "Get current profile",
+        "description": "Get profile of current user",
+        "operationId": "getCurrentProfile",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/CommonResponseListProfile"
+                  "$ref": "#/components/schemas/CommonResponseProfile"
                 }
               }
             }
@@ -503,11 +565,13 @@
         }
       }
     },
-    "/profile/find-all": {
+    "/profile/profiles": {
       "get": {
         "tags": [
           "Profile Apis"
         ],
+        "summary": "Get profile list",
+        "description": "Get get all profile with role ADMIN",
         "operationId": "getAll",
         "responses": {
           "200": {
@@ -1362,7 +1426,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/AccountInfoResponse"
+                    "$ref": "#/components/schemas/FullAccountInfoResponse"
                   }
                 }
               }
@@ -1374,6 +1438,9 @@
   },
   "components": {
     "schemas": {
+      "CreateProfileRequest": {
+        "type": "object"
+      },
       "Account": {
         "type": "object",
         "properties": {
@@ -1394,9 +1461,6 @@
           "id": {
             "type": "string"
           },
-          "username": {
-            "type": "string"
-          },
           "password": {
             "type": "string"
           },
@@ -1415,8 +1479,80 @@
               "$ref": "#/components/schemas/Verification"
             }
           },
+          "roles": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          },
           "activated": {
             "type": "boolean"
+          }
+        }
+      },
+      "CommonResponseProfile": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "results": {
+            "$ref": "#/components/schemas/Profile"
+          }
+        }
+      },
+      "Family": {
+        "type": "object",
+        "properties": {
+          "createdBy": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Profile"
+            }
+          }
+        }
+      },
+      "Permission": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
           }
         }
       },
@@ -1468,6 +1604,49 @@
               "PUBLIC",
               "PRIVATE"
             ]
+          },
+          "families": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Family"
+            }
+          }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "createdBy": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Account"
+            }
           }
         }
       },
@@ -1511,20 +1690,6 @@
           }
         }
       },
-      "CommonResponseProfile": {
-        "type": "object",
-        "properties": {
-          "errorCode": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
-          "result": {
-            "$ref": "#/components/schemas/Profile"
-          }
-        }
-      },
       "VerifyEmailByCodeRequest": {
         "required": [
           "code",
@@ -1560,6 +1725,20 @@
         ],
         "type": "object",
         "properties": {
+          "createdBy": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
           "userName": {
             "type": "string"
           },
@@ -1814,7 +1993,7 @@
           "message": {
             "type": "string"
           },
-          "result": {
+          "results": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Profile"
@@ -1830,6 +2009,42 @@
           },
           "templated": {
             "type": "boolean"
+          }
+        }
+      },
+      "FullAccountInfoResponse": {
+        "type": "object",
+        "properties": {
+          "accountInfoResponse": {
+            "$ref": "#/components/schemas/AccountInfoResponse"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleResponse"
+            }
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionResponse"
+            }
+          }
+        }
+      },
+      "PermissionResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "RoleResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
           }
         }
       }

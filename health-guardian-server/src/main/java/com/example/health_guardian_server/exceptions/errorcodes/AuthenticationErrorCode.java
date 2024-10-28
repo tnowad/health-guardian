@@ -30,6 +30,8 @@ public enum AuthenticationErrorCode {
   // Verification Errors
   CODE_INVALID("auth/code-invalid", "code_invalid"),
 
+  // Account Errors
+  ACCOUNT_NOT_FOUND("auth/account-not-found", "account_not_found"),
   // User Errors
   USER_DISABLED("auth/user-disabled", "user_disabled"),
   USER_NOT_ACTIVATED("auth/user-not-activated", "user_not_activated"),

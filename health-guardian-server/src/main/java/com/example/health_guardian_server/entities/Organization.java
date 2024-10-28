@@ -2,6 +2,8 @@ package com.example.health_guardian_server.entities;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,5 +38,6 @@ public class Organization extends AbstractEntity {
   String address;
 
   @OneToMany(mappedBy = "organization")
+  @JsonManagedReference
   Set<Doctor> doctors;
 }

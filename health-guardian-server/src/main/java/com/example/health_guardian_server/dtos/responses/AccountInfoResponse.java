@@ -18,6 +18,5 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccountInfoResponse {
-  private String username;
   private String email;
 }

@@ -15,7 +15,7 @@ brevo-mail:
   from-mail: ${FROM_MAIL}
   url: https://api.brevo.com
   api-key: ${BREVO_API_KEY}
-  server-url: http://${server.host}:${server.port}${server.servlet.context-path}
+  server-url: http://${server.host}:${server.port}
 
 # Spring Boot Actuator configuration (Health, Info, Metrics, etc.)
 management:

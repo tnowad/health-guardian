@@ -31,132 +31,132 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class SeedServiceImpl implements SeedService {
-    AccountRepository accountRepository;
-    ProfileRepository profileRepository;
-    OrganizationRepository organizationRepository;
-    RoleRepository roleRepository;
-    PermissionRepository permissionRepository;
+  AccountRepository accountRepository;
+  ProfileRepository profileRepository;
+  OrganizationRepository organizationRepository;
+  RoleRepository roleRepository;
+  PermissionRepository permissionRepository;
 
-    public void clear() {
-        accountRepository.deleteAllInBatch();
-        profileRepository.deleteAllInBatch();
-        organizationRepository.deleteAllInBatch();
-        roleRepository.deleteAllInBatch();
-        permissionRepository.deleteAllInBatch();
+  public void clear() {
+    accountRepository.deleteAllInBatch();
+    profileRepository.deleteAllInBatch();
+    organizationRepository.deleteAllInBatch();
+    roleRepository.deleteAllInBatch();
+    permissionRepository.deleteAllInBatch();
+  }
+
+  public void defaultSeed() {
+    Map<String, List<String>> rolePermissionsMap = Map.of(
+        "ADMIN", List.of("READ", "WRITE", "DELETE", "UPDATE", "CREATE", "READ_ALL"),
+        "DOCTOR", List.of("READ", "WRITE", "DELETE", "CREATE", "READ_ALL"),
+        "PATIENT", List.of("READ", "DELETE", "CREATE"));
+
+    // Ensure permissions exist
+    List<Permission> allPermissions = rolePermissionsMap.values().stream()
+        .flatMap(List::stream)
+        .distinct()
+        .map(permissionName -> permissionRepository.findByName(permissionName)
+            .orElseGet(() -> Permission.builder().name(permissionName).build()))
+        .collect(Collectors.toList());
+
+    permissionRepository.saveAll(allPermissions);
+
+    // Ensure roles exist and assign permissions
+    rolePermissionsMap.forEach((roleName, permissionNames) -> {
+      Role role = roleRepository.findByName(roleName)
+          .orElseGet(() -> Role.builder().name(roleName).build());
+
+      List<Permission> rolePermissions = allPermissions.stream()
+          .filter(permission -> permissionNames.contains(permission.getName()))
+          .collect(Collectors.toList());
+
+      role.setPermissions(rolePermissions);
+      roleRepository.save(role);
+    });
+
+  }
+
+  public void mockSeed() {
+    Faker faker = new Faker();
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    Account admin = Account.builder().password(
+        passwordEncoder.encode("Password@123"))
+        .email("admin@health-guardian.com")
+        .isActivated(false)
+      .acceptTerms(true)
+        .roles(Set.of(roleRepository.findByName("ADMIN").get()))
+        .build();
+
+    for (int i = 0; i < 10; i++) {
+      Organization organization = Organization.builder()
+          .name(faker.company().name())
+          .address(faker.address().fullAddress())
+          .build();
+      organizationRepository.save(organization);
+    }
+    accountRepository.save(admin);
+    for (int i = 0; i < 10; i++) {
+      Account account = Account.builder()
+          .password(passwordEncoder.encode("123456"))
+          .email(faker.internet().emailAddress())
+          .isActivated(true)
+          .roles(Set.of(roleRepository.findByName("PATIENT").get()))
+          .build();
+      accountRepository.save(account);
+      Patient patient = Patient.builder()
+          .account(account)
+          .fullName(faker.name().fullName())
+          .bio(faker.lorem().sentence())
+          .phoneNunmber(faker.phoneNumber().cellPhone())
+          .address(faker.address().fullAddress())
+          .dateOfBirth(faker.date().birthday().toInstant().atZone(
+              ZoneId.systemDefault())
+              .toLocalDate())
+          .avatarUrl(faker.internet().avatar())
+          .visibility(PUBLIC)
+          .build();
+      profileRepository.save(patient);
     }
 
-    public void defaultSeed() {
-        Map<String, List<String>> rolePermissionsMap = Map.of(
-                "ADMIN", List.of("READ", "WRITE", "DELETE", "UPDATE", "CREATE", "READ_ALL"),
-                "DOCTOR", List.of("READ", "WRITE", "DELETE", "CREATE", "READ_ALL"),
-                "PATIENT", List.of("READ", "DELETE", "CREATE"));
-
-        // Ensure permissions exist
-        List<Permission> allPermissions = rolePermissionsMap.values().stream()
-                .flatMap(List::stream)
-                .distinct()
-                .map(permissionName -> permissionRepository.findByName(permissionName)
-                        .orElseGet(() -> Permission.builder().name(permissionName).build()))
-                .collect(Collectors.toList());
-
-        permissionRepository.saveAll(allPermissions);
-
-        // Ensure roles exist and assign permissions
-        rolePermissionsMap.forEach((roleName, permissionNames) -> {
-            Role role = roleRepository.findByName(roleName)
-                    .orElseGet(() -> Role.builder().name(roleName).build());
-
-            List<Permission> rolePermissions = allPermissions.stream()
-                    .filter(permission -> permissionNames.contains(permission.getName()))
-                    .collect(Collectors.toList());
-
-            role.setPermissions(rolePermissions);
-            roleRepository.save(role);
-        });
-
+    for (int i = 0; i < 10; i++) {
+      Account account = Account.builder()
+          .password(passwordEncoder.encode("123456"))
+          .email(faker.internet().emailAddress())
+          .isActivated(true)
+          .roles(Set.of(roleRepository.findByName("DOCTOR").get()))
+          .build();
+      accountRepository.save(account);
+      Doctor doctor = Doctor.builder()
+          .account(account)
+          .fullName(faker.name().fullName())
+          .bio(faker.lorem().sentence())
+          .phoneNunmber(faker.phoneNumber().cellPhone())
+          .address(faker.address().fullAddress())
+          .dateOfBirth(faker.date().birthday().toInstant().atZone(
+              ZoneId.systemDefault())
+              .toLocalDate())
+          .avatarUrl(faker.internet().avatar())
+          .visibility(PUBLIC)
+          .specialization(faker.lorem().word())
+          .organization(organizationRepository.findAll().get(
+              faker.random().nextInt(0, 9)))
+          .build();
+      profileRepository.save(doctor);
+    }
+    for (int i = 0; i < 10; i++) {
+      Profile profile = Profile.builder()
+          .fullName(faker.name().fullName())
+          .bio(faker.lorem().sentence())
+          .phoneNunmber(faker.phoneNumber().cellPhone())
+          .address(faker.address().fullAddress())
+          .dateOfBirth(faker.date().birthday().toInstant().atZone(
+              ZoneId.systemDefault())
+              .toLocalDate())
+          .avatarUrl(faker.internet().avatar())
+          .visibility(PUBLIC)
+          .build();
+      profileRepository.save(profile);
     }
 
-    public void mockSeed() {
-        Faker faker = new Faker();
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        Account admin = Account.builder().username("admin").password(
-                passwordEncoder.encode("Password@123"))
-                .email("admin@health-guardian.com")
-                .isActivated(false)
-                .roles(Set.of(roleRepository.findByName("ADMIN").get()))
-                .build();
-        for (int i = 0; i < 10; i++) {
-            Organization organization = Organization.builder()
-                    .name(faker.company().name())
-                    .address(faker.address().fullAddress())
-                    .build();
-            organizationRepository.save(organization);
-        }
-        accountRepository.save(admin);
-        for (int i = 0; i < 10; i++) {
-            Account account = Account.builder()
-                    .username(faker.name().username())
-                    .password(passwordEncoder.encode("123456"))
-                    .email(faker.internet().emailAddress())
-                    .isActivated(true)
-                    .roles(Set.of(roleRepository.findByName("PATIENT").get()))
-                    .build();
-            accountRepository.save(account);
-            Patient patient = Patient.builder()
-                    .account(account)
-                    .fullName(faker.name().fullName())
-                    .bio(faker.lorem().sentence())
-                    .phoneNunmber(faker.phoneNumber().cellPhone())
-                    .address(faker.address().fullAddress())
-                    .dateOfBirth(faker.date().birthday().toInstant().atZone(
-                            ZoneId.systemDefault())
-                            .toLocalDate())
-                    .avatarUrl(faker.internet().avatar())
-                    .visibility(PUBLIC)
-                    .build();
-            profileRepository.save(patient);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            Account account = Account.builder()
-                    .username(faker.name().username())
-                    .password(passwordEncoder.encode("123456"))
-                    .email(faker.internet().emailAddress())
-                    .isActivated(true)
-                    .roles(Set.of(roleRepository.findByName("DOCTOR").get()))
-                    .build();
-            accountRepository.save(account);
-            Doctor doctor = Doctor.builder()
-                    .account(account)
-                    .fullName(faker.name().fullName())
-                    .bio(faker.lorem().sentence())
-                    .phoneNunmber(faker.phoneNumber().cellPhone())
-                    .address(faker.address().fullAddress())
-                    .dateOfBirth(faker.date().birthday().toInstant().atZone(
-                            ZoneId.systemDefault())
-                            .toLocalDate())
-                    .avatarUrl(faker.internet().avatar())
-                    .visibility(PUBLIC)
-                    .specialization(faker.lorem().word())
-                    .organization(organizationRepository.findAll().get(
-                            faker.random().nextInt(0, 9)))
-                    .build();
-            profileRepository.save(doctor);
-        }
-        for (int i = 0; i < 10; i++) {
-            Profile profile = Profile.builder()
-                    .fullName(faker.name().fullName())
-                    .bio(faker.lorem().sentence())
-                    .phoneNunmber(faker.phoneNumber().cellPhone())
-                    .address(faker.address().fullAddress())
-                    .dateOfBirth(faker.date().birthday().toInstant().atZone(
-                            ZoneId.systemDefault())
-                            .toLocalDate())
-                    .avatarUrl(faker.internet().avatar())
-                    .visibility(PUBLIC)
-                    .build();
-            profileRepository.save(profile);
-        }
-
-    }
+  }
 }

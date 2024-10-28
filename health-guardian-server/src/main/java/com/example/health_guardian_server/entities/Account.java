@@ -3,6 +3,7 @@ package com.example.health_guardian_server.entities;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -38,9 +39,6 @@ public class Account extends AbstractEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
 
-  @Column(unique = true, nullable = false, length = 50)
-  String username;
-
   @Column(nullable = false)
   String password;
 
@@ -55,7 +53,8 @@ public class Account extends AbstractEntity {
   @Column(nullable = false)
   boolean acceptTerms = false;
 
-  @OneToOne
+  @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  @JsonManagedReference
   Profile profile;
 
   @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
