@@ -22,16 +22,19 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
-import { useSignInMutation } from "@/hooks/api/sign-in.mutation";
-import { SignInRequest, signInRequestSchema } from "@/lib/api/sign-in.api";
+import {
+  SignInBodySchema,
+  signInBodySchema,
+  useSignInMutation,
+} from "@/lib/apis/sign-in.api";
 import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
   const { toast } = useToast();
   const router = useRouter();
   const signInMutation = useSignInMutation();
-  const signInForm = useForm<SignInRequest>({
-    resolver: zodResolver(signInRequestSchema),
+  const signInForm = useForm<SignInBodySchema>({
+    resolver: zodResolver(signInBodySchema),
     defaultValues: {
       email: "admin@health-guardian.com",
       password: "Password@123",

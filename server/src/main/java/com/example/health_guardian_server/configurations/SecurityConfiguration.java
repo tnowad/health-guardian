@@ -55,7 +55,7 @@ public class SecurityConfiguration {
   };
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+  SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     httpSecurity.csrf(AbstractHttpConfigurer::disable);
     httpSecurity.authorizeHttpRequests(request -> {
       request.requestMatchers(PUBLIC_ENDPOINTS)
@@ -72,7 +72,7 @@ public class SecurityConfiguration {
   }
 
   @Bean
-  public CorsFilter corsFilter() {
+  CorsFilter corsFilter() {
     CorsConfiguration corsConfiguration = new CorsConfiguration();
 
     corsConfiguration.addAllowedOrigin("*");
@@ -86,7 +86,7 @@ public class SecurityConfiguration {
   }
 
   @Bean
-  public JwtAuthenticationConverter jwtAuthenticationConverter() {
+  JwtAuthenticationConverter jwtAuthenticationConverter() {
     JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
     jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 

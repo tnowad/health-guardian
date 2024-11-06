@@ -3,6 +3,8 @@ package com.example.health_guardian_server.entities;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,4 +31,9 @@ public class Account {
   private UUID id;
 
   private String profileType;
+
+  private UUID userId;
+
+  @Enumerated(EnumType.STRING)
+  private AccountStatus status;
 }

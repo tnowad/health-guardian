@@ -1,16 +1,43 @@
+import { z } from "zod";
 import { apiClient } from "../client";
-import {
-  SignInRequestSchema,
-  SignInResponseSchema,
-} from "../schemas/sign-in.schema";
+import { tokenSchema } from "../schemas/token.schema";
+import { useMutation } from "@tanstack/react-query";
+
+export const signInBodySchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+export type SignInBodySchema = z.infer<typeof signInBodySchema>;
+export const signInResponseSchema = z.object({
+  message: z.string(),
+  tokens: tokenSchema,
+});
+export type SignInResponseSchema = z.infer<typeof signInResponseSchema>;
+export const signInErrorResponseSchema = z.object({
+  message: z.string(),
+});
+export type SignInErrorResponseSchema = z.infer<
+  typeof signInErrorResponseSchema
+>;
 
 export async function signInApi(
-  body: SignInRequestSchema,
+  body: SignInBodySchema,
 ): Promise<SignInResponseSchema> {
   const response = await apiClient.post<SignInResponseSchema>(
     "/auth/sign-in",
     body,
+    {
+      headers: {
+        "No-Auth": true,
+      },
+    },
   );
-
   return response.data;
+}
+
+export function useSignInMutation() {
+  return useMutation({
+    mutationKey: ["sign-in"],
+    mutationFn: (body: SignInBodySchema) => signInApi(body),
+  });
 }

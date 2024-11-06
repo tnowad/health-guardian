@@ -1,6 +1,7 @@
 package com.example.health_guardian_server.services;
 
-public interface UserService {
-    // Define methods
-}
+import com.example.health_guardian_server.entities.User;
 
+public interface UserService {
+  User getUserByAccountId(String accountId);
+}

@@ -1,7 +1,6 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.UUID;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,8 +26,11 @@ import lombok.ToString;
 public class User {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
+
+  @Column(name = "account_id", insertable = false, updatable = false)
+  private String accountId;
 
   @ManyToOne
   @JoinColumn(name = "account_id", referencedColumnName = "id")
