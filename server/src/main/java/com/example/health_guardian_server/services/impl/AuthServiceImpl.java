@@ -33,7 +33,10 @@ public class AuthServiceImpl implements AuthService {
     if (localProvider == null) {
       throw new RuntimeException("User not found");
     }
-    if (localProviderService.verifyLocalProviderPassword(
+    System.out.println(
+        localProviderService.verifyLocalProviderPassword(
+            request.getEmail(), request.getPassword()));
+    if (!localProviderService.verifyLocalProviderPassword(
         request.getEmail(), request.getPassword())) {
       throw new RuntimeException("Invalid password");
     }

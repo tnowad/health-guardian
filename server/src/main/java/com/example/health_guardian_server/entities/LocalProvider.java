@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "local_providers")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -39,5 +41,6 @@ public class LocalProvider {
 
   @Email private String email;
 
+  @Column(name = "password_hash")
   private String passwordHash;
 }
