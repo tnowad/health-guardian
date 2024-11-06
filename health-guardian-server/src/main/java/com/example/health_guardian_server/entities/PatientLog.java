@@ -2,7 +2,7 @@ package com.example.health_guardian_server.entities;
 
 import java.util.Date;
 import java.util.UUID;
-
+import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,6 +41,6 @@ public class PatientLog {
   @Lob
   private String message;
 
-  @CreatedDate
+  @CreationTimestamp
   private Date createdAt;
 }
