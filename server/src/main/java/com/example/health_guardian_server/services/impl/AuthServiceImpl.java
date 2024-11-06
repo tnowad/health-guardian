@@ -13,7 +13,10 @@ import com.example.health_guardian_server.services.RoleService;
 import com.example.health_guardian_server.services.TokenService;
 import com.example.health_guardian_server.services.UserService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
   LocalProviderService localProviderService;
