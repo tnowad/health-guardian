@@ -3,7 +3,9 @@ package com.example.health_guardian_server.controllers;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.services.AuthService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AuthController {
-  private final AuthService authService;
+  AuthService authService;
 
   @PostMapping("/sign-in")
   public ResponseEntity<SignInResponse> signIn(@RequestBody SignInRequest request) {

@@ -10,11 +10,14 @@ import com.example.health_guardian_server.services.PermissionService;
 import com.example.health_guardian_server.services.RoleService;
 import com.example.health_guardian_server.services.TokenService;
 import com.example.health_guardian_server.services.UserService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AuthServiceImpl implements AuthService {
 
   LocalProviderService localProviderService;

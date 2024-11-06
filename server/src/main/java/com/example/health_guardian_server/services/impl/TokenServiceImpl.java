@@ -4,11 +4,14 @@ import com.example.health_guardian_server.dtos.responses.TokensResponse;
 import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.services.TokenService;
 import java.util.Set;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class TokenServiceImpl implements TokenService {
 
   @Override

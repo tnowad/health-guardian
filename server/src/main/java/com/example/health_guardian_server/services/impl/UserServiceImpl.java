@@ -3,11 +3,14 @@ package com.example.health_guardian_server.services.impl;
 import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.repositories.UserRepository;
 import com.example.health_guardian_server.services.UserService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
 
   UserRepository userRepository;
