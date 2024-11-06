@@ -1,8 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.Date;
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +9,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Past;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,7 +29,7 @@ public class AggregatedSideEffect {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  private String id;
 
   @ManyToOne
   @JoinColumn(name = "side_effect_id", referencedColumnName = "id")
@@ -43,9 +41,7 @@ public class AggregatedSideEffect {
 
   private int totalReports;
 
-  @Past
-  private Date periodStart;
+  @Past private Date periodStart;
 
-  @Future
-  private Date periodEnd;
+  @Future private Date periodEnd;
 }

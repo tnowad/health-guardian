@@ -5,6 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HouseholdMemberServiceImpl implements HouseholdMemberService {
-    // Implement methods
+  // Implement methods
 }
-

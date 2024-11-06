@@ -1,13 +1,9 @@
 package com.example.health_guardian_server.services.impl;
 
-import com.example.health_guardian_server.entities.Role;
 import com.example.health_guardian_server.repositories.RoleRepository;
 import com.example.health_guardian_server.services.RoleService;
-
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +13,7 @@ public class RoleServiceImpl implements RoleService {
   RoleRepository roleRepository;
 
   @Override
-  public List<Role> getRolesByUserId(String userId) {
-    return roleRepository.findAllByUserId(userId);
+  public Set<String> getRoleIdsByUserId(String userId) {
+    return roleRepository.findRoleIdsByUserId(userId);
   }
 }

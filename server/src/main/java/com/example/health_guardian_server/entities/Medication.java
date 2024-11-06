@@ -1,7 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,10 +25,9 @@ public class Medication {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  private String id;
 
-  @NotBlank
-  private String name;
+  @NotBlank private String name;
 
   private String activeIngredient;
 

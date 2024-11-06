@@ -5,6 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
-    // Implement methods
+  // Implement methods
 }
-

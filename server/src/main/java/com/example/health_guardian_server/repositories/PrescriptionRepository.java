@@ -1,11 +1,8 @@
 package com.example.health_guardian_server.repositories;
 
+import com.example.health_guardian_server.entities.Prescription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.example.health_guardian_server.entities.Prescription;
-import java.util.UUID;
 
 @Repository
-public interface PrescriptionRepository extends JpaRepository<Prescription, UUID> {
-}
-
+public interface PrescriptionRepository extends JpaRepository<Prescription, String> {}

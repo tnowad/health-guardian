@@ -1,17 +1,14 @@
 package com.example.health_guardian_server.services;
 
-import java.util.List;
-
 import com.example.health_guardian_server.dtos.responses.TokensResponse;
-import com.example.health_guardian_server.entities.Permission;
-import com.example.health_guardian_server.entities.Role;
 import com.example.health_guardian_server.entities.User;
+import java.util.Set;
 
 public interface TokenService {
 
   String generateRefreshToken(String userId);
 
-  String generateAccessToken(String userId, List<String> roles, List<String> permissions);
+  String generateAccessToken(String userId, Set<String> permissionIds);
 
-  TokensResponse generateTokens(User user, List<Role> roles, List<Permission> permissions);
+  TokensResponse generateTokens(User user, Set<String> permissionIds);
 }

@@ -1,7 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,15 +27,13 @@ import lombok.ToString;
 public class SideEffect {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
-  @NotBlank
-  private String name;
+  @NotBlank private String name;
 
   @Enumerated(EnumType.STRING)
   private SideEffectSeverity severity;
 
-  @Lob
-  private String description;
+  @Lob private String description;
 }

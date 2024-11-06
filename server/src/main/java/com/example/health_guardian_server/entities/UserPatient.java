@@ -1,7 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,7 +26,7 @@ public class UserPatient {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  private String id;
 
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")

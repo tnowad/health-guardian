@@ -1,7 +1,6 @@
 package com.example.health_guardian_server.configurations;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,8 +69,10 @@ public class RedisConfig {
   @Bean
   public RedisCacheConfiguration redisCacheConfiguration() {
     return RedisCacheConfiguration.defaultCacheConfig()
-        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer()));
+        .serializeKeysWith(
+            RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+        .serializeValuesWith(
+            RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer()));
   }
 
   @Bean
@@ -80,5 +81,4 @@ public class RedisConfig {
         .cacheDefaults(redisCacheConfiguration())
         .build();
   }
-
 }

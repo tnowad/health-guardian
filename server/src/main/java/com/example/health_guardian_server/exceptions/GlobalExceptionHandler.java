@@ -1,29 +1,24 @@
 package com.example.health_guardian_server.exceptions;
 
-import org.slf4j.log;
-import org.slf4j.logFactory;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(OAuth2AuthenticationException.class)
-  public ResponseEntity<Object> handleOAuth2AuthenticationException(OAuth2AuthenticationException ex) {
+  public ResponseEntity<Object> handleOAuth2AuthenticationException(
+      OAuth2AuthenticationException ex) {
     log.error("OAuth2 Authentication error: {}", ex.getMessage(), ex);
     Map<String, String> response = new HashMap<>();
     response.put("error", "Unauthorized");
@@ -44,9 +39,12 @@ public class GlobalExceptionHandler {
   public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex) {
     log.warn("Validation error: {}", ex.getMessage(), ex);
     Map<String, String> response = new HashMap<>();
-    ex.getBindingResult().getFieldErrors().forEach(error -> {
-      response.put(error.getField(), error.getDefaultMessage());
-    });
+    ex.getBindingResult()
+        .getFieldErrors()
+        .forEach(
+            error -> {
+              response.put(error.getField(), error.getDefaultMessage());
+            });
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
@@ -54,9 +52,12 @@ public class GlobalExceptionHandler {
   public ResponseEntity<Object> handleBindException(BindException ex) {
     log.warn("Binding error: {}", ex.getMessage(), ex);
     Map<String, String> response = new HashMap<>();
-    ex.getBindingResult().getFieldErrors().forEach(error -> {
-      response.put(error.getField(), error.getDefaultMessage());
-    });
+    ex.getBindingResult()
+        .getFieldErrors()
+        .forEach(
+            error -> {
+              response.put(error.getField(), error.getDefaultMessage());
+            });
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 

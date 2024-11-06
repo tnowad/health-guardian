@@ -5,6 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ConsentFormServiceImpl implements ConsentFormService {
-    // Implement methods
+  // Implement methods
 }
-

@@ -37,8 +37,7 @@ public class LocalProvider {
   @JoinColumn(name = "account_id", referencedColumnName = "id")
   private Account account;
 
-  @Email
-  private String email;
+  @Email private String email;
 
   private String passwordHash;
 }

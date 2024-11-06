@@ -5,6 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GuardianServiceImpl implements GuardianService {
-    // Implement methods
+  // Implement methods
 }
-

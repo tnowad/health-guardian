@@ -7,9 +7,7 @@ import lombok.Data;
 
 @Data
 public class SignInRequest {
-  @Email
-  @NotBlank
-  private String email;
+  @Email @NotBlank private String email;
 
   @Size(min = 8)
   @NotBlank

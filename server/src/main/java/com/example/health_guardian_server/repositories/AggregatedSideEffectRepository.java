@@ -1,11 +1,9 @@
 package com.example.health_guardian_server.repositories;
 
+import com.example.health_guardian_server.entities.AggregatedSideEffect;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.example.health_guardian_server.entities.AggregatedSideEffect;
-import java.util.UUID;
 
 @Repository
-public interface AggregatedSideEffectRepository extends JpaRepository<AggregatedSideEffect, UUID> {
-}
-
+public interface AggregatedSideEffectRepository
+    extends JpaRepository<AggregatedSideEffect, String> {}

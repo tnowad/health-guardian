@@ -1,8 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.Date;
-import java.util.UUID;
-import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,12 +8,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "patient_logs")
@@ -30,7 +29,7 @@ public class PatientLog {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  private String id;
 
   @ManyToOne
   @JoinColumn(name = "patient_id", referencedColumnName = "id")
@@ -38,9 +37,7 @@ public class PatientLog {
 
   private String logType;
 
-  @Lob
-  private String message;
+  @Lob private String message;
 
-  @CreationTimestamp
-  private Date createdAt;
+  @CreationTimestamp private Date createdAt;
 }

@@ -1,14 +1,12 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -28,19 +26,16 @@ import lombok.ToString;
 public class Guardian {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
-  @NotBlank
-  private String name;
+  @NotBlank private String name;
 
-  @NotBlank
-  private String relationshipToPatient;
+  @NotBlank private String relationshipToPatient;
 
   @NotBlank
   @Pattern(regexp = "^\\+?[0-9]*$")
   private String phone;
 
-  @Email
-  private String email;
+  @Email private String email;
 }

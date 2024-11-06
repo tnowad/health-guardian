@@ -5,6 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserMedicalStaffServiceImpl implements UserMedicalStaffService {
-    // Implement methods
+  // Implement methods
 }
-

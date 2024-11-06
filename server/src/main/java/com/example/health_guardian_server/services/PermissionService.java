@@ -1,10 +1,9 @@
 package com.example.health_guardian_server.services;
 
-import java.util.List;
-
-import com.example.health_guardian_server.entities.Permission;
-import com.example.health_guardian_server.entities.Role;
+import java.util.Set;
+import org.springframework.data.jpa.repository.Query;
 
 public interface PermissionService {
-  List<Permission> getPermissionsByRoles(List<Role> roles);
+  @Query("SELECT p.id FROM Permission p WHERE p.roleId IN :roleIds")
+  Set<String> getPermissionIdsByRoleIds(Set<String> roleIds);
 }

@@ -1,7 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,17 +27,14 @@ public class Hospital {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  private String id;
 
-  @NotBlank
-  private String name;
+  @NotBlank private String name;
 
-  @NotBlank
-  private String location;
+  @NotBlank private String location;
 
   @Pattern(regexp = "^\\+?[0-9]*$")
   private String phone;
 
-  @Email
-  private String email;
+  @Email private String email;
 }

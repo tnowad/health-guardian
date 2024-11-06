@@ -5,6 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SideEffectServiceImpl implements SideEffectService {
-    // Implement methods
+  // Implement methods
 }
-

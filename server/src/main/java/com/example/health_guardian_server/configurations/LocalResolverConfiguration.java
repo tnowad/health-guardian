@@ -1,6 +1,8 @@
 package com.example.health_guardian_server.configurations;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Locale;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
@@ -13,17 +15,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
-import java.util.List;
-import java.util.Locale;
-
 // This class is used to resolve the locale of the user (multi-language support)
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class LocalResolverConfiguration extends AcceptHeaderLocaleResolver implements WebMvcConfigurer {
+public class LocalResolverConfiguration extends AcceptHeaderLocaleResolver
+    implements WebMvcConfigurer {
 
-  List<Locale> LOCALES = List.of(
-      Locale.of("en"),
-      Locale.of("vi"));
+  List<Locale> LOCALES = List.of(Locale.of("en"), Locale.of("vi"));
 
   @Override
   public @NonNull Locale resolveLocale(@NonNull HttpServletRequest request) {
@@ -45,5 +43,4 @@ public class LocalResolverConfiguration extends AcceptHeaderLocaleResolver imple
     messageSource.setCacheSeconds(3600);
     return messageSource;
   }
-
 }

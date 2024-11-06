@@ -1,8 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.Date;
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +11,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Past;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,7 +31,7 @@ public class ReportedSideEffect {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  private String id;
 
   @ManyToOne
   @JoinColumn(name = "patient_id", referencedColumnName = "id")
@@ -47,14 +45,12 @@ public class ReportedSideEffect {
   @JoinColumn(name = "prescription_id", referencedColumnName = "id")
   private Prescription prescription;
 
-  @Past
-  private Date reportDate;
+  @Past private Date reportDate;
 
   @Enumerated(EnumType.STRING)
   private SideEffectSeverity severity;
 
-  @Lob
-  private String notes;
+  @Lob private String notes;
 
   private String reportedBy;
 

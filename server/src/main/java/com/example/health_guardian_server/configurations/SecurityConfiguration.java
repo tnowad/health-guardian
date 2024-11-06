@@ -1,5 +1,9 @@
 package com.example.health_guardian_server.configurations;
 
+import com.example.health_guardian_server.components.CustomJwtDecoder;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,12 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import com.example.health_guardian_server.components.CustomJwtDecoder;
-
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -27,45 +25,49 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class SecurityConfiguration {
   CustomJwtDecoder customJwtDecoder;
-  final String[] PUBLIC_ENDPOINTS = new String[] {
-      "/auth/sign-up",
-      "/auth/sign-in",
-      "/auth/verify-email-by-code",
-      "/auth/verify-email-by-token",
-      "/auth/send-email-verification",
-      "/auth/send-forgot-password",
-      "/auth/forgot-password",
-      "/auth/reset-password",
-      "/auth/sign-out",
-      "/auth/health",
-      "/auth/introspect",
-      "/auth/test",
-      "/actuator/health",
-      "/actuator/info",
-      "/actuator/prometheus",
-      "/actuator/metrics",
-      "/api-docs/**",
-      "/v3/api-docs/**",
-      "/swagger-ui/**",
-      "/swagger-ui.html",
-      "/swagger-resources/**",
-      "/seeds/**"
-  };
+  final String[] PUBLIC_ENDPOINTS =
+      new String[] {
+        "/auth/sign-up",
+        "/auth/sign-in",
+        "/auth/verify-email-by-code",
+        "/auth/verify-email-by-token",
+        "/auth/send-email-verification",
+        "/auth/send-forgot-password",
+        "/auth/forgot-password",
+        "/auth/reset-password",
+        "/auth/sign-out",
+        "/auth/health",
+        "/auth/introspect",
+        "/auth/test",
+        "/actuator/health",
+        "/actuator/info",
+        "/actuator/prometheus",
+        "/actuator/metrics",
+        "/api-docs/**",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/swagger-resources/**",
+        "/seeds/**"
+      };
 
   @Bean
   SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     httpSecurity.csrf(AbstractHttpConfigurer::disable);
-    httpSecurity.authorizeHttpRequests(request -> {
-      request.requestMatchers(PUBLIC_ENDPOINTS)
-          .permitAll()
-          .anyRequest().authenticated();
-    });
+    httpSecurity.authorizeHttpRequests(
+        request -> {
+          request.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated();
+        });
 
-    httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(
-        jwtConfigurer -> jwtConfigurer
-            .decoder(customJwtDecoder)
-            .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+    httpSecurity.oauth2ResourceServer(
+        oauth2 ->
+            oauth2
+                .jwt(
+                    jwtConfigurer ->
+                        jwtConfigurer
+                            .decoder(customJwtDecoder)
+                            .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
     return httpSecurity.build();
   }
 
@@ -77,7 +79,8 @@ public class SecurityConfiguration {
     corsConfiguration.addAllowedMethod("*");
     corsConfiguration.addAllowedHeader("*");
 
-    UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+    UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource =
+        new UrlBasedCorsConfigurationSource();
     urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 
     return new CorsFilter(urlBasedCorsConfigurationSource);
@@ -85,7 +88,8 @@ public class SecurityConfiguration {
 
   @Bean
   JwtAuthenticationConverter jwtAuthenticationConverter() {
-    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
+        new JwtGrantedAuthoritiesConverter();
     jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 
     JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();

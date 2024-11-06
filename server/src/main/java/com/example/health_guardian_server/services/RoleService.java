@@ -1,9 +1,7 @@
 package com.example.health_guardian_server.services;
 
-import java.util.List;
-
-import com.example.health_guardian_server.entities.Role;
+import java.util.Set;
 
 public interface RoleService {
-  List<Role> getRolesByUserId(String userId);
+  Set<String> getRoleIdsByUserId(String userId);
 }

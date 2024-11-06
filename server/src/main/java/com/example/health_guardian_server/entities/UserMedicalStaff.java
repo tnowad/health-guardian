@@ -1,8 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.Date;
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.PastOrPresent;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,7 +28,7 @@ public class UserMedicalStaff {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  private String id;
 
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -48,6 +46,5 @@ public class UserMedicalStaff {
 
   private Boolean active;
 
-  @PastOrPresent
-  private Date endDate;
+  @PastOrPresent private Date endDate;
 }

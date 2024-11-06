@@ -1,8 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.Date;
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Past;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,7 +31,7 @@ public class Prescription {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  private String id;
 
   @ManyToOne
   @JoinColumn(name = "patient_id", referencedColumnName = "id")
@@ -51,13 +49,10 @@ public class Prescription {
 
   private String frequency;
 
-  @Past
-  private Date startDate;
+  @Past private Date startDate;
 
-  @Future
-  private Date endDate;
+  @Future private Date endDate;
 
   @Enumerated(EnumType.STRING)
   private PrescriptionStatus status;
-
 }

@@ -8,8 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 public class HealthGuardianServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(HealthGuardianServerApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(HealthGuardianServerApplication.class, args);
+  }
 }

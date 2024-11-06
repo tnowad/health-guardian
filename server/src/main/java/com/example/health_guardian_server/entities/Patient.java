@@ -1,11 +1,5 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.Date;
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,12 +11,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "patients")
@@ -35,20 +32,16 @@ import lombok.ToString;
 public class Patient {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
-  @NotBlank
-  private String firstName;
+  @NotBlank private String firstName;
 
-  @NotBlank
-  private String lastName;
+  @NotBlank private String lastName;
 
-  @Past
-  private Date dob;
+  @Past private Date dob;
 
-  @NotBlank
-  private String gender;
+  @NotBlank private String gender;
 
   @ManyToOne
   @JoinColumn(name = "guardian_id", referencedColumnName = "id")
@@ -57,9 +50,7 @@ public class Patient {
   @Enumerated(EnumType.STRING)
   private MedicalStatus status;
 
-  @CreationTimestamp
-  private Date createdAt;
+  @CreationTimestamp private Date createdAt;
 
-  @UpdateTimestamp
-  private Date updatedAt;
+  @UpdateTimestamp private Date updatedAt;
 }
