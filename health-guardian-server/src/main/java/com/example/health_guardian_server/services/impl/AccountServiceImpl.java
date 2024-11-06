@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.health_guardian_server.entities.Account;
@@ -27,7 +29,8 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public Account findByEmail(String email) {
-    return accountRepository.findByEmail(email);
+    return accountRepository.findByEmail(email)
+        .orElseThrow(() -> new AuthException(AuthenticationErrorCode.ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND));
   }
 
   @PreAuthorize("hasRole('ADMIN')")
@@ -62,5 +65,13 @@ public class AccountServiceImpl implements AccountService {
   public void activateAccount(Account account) {
     account.setActivated(true);
 
+  }
+
+  @Override
+  public Account getCurrentAccount() {
+    SecurityContext context = SecurityContextHolder.getContext();
+    Account currentAccount = accountRepository.findByEmail(context.getAuthentication().getName())
+        .orElseThrow(() -> new AuthException(AuthenticationErrorCode.ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND));
+    return currentAccount;
   }
 }

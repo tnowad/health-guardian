@@ -16,7 +16,6 @@ import com.example.health_guardian_server.dtos.responses.AccountInfoResponse;
 import com.example.health_guardian_server.dtos.responses.FullAccountInfoResponse;
 import com.example.health_guardian_server.dtos.responses.PermissionResponse;
 import com.example.health_guardian_server.dtos.responses.RoleResponse;
-import com.example.health_guardian_server.entities.Account;
 import com.example.health_guardian_server.entities.Role;
 import com.example.health_guardian_server.mappers.AccountMapper;
 import com.example.health_guardian_server.mappers.PermissionMapper;

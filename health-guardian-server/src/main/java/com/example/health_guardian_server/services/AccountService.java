@@ -18,4 +18,6 @@ public interface AccountService {
   Account createaccount(Account account);
 
   void activateAccount(Account account);
+
+  Account getCurrentAccount();
 }

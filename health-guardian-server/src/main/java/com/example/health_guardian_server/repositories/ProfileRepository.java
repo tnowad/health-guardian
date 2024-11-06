@@ -7,5 +7,4 @@ import com.example.health_guardian_server.entities.Profile;
 
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, String> {
-
 }

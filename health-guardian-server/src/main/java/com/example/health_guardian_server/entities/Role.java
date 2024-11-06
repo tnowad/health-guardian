@@ -1,42 +1,43 @@
 package com.example.health_guardian_server.entities;
 
 import java.util.List;
+import java.util.UUID;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
+import lombok.ToString;
 
 @Entity
-@SuperBuilder
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "roles")
 @Getter
 @Setter
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-@Table(name = "roles")
-public class Role extends AbstractEntity {
-
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+public class Role {
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  String id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private UUID id;
 
-  @Column(nullable = false)
-  String name;
+  private String name;
+  private String description;
 
-  @ManyToMany
-  List<Permission> permissions;
+  @ManyToOne
+  @JoinColumn(name = "permission_id", referencedColumnName = "id")
+  private List<Permission> permissions;
 
-  @ManyToMany
-  List<Account> accounts;
+  @ManyToOne
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  private List<User> users;
 }
