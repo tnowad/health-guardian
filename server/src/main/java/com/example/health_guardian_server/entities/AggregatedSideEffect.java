@@ -28,7 +28,7 @@ import lombok.ToString;
 public class AggregatedSideEffect {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
   @ManyToOne

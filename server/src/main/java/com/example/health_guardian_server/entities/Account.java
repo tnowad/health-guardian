@@ -30,7 +30,7 @@ import lombok.ToString;
 public class Account {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
   private String profileType;

@@ -24,7 +24,7 @@ import lombok.ToString;
 public class Medication {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
   @NotBlank private String name;

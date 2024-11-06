@@ -30,7 +30,7 @@ import lombok.ToString;
 public class ReportedSideEffect {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
   @ManyToOne

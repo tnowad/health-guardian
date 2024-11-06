@@ -28,7 +28,7 @@ import org.hibernate.annotations.CreationTimestamp;
 public class PatientLog {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
   @ManyToOne

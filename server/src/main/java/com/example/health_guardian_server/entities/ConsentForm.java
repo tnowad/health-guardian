@@ -30,7 +30,7 @@ import lombok.ToString;
 public class ConsentForm {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
   @ManyToOne
