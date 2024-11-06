@@ -1,6 +1,8 @@
 package com.example.health_guardian_server.services.impl;
 
+import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
+import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.entities.AccountStatus;
 import com.example.health_guardian_server.services.AccountService;
@@ -49,9 +51,18 @@ public class AuthServiceImpl implements AuthService {
     }
     var user = userService.getUserByAccountId(localProvider.getAccountId());
     var roleIds = roleService.getRoleIdsByUserId(user.getId());
-    var permissions = permissionService.getPermissionIdsByRoleIds(roleIds);
-    var tokens = tokenService.generateTokens(user, permissions);
+    var permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
+    var tokens = tokenService.generateTokens(user, permissionNames);
 
     return SignInResponse.builder().tokens(tokens).message("Sign in successfully").build();
+  }
+
+  @Override
+  public RefreshTokenResponse refresh(RefreshTokenRequest request) {
+    var tokens = tokenService.refreshTokens(request.getRefreshToken());
+    return RefreshTokenResponse.builder()
+        .tokens(tokens)
+        .message("Refresh token successfully")
+        .build();
   }
 }

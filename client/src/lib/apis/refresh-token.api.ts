@@ -1,6 +1,10 @@
 import { z } from "zod";
-import { accessTokenSchema, refreshTokenSchema } from "../schemas/token.schema";
-import { apiClient } from "../api/client";
+import {
+  accessTokenSchema,
+  refreshTokenSchema,
+  tokenSchema,
+} from "../schemas/token.schema";
+import { apiClient } from "../client";
 
 export const refreshTokenBodySchema = z.object({
   refreshToken: refreshTokenSchema,
@@ -8,7 +12,8 @@ export const refreshTokenBodySchema = z.object({
 export type RefreshTokenBodySchema = z.infer<typeof refreshTokenBodySchema>;
 
 export const refreshTokenResponseSchema = z.object({
-  accessToken: accessTokenSchema,
+  message: z.string(),
+  tokens: tokenSchema,
 });
 export type RefreshTokenResponseSchema = z.infer<
   typeof refreshTokenResponseSchema

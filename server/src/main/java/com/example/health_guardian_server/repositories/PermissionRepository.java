@@ -11,4 +11,7 @@ public interface PermissionRepository extends JpaRepository<Permission, String> 
 
   @Query("SELECT p.id FROM Permission p JOIN p.roles r WHERE r.id IN :roleIds")
   Set<String> getPermissionIdsByRoleIds(Set<String> roleIds);
+
+  @Query("SELECT p.name FROM Permission p JOIN p.roles r WHERE r.id IN :roleIds")
+  Set<String> getPermissionNamesByRoleIds(Set<String> roleIds);
 }

@@ -31,6 +31,7 @@ public class SecurityConfiguration {
       new String[] {
         "/auth/sign-up",
         "/auth/sign-in",
+        "/auth/refresh",
         "/auth/verify-email-by-code",
         "/auth/verify-email-by-token",
         "/auth/send-email-verification",

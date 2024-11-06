@@ -22,6 +22,7 @@ export const accessTokenPayloadSchema = jwtPayloadSchema
     aud: z.union([z.array(z.string()), z.string()]).optional(),
     exp: z.number(),
     iat: z.number(),
+    permissions: z.array(z.string()).optional(),
   });
 
 export type AccessTokenPayloadSchema = z.infer<typeof accessTokenPayloadSchema>;

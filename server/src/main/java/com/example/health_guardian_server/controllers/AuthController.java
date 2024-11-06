@@ -1,6 +1,8 @@
 package com.example.health_guardian_server.controllers;
 
+import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
+import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.services.AuthService;
 import lombok.AccessLevel;
@@ -36,7 +38,8 @@ public class AuthController {
   }
 
   @PostMapping("/refresh")
-  public ResponseEntity<?> refresh() {
-    return ResponseEntity.ok().build();
+  public ResponseEntity<RefreshTokenResponse> refresh(@RequestBody RefreshTokenRequest request) {
+    var response = authService.refresh(request);
+    return ResponseEntity.ok(response);
   }
 }

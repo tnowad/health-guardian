@@ -8,7 +8,9 @@ public interface TokenService {
 
   String generateRefreshToken(String userId);
 
-  String generateAccessToken(String userId, Set<String> permissionIds);
+  String generateAccessToken(String userId, Set<String> permissionNames);
 
-  TokensResponse generateTokens(User user, Set<String> permissionIds);
+  TokensResponse generateTokens(User user, Set<String> permissionNames);
+
+  TokensResponse refreshTokens(String refreshToken);
 }

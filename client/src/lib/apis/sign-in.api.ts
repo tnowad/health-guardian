@@ -2,6 +2,8 @@ import { z } from "zod";
 import { apiClient } from "../client";
 import { tokenSchema } from "../schemas/token.schema";
 import { useMutation } from "@tanstack/react-query";
+import { setCookie } from "cookies-next";
+import { COOKIE_KEY_ACCESS_TOKEN, COOKIE_KEY_REFRESH_TOKEN } from "@/constants";
 
 export const signInBodySchema = z.object({
   email: z.string().email(),
@@ -39,5 +41,9 @@ export function useSignInMutation() {
   return useMutation({
     mutationKey: ["sign-in"],
     mutationFn: (body: SignInBodySchema) => signInApi(body),
+    onSuccess: (data) => {
+      setCookie(COOKIE_KEY_ACCESS_TOKEN, data.tokens.accessToken);
+      setCookie(COOKIE_KEY_REFRESH_TOKEN, data.tokens.refreshToken);
+    },
   });
 }

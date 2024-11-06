@@ -19,4 +19,9 @@ public class PermissionServiceImpl implements PermissionService {
   public Set<String> getPermissionIdsByRoleIds(Set<String> roleIds) {
     return permissionRepository.getPermissionIdsByRoleIds(roleIds);
   }
+
+  @Override
+  public Set<String> getPermissionNamesByRoleIds(Set<String> roleIds) {
+    return permissionRepository.getPermissionNamesByRoleIds(roleIds);
+  }
 }
