@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,18 +16,27 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "medications")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Account {
+public class Medication {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private UUID id;
 
-  private String profileType;
+  @NotBlank
+  private String name;
+
+  private String activeIngredient;
+
+  private String dosageForm;
+
+  private String standardDosage;
+
+  private String manufacturer;
 }

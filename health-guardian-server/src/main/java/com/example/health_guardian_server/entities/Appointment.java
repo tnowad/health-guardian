@@ -1,43 +1,55 @@
 package com.example.health_guardian_server.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.Date;
+import java.util.UUID;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
+import lombok.ToString;
 
-@Getter
-@Setter
-@SuperBuilder
-@AllArgsConstructor
-@NoArgsConstructor
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
 @Table(name = "appointments")
-public class Appointment extends AbstractEntity {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+public class Appointment {
+
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  String id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private UUID id;
 
   @ManyToOne
-  @JoinColumn(name = "patient_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_patient_appointment", foreignKeyDefinition = "FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE ON UPDATE CASCADE"), nullable = false, updatable = false)
-  @JsonManagedReference
-  Patient patient;
+  @JoinColumn(name = "patient_id", referencedColumnName = "id")
+  private Patient patient;
 
   @ManyToOne
-  @JoinColumn(name = "doctor_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_doctor_appointment", foreignKeyDefinition = "FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE ON UPDATE CASCADE"), nullable = false, updatable = false)
-  @JsonManagedReference
-  Doctor doctor;
+  @JoinColumn(name = "doctor_id", referencedColumnName = "id")
+  private UserMedicalStaff doctor;
+
+  @NotNull
+  private Date appointmentDate;
+
+  @NotBlank
+  private String reasonForVisit;
+
+  @Enumerated(EnumType.STRING)
+  private AppointmentStatus status;
 
 }

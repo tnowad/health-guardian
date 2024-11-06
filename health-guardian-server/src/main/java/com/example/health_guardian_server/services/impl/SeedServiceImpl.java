@@ -83,7 +83,7 @@ public class SeedServiceImpl implements SeedService {
         passwordEncoder.encode("Password@123"))
         .email("admin@health-guardian.com")
         .isActivated(false)
-      .acceptTerms(true)
+        .acceptTerms(true)
         .roles(Set.of(roleRepository.findByName("ADMIN").get()))
         .build();
 

@@ -3,9 +3,6 @@ package com.example.health_guardian_server.entities;
 import java.util.Date;
 import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,9 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -25,41 +22,41 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "patients")
+@Table(name = "reported_side_effects")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Patient {
+public class ReportedSideEffect {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private UUID id;
 
-  @NotBlank
-  private String firstName;
-
-  @NotBlank
-  private String lastName;
-
-  @Past
-  private Date dob;
-
-  @NotBlank
-  private String gender;
+  @ManyToOne
+  @JoinColumn(name = "patient_id", referencedColumnName = "id")
+  private Patient patient;
 
   @ManyToOne
-  @JoinColumn(name = "guardian_id", referencedColumnName = "id")
-  private Guardian guardian;
+  @JoinColumn(name = "side_effect_id", referencedColumnName = "id")
+  private SideEffect sideEffect;
+
+  @ManyToOne
+  @JoinColumn(name = "prescription_id", referencedColumnName = "id")
+  private Prescription prescription;
+
+  @Past
+  private Date reportDate;
 
   @Enumerated(EnumType.STRING)
-  private MedicalStatus status;
+  private SideEffectSeverity severity;
 
-  @CreationTimestamp
-  private Date createdAt;
+  @Lob
+  private String notes;
 
-  @UpdateTimestamp
-  private Date updatedAt;
+  private String reportedBy;
+
+  private String outcome;
 }

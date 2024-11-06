@@ -1,10 +1,7 @@
 package com.example.health_guardian_server.entities;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,8 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,41 +21,28 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "patients")
+@Table(name = "notifications")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Patient {
+public class Notification {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private UUID id;
 
-  @NotBlank
-  private String firstName;
-
-  @NotBlank
-  private String lastName;
-
-  @Past
-  private Date dob;
-
-  @NotBlank
-  private String gender;
-
   @ManyToOne
-  @JoinColumn(name = "guardian_id", referencedColumnName = "id")
-  private Guardian guardian;
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  private User user;
 
   @Enumerated(EnumType.STRING)
-  private MedicalStatus status;
+  private NotificationType type;
 
-  @CreationTimestamp
-  private Date createdAt;
+  @NotNull
+  private Timestamp notificationDate;
 
-  @UpdateTimestamp
-  private Date updatedAt;
+  private Boolean readStatus;
 }
