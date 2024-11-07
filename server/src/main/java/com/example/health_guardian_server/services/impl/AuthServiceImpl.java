@@ -12,7 +12,6 @@ import com.example.health_guardian_server.services.LocalProviderService;
 import com.example.health_guardian_server.services.PermissionService;
 import com.example.health_guardian_server.services.RoleService;
 import com.example.health_guardian_server.services.TokenService;
-import com.example.health_guardian_server.services.UserService;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -28,7 +27,6 @@ public class AuthServiceImpl implements AuthService {
   LocalProviderService localProviderService;
   AccountService accountService;
   RoleService roleService;
-  UserService userService;
   PermissionService permissionService;
   TokenService tokenService;
 
@@ -49,10 +47,11 @@ public class AuthServiceImpl implements AuthService {
     } else if (status == AccountStatus.INACTIVE) {
       throw new RuntimeException("Account inactive");
     }
-    var user = userService.getUserByAccountId(localProvider.getAccountId());
-    var roleIds = roleService.getRoleIdsByUserId(user.getId());
+    var userId = accountService.getUserIdByAccountId(localProvider.getAccountId());
+
+    var roleIds = roleService.getRoleIdsByUserId(userId);
     var permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
-    var tokens = tokenService.generateTokens(user, permissionNames);
+    var tokens = tokenService.generateTokens(userId, permissionNames);
 
     return SignInResponse.builder().tokens(tokens).message("Sign in successfully").build();
   }

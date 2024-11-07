@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.health_guardian_server.dtos.responses.TokensResponse;
-import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.services.PermissionService;
 import com.example.health_guardian_server.services.RoleService;
 import com.example.health_guardian_server.services.TokenService;
@@ -74,9 +73,9 @@ public class TokenServiceImpl implements TokenService {
   }
 
   @Override
-  public TokensResponse generateTokens(User user, Set<String> permissionNames) {
-    String accessToken = generateAccessToken(user.getId(), permissionNames);
-    String refreshToken = generateRefreshToken(user.getId());
+  public TokensResponse generateTokens(String userId, Set<String> permissionNames) {
+    String accessToken = generateAccessToken(userId, permissionNames);
+    String refreshToken = generateRefreshToken(userId);
 
     return new TokensResponse(accessToken, refreshToken);
   }

@@ -26,4 +26,9 @@ public class AccountServiceImpl implements AccountService {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'registerNewAccount'");
   }
+
+  @Override
+  public String getUserIdByAccountId(String accountId) {
+    return accountRepository.findUserIdByAccountId(accountId);
+  }
 }
