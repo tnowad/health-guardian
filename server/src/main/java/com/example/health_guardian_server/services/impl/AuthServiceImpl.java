@@ -38,9 +38,6 @@ public class AuthServiceImpl implements AuthService {
     if (localProvider == null) {
       throw new RuntimeException("User not found");
     }
-    System.out.println(
-        localProviderService.verifyLocalProviderPassword(
-            request.getEmail(), request.getPassword()));
     if (!localProviderService.verifyLocalProviderPassword(
         request.getEmail(), request.getPassword())) {
       throw new RuntimeException("Invalid password");
@@ -72,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public GetCurrentUserPermissionsResponse getCurrentUserPermissions(String accessToken) {
     Set<String> permissionNames = new HashSet<>();
-    if (accessToken != null) {
+    if (accessToken == null) {
       var roleIds = roleService.getDefaultRoleIds();
       permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
     } else {

@@ -55,26 +55,21 @@ public class SecurityConfiguration {
         "/seeds/**"
       };
 
-  @Bean
-  SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-    httpSecurity.csrf(AbstractHttpConfigurer::disable);
-    httpSecurity.authorizeHttpRequests(
-        request -> {
-          request.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated();
-        });
+@Bean
+SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    httpSecurity
+        .csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(requests -> requests
+            .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+            .anyRequest().authenticated())
+        .oauth2ResourceServer(oauth2 -> oauth2
+            .jwt(jwtConfigurer -> jwtConfigurer
+                .decoder(customJwtDecoder)
+                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+            .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
 
-    httpSecurity.oauth2ResourceServer(
-        oauth2 ->
-            oauth2
-                .jwt(
-                    jwtConfigurer ->
-                        jwtConfigurer
-                            .decoder(customJwtDecoder)
-                            .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
     return httpSecurity.build();
-  }
-
+}
   @Bean
   CorsFilter corsFilter() {
     CorsConfiguration corsConfiguration = new CorsConfiguration();

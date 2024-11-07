@@ -49,6 +49,7 @@ public class AuthController {
   @GetMapping("/current-user/permissions")
   public ResponseEntity<GetCurrentUserPermissionsResponse> getCurrentUserPermissions(
       @RequestHeader(value = "Authorization", required = false) String accessToken) {
+    System.out.println(accessToken);
 
     String token = (accessToken != null) ? accessToken.replace("Bearer ", "") : null;
     GetCurrentUserPermissionsResponse response = authService.getCurrentUserPermissions(token);

@@ -62,6 +62,7 @@ public class SeedServiceImpl implements SeedService {
     userPatientRepository.deleteAllInBatch();
     userStaffRepository.deleteAllInBatch();
 
+    localProviderRepository.deleteAllInBatch();
     accountRepository.deleteAllInBatch();
     userRepository.deleteAllInBatch();
 
@@ -80,7 +81,6 @@ public class SeedServiceImpl implements SeedService {
     prescriptionRepository.deleteAllInBatch();
     reportedSideEffectRepository.deleteAllInBatch();
     sideEffectRepository.deleteAllInBatch();
-    localProviderRepository.deleteAllInBatch();
 
     log.info("Database cleared");
   }
@@ -164,7 +164,7 @@ public class SeedServiceImpl implements SeedService {
         Setting.builder()
             .key(SettingKey.ROLE_DEFAULT_IDS)
             .description("Default role for new users")
-            .type(SettingType.STRING)
+            .type(SettingType.STRING_ARRAY)
             .build();
 
     roleSetting.setStringArrayValue(
@@ -193,7 +193,6 @@ public class SeedServiceImpl implements SeedService {
 
     Account adminAccount = Account.builder().user(adminUser).status(AccountStatus.ACTIVE).build();
     accountRepository.save(adminAccount);
-    adminUser.setAccount(adminAccount);
     userRepository.save(adminUser);
 
     LocalProvider adminLocalProvider =
