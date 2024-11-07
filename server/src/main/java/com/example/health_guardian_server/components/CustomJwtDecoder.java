@@ -1,38 +1,62 @@
 package com.example.health_guardian_server.components;
 
-import static com.example.health_guardian_server.utils.Constants.*;
-
-import java.util.Objects;
-import javax.crypto.spec.SecretKeySpec;
+import com.auth0.jwt.RegisteredClaims;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.health_guardian_server.services.TokenService;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.*;
+import lombok.experimental.FieldDefaults;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CustomJwtDecoder implements JwtDecoder {
 
-  @Value("${jwt.accessSignerKey}")
-  private String ACCESS_SIGNER_KEY;
-
-  private NimbusJwtDecoder nimbusJwtDecoder = null;
+  TokenService tokenService;
 
   @Override
-  public Jwt decode(String token) {
-    if (Objects.isNull(nimbusJwtDecoder)) {
-      SecretKeySpec secretKeySpec =
-          new SecretKeySpec(
-              ACCESS_SIGNER_KEY.getBytes(), ACCESS_TOKEN_SIGNATURE_ALGORITHM.getName());
+  public Jwt decode(String token) throws JwtException {
+    try {
+      DecodedJWT decoded = tokenService.decodeAccessToken(token);
 
-      nimbusJwtDecoder =
-          NimbusJwtDecoder.withSecretKey(secretKeySpec)
-              .macAlgorithm(MacAlgorithm.from(ACCESS_TOKEN_SIGNATURE_ALGORITHM.getName()))
-              .build();
+      Instant issuedAt =
+          decoded.getIssuedAt() != null ? decoded.getIssuedAt().toInstant() : Instant.MIN;
+      Instant expiresAt =
+          decoded.getExpiresAt() != null ? decoded.getExpiresAt().toInstant() : Instant.MAX;
+      Instant notBefore =
+          decoded.getNotBefore() != null ? decoded.getNotBefore().toInstant() : Instant.MIN;
+
+      Map<String, Object> claims =
+          decoded.getClaims().entrySet().stream()
+              .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().as(Object.class)));
+
+      claims.put(RegisteredClaims.ISSUED_AT, issuedAt);
+      claims.put(RegisteredClaims.EXPIRES_AT, expiresAt);
+      claims.put(RegisteredClaims.NOT_BEFORE, notBefore);
+
+      Map<String, Object> headerClaims = new HashMap<>();
+      headerClaims.put("kid", decoded.getKeyId());
+      headerClaims.put("alg", decoded.getAlgorithm());
+      headerClaims.put("cty", decoded.getContentType());
+      headerClaims.put("typ", decoded.getType());
+
+      return new Jwt(token, issuedAt, expiresAt, headerClaims, claims);
+    } catch (TokenExpiredException expired) {
+      throw new JwtException("Token expired: " + expired.getMessage(), expired);
+    } catch (JWTVerificationException invalid) {
+      throw new JwtException("JWT verification failed: " + invalid.getMessage(), invalid);
+    } catch (Exception e) {
+      throw new JwtException("JWT decoding failed: " + e.getMessage(), e);
     }
-    return nimbusJwtDecoder.decode(token);
   }
 }

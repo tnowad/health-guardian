@@ -121,4 +121,16 @@ public class TokenServiceImpl implements TokenService {
       throw new RuntimeException("Invalid access token");
     }
   }
+
+  @Override
+  public DecodedJWT decodeAccessToken(String accessToken) {
+    try {
+      return JWT.require(Algorithm.HMAC256(accessSignerKey))
+          .withIssuer(ISSUER)
+          .build()
+          .verify(accessToken);
+    } catch (Exception e) {
+      throw new RuntimeException("Invalid access token");
+    }
+  }
 }

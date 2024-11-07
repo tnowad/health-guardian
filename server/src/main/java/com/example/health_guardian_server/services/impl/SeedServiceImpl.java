@@ -109,6 +109,7 @@ public class SeedServiceImpl implements SeedService {
     adminRolePermissions.put(
         "admin",
         Arrays.asList(
+            PermissionName.VIEW_MAIN_DASHBOARD.name(),
             PermissionName.ACCOUNT_VIEW_OWN.name(),
             PermissionName.PATIENT_VIEW_OWN.name(),
             PermissionName.APPOINTMENT_CREATE_OWN.name(),

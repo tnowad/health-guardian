@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.services;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.health_guardian_server.dtos.responses.TokensResponse;
 import java.util.Set;
 
@@ -14,4 +15,6 @@ public interface TokenService {
   TokensResponse refreshTokens(String refreshToken);
 
   Set<String> extractPermissionNames(String accessToken);
+
+  DecodedJWT decodeAccessToken(String accessToken);
 }
