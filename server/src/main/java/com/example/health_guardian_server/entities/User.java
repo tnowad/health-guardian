@@ -38,8 +38,8 @@ public class User {
   @Column(name = "account_id", insertable = false, updatable = false)
   private String accountId;
 
-  @OneToOne()
-  @JoinColumn(name = "account_id", referencedColumnName = "id")
+  @OneToOne(cascade = CascadeType.ALL, optional = true)
+  @JoinColumn(name = "account_id")
   private Account account;
 
   private String userType;

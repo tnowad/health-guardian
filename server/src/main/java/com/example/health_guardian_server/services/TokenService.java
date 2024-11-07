@@ -13,4 +13,6 @@ public interface TokenService {
   TokensResponse generateTokens(User user, Set<String> permissionNames);
 
   TokensResponse refreshTokens(String refreshToken);
+
+  Set<String> extractPermissionNames(String accessToken);
 }

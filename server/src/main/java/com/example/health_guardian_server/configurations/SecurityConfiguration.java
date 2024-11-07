@@ -32,6 +32,7 @@ public class SecurityConfiguration {
         "/auth/sign-up",
         "/auth/sign-in",
         "/auth/refresh",
+        "/auth/current-user/permissions",
         "/auth/verify-email-by-code",
         "/auth/verify-email-by-token",
         "/auth/send-email-verification",

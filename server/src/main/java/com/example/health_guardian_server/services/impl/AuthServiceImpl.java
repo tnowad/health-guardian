@@ -2,6 +2,7 @@ package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
+import com.example.health_guardian_server.dtos.responses.GetCurrentUserPermissionsResponse;
 import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.entities.AccountStatus;
@@ -12,6 +13,8 @@ import com.example.health_guardian_server.services.PermissionService;
 import com.example.health_guardian_server.services.RoleService;
 import com.example.health_guardian_server.services.TokenService;
 import com.example.health_guardian_server.services.UserService;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -63,6 +66,21 @@ public class AuthServiceImpl implements AuthService {
     return RefreshTokenResponse.builder()
         .tokens(tokens)
         .message("Refresh token successfully")
+        .build();
+  }
+
+  @Override
+  public GetCurrentUserPermissionsResponse getCurrentUserPermissions(String accessToken) {
+    Set<String> permissionNames = new HashSet<>();
+    if (accessToken != null) {
+      var roleIds = roleService.getDefaultRoleIds();
+      permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
+    } else {
+      permissionNames = tokenService.extractPermissionNames(accessToken);
+    }
+    return GetCurrentUserPermissionsResponse.builder()
+        .items(permissionNames)
+        .message("Get current user permissions successfully")
         .build();
   }
 }

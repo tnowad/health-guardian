@@ -46,6 +46,7 @@ public class SeedServiceImpl implements SeedService {
   UserPatientRepository userPatientRepository;
   UserRepository userRepository;
   UserStaffRepository userStaffRepository;
+  SettingRepository settingRepository;
   PasswordEncoder passwordEncoder;
 
   Faker faker = new Faker();
@@ -53,7 +54,17 @@ public class SeedServiceImpl implements SeedService {
   @Override
   @Transactional
   public void clear() {
+    settingRepository.deleteAllInBatch();
+    permissionRepository.deleteAllInBatch();
+    roleRepository.deleteAllInBatch();
+
+    userMedicalStaffRepository.deleteAllInBatch();
+    userPatientRepository.deleteAllInBatch();
+    userStaffRepository.deleteAllInBatch();
+
     accountRepository.deleteAllInBatch();
+    userRepository.deleteAllInBatch();
+
     aggregatedSideEffectRepository.deleteAllInBatch();
     appointmentRepository.deleteAllInBatch();
     consentFormRepository.deleteAllInBatch();
@@ -62,20 +73,15 @@ public class SeedServiceImpl implements SeedService {
     hospitalRepository.deleteAllInBatch();
     householdMemberRepository.deleteAllInBatch();
     householdRepository.deleteAllInBatch();
-    localProviderRepository.deleteAllInBatch();
     medicationRepository.deleteAllInBatch();
     notificationRepository.deleteAllInBatch();
     patientLogRepository.deleteAllInBatch();
     patientRepository.deleteAllInBatch();
-    permissionRepository.deleteAllInBatch();
     prescriptionRepository.deleteAllInBatch();
     reportedSideEffectRepository.deleteAllInBatch();
-    roleRepository.deleteAllInBatch();
     sideEffectRepository.deleteAllInBatch();
-    userMedicalStaffRepository.deleteAllInBatch();
-    userPatientRepository.deleteAllInBatch();
-    userRepository.deleteAllInBatch();
-    userStaffRepository.deleteAllInBatch();
+    localProviderRepository.deleteAllInBatch();
+
     log.info("Database cleared");
   }
 
@@ -90,6 +96,15 @@ public class SeedServiceImpl implements SeedService {
     permissionRepository.saveAll(permissions);
 
     List<Map<String, List<String>>> permissionRoleMapping = new ArrayList<>();
+
+    Map<String, List<String>> anonymousRolePermissions = new HashMap<>();
+    anonymousRolePermissions.put(
+        "anonymous",
+        Arrays.asList(
+            PermissionName.ACCOUNT_CREATE_OWN.name(),
+            PermissionName.ACCOUNT_SIGNIN_OWN.name(),
+            PermissionName.ACCOUNT_SIGNOUT_OWN.name()));
+
     Map<String, List<String>> adminRolePermissions = new HashMap<>();
     adminRolePermissions.put(
         "admin",
@@ -119,6 +134,7 @@ public class SeedServiceImpl implements SeedService {
             PermissionName.NOTIFICATION_VIEW_OWN.name(),
             PermissionName.REPORT_VIEW_OWN.name()));
 
+    permissionRoleMapping.add(anonymousRolePermissions);
     permissionRoleMapping.add(adminRolePermissions);
     permissionRoleMapping.add(doctorRolePermissions);
     permissionRoleMapping.add(nurseRolePermissions);
@@ -142,6 +158,24 @@ public class SeedServiceImpl implements SeedService {
             .collect(Collectors.toList());
 
     roleRepository.saveAll(roles);
+
+    List<Setting> settings = new ArrayList<>();
+    Setting roleSetting =
+        Setting.builder()
+            .key(SettingKey.ROLE_DEFAULT_IDS)
+            .description("Default role for new users")
+            .type(SettingType.STRING)
+            .build();
+
+    roleSetting.setStringArrayValue(
+        roles.stream()
+            .filter(role -> role.getName().equals("anonymous"))
+            .map(Role::getId)
+            .collect(Collectors.toList()));
+
+    settings.add(roleSetting);
+
+    settingRepository.saveAll(settings);
 
     User adminUser =
         User.builder()

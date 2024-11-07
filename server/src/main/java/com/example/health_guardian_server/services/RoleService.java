@@ -4,4 +4,6 @@ import java.util.Set;
 
 public interface RoleService {
   Set<String> getRoleIdsByUserId(String userId);
+
+  Set<String> getDefaultRoleIds();
 }

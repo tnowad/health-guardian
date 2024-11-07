@@ -108,4 +108,18 @@ public class TokenServiceImpl implements TokenService {
       throw new RuntimeException("Invalid refresh token");
     }
   }
+
+  @Override
+  public Set<String> extractPermissionNames(String accessToken) {
+    try {
+      DecodedJWT decodedJWT =
+          JWT.require(Algorithm.HMAC256(accessSignerKey))
+              .withIssuer(ISSUER)
+              .build()
+              .verify(accessToken);
+      return Set.copyOf(decodedJWT.getClaim("permissions").asList(String.class));
+    } catch (Exception e) {
+      throw new RuntimeException("Invalid access token");
+    }
+  }
 }
