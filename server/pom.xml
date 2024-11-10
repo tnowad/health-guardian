@@ -61,6 +61,21 @@
       <artifactId>spring-boot-starter-mail</artifactId>
       <version>${spring-boot-starter-mail.version}</version>
     </dependency>
+<!--    Google Email Login-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+    </dependency>
+<!--    AI Assistant-->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-dialogflow</artifactId>
+      <version>3.0.0</version>
+    </dependency>
     <!--FAKER-->
     <!-- https://mvnrepository.com/artifact/com.github.javafaker/javafaker -->
     <dependency>

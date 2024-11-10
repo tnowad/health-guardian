@@ -1,6 +1,8 @@
 package com.example.health_guardian_server.configurations;
 
 import com.example.health_guardian_server.components.CustomJwtDecoder;
+import com.example.health_guardian_server.repositories.AccountRepository;
+import com.example.health_guardian_server.repositories.LocalProviderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +29,16 @@ import org.springframework.web.filter.CorsFilter;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class SecurityConfiguration {
   CustomJwtDecoder customJwtDecoder;
+  AccountRepository accountRepository;
+  LocalProviderRepository localProviderRepository;
   final String[] PUBLIC_ENDPOINTS =
       new String[] {
+        //Google login
+        "/login/oauth2/code/google/**",
+        "/oauth2/authorization/google/**",
+        //AI assistant
+        "/api/ai-assistant/**",
+
         "/auth/sign-up",
         "/auth/sign-in",
         "/auth/refresh",
@@ -62,7 +72,11 @@ public class SecurityConfiguration {
         request -> {
           request.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated();
         });
-
+    httpSecurity.oauth2Login(oauth2 -> oauth2
+      .loginPage("/oauth2/authorization/google")
+      .successHandler(customOAuth2SuccessHandler(localProviderRepository,accountRepository)) // Thêm success handler
+      .failureUrl("/login?error=true") // Chuyển hướng đến trang lỗi nếu đăng nhập thất bại
+    );
     httpSecurity.oauth2ResourceServer(
         oauth2 ->
             oauth2
@@ -101,7 +115,10 @@ public class SecurityConfiguration {
 
     return jwtAuthenticationConverter;
   }
-
+  @Bean
+  public CustomOAuth2SuccessHandler customOAuth2SuccessHandler(LocalProviderRepository localProviderRepository, AccountRepository accountRepository) {
+    return new CustomOAuth2SuccessHandler(localProviderRepository,accountRepository);
+  }
   @Bean
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
