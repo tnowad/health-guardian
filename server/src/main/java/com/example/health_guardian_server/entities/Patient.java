@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import java.util.Date;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Builder
 public class Patient {
 
   @Id

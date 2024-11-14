@@ -6,4 +6,6 @@ public interface LocalProviderService {
   LocalProvider getLocalProviderByEmail(String email);
 
   boolean verifyLocalProviderPassword(String email, String password);
+
+  LocalProvider createLocalProvider(String email, String password);
 }

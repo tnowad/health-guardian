@@ -1,13 +1,17 @@
 package com.example.health_guardian_server.entities;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -35,10 +39,16 @@ public class User {
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
-  private String userType;
+  @Column(name = "type", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private UserType type;
 
   @OneToMany(mappedBy = "user")
   private List<Account> accounts;
+
+  @ManyToOne
+  @JoinColumn(name = "patient_id", referencedColumnName = "id")
+  private Patient patient;
 
   @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(

@@ -27,4 +27,12 @@ public class LocalProviderServiceImpl implements LocalProviderService {
     LocalProvider localProvider = localProviderRepository.findByEmail(email);
     return passwordEncoder.matches(password, localProvider.getPasswordHash());
   }
+
+  @Override
+  public LocalProvider createLocalProvider(String email, String password) {
+    LocalProvider localProvider = new LocalProvider();
+    localProvider.setEmail(email);
+    localProvider.setPasswordHash(passwordEncoder.encode(password));
+    return localProviderRepository.save(localProvider);
+  }
 }
