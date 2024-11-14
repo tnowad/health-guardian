@@ -1,20 +1,16 @@
 package com.example.health_guardian_server.dtos.responses;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class MedicationResponse {
-
-  private String id;
-  private String name;
-  private String activeIngredient;
-  private String dosageForm;
-  private String standardDosage;
-  private String manufacturer;
+public class GetListMedicationResponse {
+  List<MedicationResponse> items;
+  String message;
 }

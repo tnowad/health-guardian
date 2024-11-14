@@ -223,5 +223,22 @@ public class SeedServiceImpl implements SeedService {
         appointmentRepository.save(appointment);
       }
     }
+    List<Medication> medications = new ArrayList<>();
+    for (int i = 0; i < 100; i++) {
+      String name = faker.medical().medicineName();
+      String activeIngredient = faker.medical().symptoms();
+      String dosageForm = faker.options().option("Tablet", "Capsule", "Injection", "Syrup");
+      String standardDosage = faker.number().numberBetween(10, 500) + " mg";
+      String manufacturer = faker.company().name();
+      medications.add(
+          Medication.builder()
+              .name(name)
+              .activeIngredient(activeIngredient)
+              .dosageForm(dosageForm)
+              .standardDosage(standardDosage)
+              .manufacturer(manufacturer)
+              .build());
+    }
+    medicationRepository.saveAll(medications);
   }
 }
