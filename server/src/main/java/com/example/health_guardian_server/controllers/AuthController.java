@@ -2,9 +2,11 @@ package com.example.health_guardian_server.controllers;
 
 import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
+import com.example.health_guardian_server.dtos.requests.SignUpRequest;
 import com.example.health_guardian_server.dtos.responses.GetCurrentUserPermissionsResponse;
 import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
+import com.example.health_guardian_server.dtos.responses.SignUpResponse;
 import com.example.health_guardian_server.services.AuthService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +33,9 @@ public class AuthController {
   }
 
   @PostMapping("/sign-up")
-  public ResponseEntity<?> signUp() {
-    return ResponseEntity.ok().build();
+  public ResponseEntity<SignUpResponse> signUp(@RequestBody SignUpRequest request) {
+    var response = authService.signUp(request);
+    return ResponseEntity.ok(response);
   }
 
   @PostMapping("/sign-out")

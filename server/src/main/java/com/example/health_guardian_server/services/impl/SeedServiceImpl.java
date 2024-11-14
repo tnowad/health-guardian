@@ -194,6 +194,7 @@ public class SeedServiceImpl implements SeedService {
                                 .findFirst()
                                 .get())
                     .collect(Collectors.toSet()))
+            .type(UserType.STAFF)
             .build();
     userRepository.save(adminUser);
 

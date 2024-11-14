@@ -2,16 +2,22 @@ package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
+import com.example.health_guardian_server.dtos.requests.SignUpRequest;
 import com.example.health_guardian_server.dtos.responses.GetCurrentUserPermissionsResponse;
 import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
+import com.example.health_guardian_server.dtos.responses.SignUpResponse;
 import com.example.health_guardian_server.entities.AccountStatus;
+import com.example.health_guardian_server.entities.UserType;
 import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AuthService;
 import com.example.health_guardian_server.services.LocalProviderService;
+import com.example.health_guardian_server.services.PatientService;
 import com.example.health_guardian_server.services.PermissionService;
 import com.example.health_guardian_server.services.RoleService;
 import com.example.health_guardian_server.services.TokenService;
+import com.example.health_guardian_server.services.UserService;
+import jakarta.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -29,6 +35,8 @@ public class AuthServiceImpl implements AuthService {
   RoleService roleService;
   PermissionService permissionService;
   TokenService tokenService;
+  UserService userService;
+  PatientService patientService;
 
   @Override
   public SignInResponse signIn(SignInRequest request) {
@@ -78,5 +86,27 @@ public class AuthServiceImpl implements AuthService {
         .items(permissionNames)
         .message("Get current user permissions successfully")
         .build();
+  }
+
+  @Override
+  @Transactional
+  public SignUpResponse signUp(SignUpRequest request) {
+    if (localProviderService.getLocalProviderByEmail(request.getEmail()) != null) {
+      throw new RuntimeException("Email already in use");
+    }
+
+    var localProvider =
+        localProviderService.createLocalProvider(request.getEmail(), request.getPassword());
+    var user = userService.createUser(UserType.PATIENT);
+    var account = accountService.createAccountWithLocalProvider(user, localProvider);
+    accountService.updateAccountStatus(account.getId(), AccountStatus.ACTIVE);
+
+    var roleIds = roleService.getDefaultRoleIdsForPatient();
+    roleService.assignRolesToUser(user.getId(), roleIds);
+    patientService.createPatient(user.getId(), request.getFirstName(), request.getLastName());
+    var permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
+    var tokens = tokenService.generateTokens(user.getId(), permissionNames);
+
+    return SignUpResponse.builder().tokens(tokens).message("Sign up successfully").build();
   }
 }
