@@ -12,18 +12,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
+import lombok.*;
 
 @Entity
 @Table(name = "appointments")
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode

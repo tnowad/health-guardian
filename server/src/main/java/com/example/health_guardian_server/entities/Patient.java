@@ -12,12 +12,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -27,6 +23,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString
 @EqualsAndHashCode
 public class Patient {

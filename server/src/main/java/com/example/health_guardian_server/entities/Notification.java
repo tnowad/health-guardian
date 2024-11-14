@@ -11,12 +11,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.sql.Timestamp;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
+import lombok.*;
 
 @Entity
 @Table(name = "notifications")
@@ -24,6 +20,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString
 @EqualsAndHashCode
 public class Notification {
