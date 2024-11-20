@@ -2,7 +2,9 @@ package com.example.health_guardian_server.configurations;
 
 import com.example.health_guardian_server.components.CustomJwtDecoder;
 import com.example.health_guardian_server.repositories.AccountRepository;
+import com.example.health_guardian_server.repositories.ExternalProviderRepository;
 import com.example.health_guardian_server.repositories.LocalProviderRepository;
+import com.example.health_guardian_server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,7 +33,10 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfiguration {
   CustomJwtDecoder customJwtDecoder;
   AccountRepository accountRepository;
-  LocalProviderRepository localProviderRepository;
+  ExternalProviderRepository externalProviderRepository;
+  UserRepository userRepository;
+  OAuth2AuthorizedClientService authorizedClientService;
+
   final String[] PUBLIC_ENDPOINTS =
       new String[] {
         //Google login
@@ -39,6 +45,7 @@ public class SecurityConfiguration {
         //AI assistant
         "/api/ai-assistant/**",
 
+        "/appointments/**",
         "/auth/sign-up",
         "/auth/sign-in",
         "/auth/refresh",
@@ -74,7 +81,7 @@ public class SecurityConfiguration {
         });
     httpSecurity.oauth2Login(oauth2 -> oauth2
       .loginPage("/oauth2/authorization/google")
-      .successHandler(customOAuth2SuccessHandler(localProviderRepository,accountRepository)) // Thêm success handler
+      .successHandler(customOAuth2SuccessHandler(externalProviderRepository,accountRepository,  userRepository,authorizedClientService)) // Thêm success handler
       .failureUrl("/login?error=true") // Chuyển hướng đến trang lỗi nếu đăng nhập thất bại
     );
     httpSecurity.oauth2ResourceServer(
@@ -116,8 +123,8 @@ public class SecurityConfiguration {
     return jwtAuthenticationConverter;
   }
   @Bean
-  public CustomOAuth2SuccessHandler customOAuth2SuccessHandler(LocalProviderRepository localProviderRepository, AccountRepository accountRepository) {
-    return new CustomOAuth2SuccessHandler(localProviderRepository,accountRepository);
+  public CustomOAuth2SuccessHandler customOAuth2SuccessHandler(ExternalProviderRepository externalProviderRepository, AccountRepository accountRepository, UserRepository userRepository,OAuth2AuthorizedClientService authorizedClientService) {
+    return new CustomOAuth2SuccessHandler(externalProviderRepository, accountRepository, userRepository, authorizedClientService);
   }
   @Bean
   PasswordEncoder passwordEncoder() {
