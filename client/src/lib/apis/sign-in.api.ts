@@ -48,7 +48,9 @@ export function useSignInMutation() {
       setCookie(COOKIE_KEY_ACCESS_TOKEN, data.tokens.accessToken);
       setCookie(COOKIE_KEY_REFRESH_TOKEN, data.tokens.refreshToken);
 
-      queryClient.invalidateQueries({ queryKey: ["current-user-permissions"] });
+      queryClient.resetQueries({
+        queryKey: ["current-user-permissions"],
+      });
     },
   });
 }
