@@ -35,103 +35,277 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "Patient Sidebar",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
     {
-      name: "Acme Corp.",
+      name: "Staff Sidebar",
       logo: AudioWaveform,
       plan: "Startup",
     },
     {
-      name: "Evil Corp.",
+      name: "Medical Staff Sidebar",
       logo: Command,
       plan: "Free",
     },
   ],
-  navMain: [
+  navMainPatient: [
     {
-      title: "Playground",
+      title: "Dashboard",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
+          title: "Overview",
           url: "#",
         },
       ],
     },
     {
-      title: "Models",
+      title: "Profile",
       url: "#",
       icon: Bot,
       items: [
         {
-          title: "Genesis",
+          title: "Personal Details",
           url: "#",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Medical Status",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Health",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
+          title: "Appointments",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Medications",
           url: "#",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Consent Forms",
           url: "#",
         },
       ],
     },
     {
-      title: "Settings",
+      title: "Logs and Notifications",
       url: "#",
       icon: Settings2,
       items: [
         {
-          title: "General",
+          title: "Health logs",
           url: "#",
         },
         {
-          title: "Team",
+          title: "Notifications",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Support",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "Guardian Contact",
           url: "#",
         },
         {
-          title: "Billing",
+          title: "Assigned Medical Staff",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  navMainStaff: [
+    {
+      title: "Dashboard",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "Patient Overview",
           url: "#",
         },
         {
-          title: "Limits",
+          title: "System Status",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Patient Management",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Patients",
+          url: "#",
+        },
+        {
+          title: "Appointments",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "System Management",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "Logs",
+          url: "#",
+        },
+        {
+          title: "Maintenance",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Notifications",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "Unread Notifications",
+          url: "#",
+        },
+        {
+          title: "All Notifications",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Support",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "Medical Staff Directory",
+          url: "#",
+        },
+        {
+          title: "Guardian Directory",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  navMainMedicalStaff: [
+    {
+      title: "Dashboard",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "My Schedule",
+          url: "#",
+        },
+        {
+          title: "Patient Activity",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Patient Management",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Patient Profiles",
+          url: "#",
+        },
+        {
+          title: "Medical Records",
+          url: "#",
+        },
+        {
+          title: "Logs",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Appointments",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "My Appointments",
+          url: "#",
+        },
+        {
+          title: "All Appointments",
+          url: "#",
+        },
+        {
+          title: "Appointment History",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Prescriptions and Medications",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "Current Prescriptions",
+          url: "#",
+        },
+        {
+          title: "Prescription History",
+          url: "#",
+        },
+        {
+          title: "Side Effects",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Notifications",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "Unread Notifications",
+          url: "#",
+        },
+        {
+          title: "All Notifications",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Staff Management",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "Medical Staff Directory",
+          url: "#",
+        },
+        {
+          title: "Support Resources",
           url: "#",
         },
       ],
@@ -158,18 +332,60 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+    // <Sidebar collapsible="icon" {...props}>
+    //   <SidebarHeader>
+    //     <TeamSwitcher teams={data.teams} />
+    //   </SidebarHeader>
+    //   <SidebarContent>
+    //     <NavMain items={data.navMain} />
+    //     <NavProjects projects={data.projects} />
+    //   </SidebarContent>
+    //   <SidebarFooter>
+    //     <NavUser user={data.user} />
+    //   </SidebarFooter>
+    //   <SidebarRail />
+    // </Sidebar>
+
+      <Sidebar collapsible="icon" {...props}>
+        <SidebarHeader>
+          <TeamSwitcher teams={data.teams} />
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={data.navMainPatient} />
+          {/*<NavProjects projects={data.projects} />*/}
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={data.user} />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+
+  // <Sidebar collapsible="icon" {...props}>
+  //   <SidebarHeader>
+  //     <TeamSwitcher teams={data.teams} />
+  //   </SidebarHeader>
+  //   <SidebarContent>
+  //     <NavMain items={data.navMainStaff} />
+  //     {/*<NavProjects projects={data.projects} />*/}
+  //   </SidebarContent>
+  //   <SidebarFooter>
+  //     <NavUser user={data.user} />
+  //   </SidebarFooter>
+  //   <SidebarRail />
+  // </Sidebar>
+
+  // <Sidebar collapsible="icon" {...props}>
+  //   <SidebarHeader>
+  //     <TeamSwitcher teams={data.teams} />
+  //   </SidebarHeader>
+  //   <SidebarContent>
+  //     <NavMain items={data.navMainMedicalStaff} />
+  //     {/*<NavProjects projects={data.projects} />*/}
+  //   </SidebarContent>
+  //   <SidebarFooter>
+  //     <NavUser user={data.user} />
+  //   </SidebarFooter>
+  //   <SidebarRail />
+  // </Sidebar>
   )
 }
