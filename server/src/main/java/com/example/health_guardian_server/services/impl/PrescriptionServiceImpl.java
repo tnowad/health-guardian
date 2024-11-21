@@ -1,10 +1,12 @@
 package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.entities.Prescription;
+import com.example.health_guardian_server.entities.PrescriptionStatus;
 import com.example.health_guardian_server.repositories.PrescriptionRepository;
 import com.example.health_guardian_server.services.PrescriptionService;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -46,10 +48,6 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     return prescriptionRepository.findByPatientId(patientId);
   }
 
-  @Override
-  public List<Prescription> getPrescriptionsByDoctorId(String doctorId) {
-    return prescriptionRepository.findByDoctorId(doctorId);
-  }
 
   @Override
   public List<Prescription> getPrescriptionsByMedicationId(String medicationId) {
@@ -58,28 +56,27 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
   @Override
   public List<Prescription> getPrescriptionsByStatus(String status) {
-    return prescriptionRepository.findByStatus(status);
+    return prescriptionRepository.findByStatus(PrescriptionStatus.valueOf(status));
   }
 
-  @Override
-  public List<Prescription> getPrescriptionsByPatientIdAndDoctorId(String patientId, String doctorId) {
-    return prescriptionRepository.findByPatientIdAndDoctorId(patientId, doctorId);
-  }
 
   @Override
   public List<Prescription> getPrescriptionsByPatientIdAndMedicationId(String patientId, String medicationId) {
     return prescriptionRepository.findByPatientIdAndMedicationId(patientId, medicationId);
   }
 
+
+
   @Override
-  public List<Prescription> getPrescriptionsByPatientIdAndDate(String patientId, String date) {
-    return prescriptionRepository.findByPatientIdAndDate(patientId, date);
+  public List<Prescription> getPrescriptionsByPatientIdAndEndDate(String patientId, Date endDate) {
+    return prescriptionRepository.findByPatientIdAndEndDate(patientId, endDate);
   }
 
   @Override
   public List<Prescription> getPrescriptionsByPatientIdAndStatus(String patientId, String status) {
-    return prescriptionRepository.findByPatientIdAndStatus(patientId, status);
+    return prescriptionRepository.findByPatientIdAndStatus(patientId, PrescriptionStatus.valueOf(status));
   }
+
 
 
 }

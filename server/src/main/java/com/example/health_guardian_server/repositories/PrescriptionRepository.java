@@ -1,26 +1,26 @@
 package com.example.health_guardian_server.repositories;
 
 import com.example.health_guardian_server.entities.Prescription;
+import com.example.health_guardian_server.entities.PrescriptionStatus;
+import jakarta.validation.constraints.Future;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, String> {
   List<Prescription> findByPatientId(String patientId);
 
-  List<Prescription> findByDoctorId(String doctorId);
-
   List<Prescription> findByMedicationId(String medicationId);
 
-  List<Prescription> findByStatus(String status);
+  List<Prescription> findByStatus(PrescriptionStatus status);
 
-  List<Prescription> findByPatientIdAndDoctorId(String patientId, String doctorId);
 
   List<Prescription> findByPatientIdAndMedicationId(String patientId, String medicationId);
 
-  List<Prescription> findByPatientIdAndDate(String patientId, String date);
+  List<Prescription> findByPatientIdAndEndDate(String patient_id, @Future Date endDate);
 
-  List<Prescription> findByPatientIdAndStatus(String patientId, String status);
+  List<Prescription> findByPatientIdAndStatus(String patient_id, PrescriptionStatus status);
 }

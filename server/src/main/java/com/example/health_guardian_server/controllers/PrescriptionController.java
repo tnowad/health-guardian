@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -37,10 +38,7 @@ public class PrescriptionController {
     return new ResponseEntity<>(prescriptionService.getPrescriptionsByPatientId(patientId), HttpStatus.OK);
   }
 
-  @GetMapping("/doctor/{doctorId}")
-  public ResponseEntity<List<Prescription>> getPrescriptionsByDoctorId(@PathVariable String doctorId) {
-    return new ResponseEntity<>(prescriptionService.getPrescriptionsByDoctorId(doctorId), HttpStatus.OK);
-  }
+
 
   @GetMapping("/medication/{medicationId}")
   public ResponseEntity<List<Prescription>> getPrescriptionsByMedicationId(@PathVariable String medicationId) {
@@ -51,19 +49,14 @@ public class PrescriptionController {
     return new ResponseEntity<>(prescriptionService.getPrescriptionsByStatus(status), HttpStatus.OK);
   }
 
-  @GetMapping("/patient/{patientId}/doctor/{doctorId}")
-  public ResponseEntity<List<Prescription>> getPrescriptionsByPatientIdAndDoctorId(@PathVariable String patientId, @PathVariable String doctorId) {
-    return new ResponseEntity<>(prescriptionService.getPrescriptionsByPatientIdAndDoctorId(patientId, doctorId), HttpStatus.OK);
-  }
-
   @GetMapping("/patient/{patientId}/medication/{medicationId}")
   public ResponseEntity<List<Prescription>> getPrescriptionsByPatientIdAndMedicationId(@PathVariable String patientId, @PathVariable String medicationId) {
     return new ResponseEntity<>(prescriptionService.getPrescriptionsByPatientIdAndMedicationId(patientId, medicationId), HttpStatus.OK);
   }
 
   @GetMapping("/patient/{patientId}/date/{date}")
-  public ResponseEntity<List<Prescription>> getPrescriptionsByPatientIdAndDate(@PathVariable String patientId, @PathVariable String date) {
-    return new ResponseEntity<>(prescriptionService.getPrescriptionsByPatientIdAndDate(patientId, date), HttpStatus.OK);
+  public ResponseEntity<List<Prescription>> getPrescriptionsByPatientIdAndEndDate(@PathVariable String patientId, @PathVariable Date date) {
+    return new ResponseEntity<>(prescriptionService.getPrescriptionsByPatientIdAndEndDate(patientId, date), HttpStatus.OK);
   }
 
   @GetMapping("/patient/{patientId}/status/{status}")
