@@ -4,6 +4,7 @@ import { tokenSchema } from "../schemas/token.schema";
 import { useMutation } from "@tanstack/react-query";
 import { setCookie } from "cookies-next";
 import { COOKIE_KEY_ACCESS_TOKEN, COOKIE_KEY_REFRESH_TOKEN } from "@/constants";
+import { getQueryClient } from "@/app/get-query-client";
 
 export const signInBodySchema = z.object({
   email: z.string().email(),
@@ -38,12 +39,18 @@ export async function signInApi(
 }
 
 export function useSignInMutation() {
+  const queryClient = getQueryClient();
+
   return useMutation({
     mutationKey: ["sign-in"],
     mutationFn: (body: SignInBodySchema) => signInApi(body),
     onSuccess: (data) => {
       setCookie(COOKIE_KEY_ACCESS_TOKEN, data.tokens.accessToken);
       setCookie(COOKIE_KEY_REFRESH_TOKEN, data.tokens.refreshToken);
+
+      queryClient.resetQueries({
+        queryKey: ["current-user-permissions"],
+      });
     },
   });
 }

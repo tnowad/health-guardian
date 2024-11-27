@@ -369,5 +369,618 @@ export default function Page() {
         </Card>
       </TabsContent>
     </Tabs>
-  );
+
+  //Patient
+  //Health->Appointments
+  // <Tabs defaultValue="Upcoming Appointments">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Upcoming Appointments">Upcoming Appointments</TabsTrigger>
+  //       <TabsTrigger value="Schedule Appointment">Schedule Appointment</TabsTrigger>
+  //       <TabsTrigger value="History" className="hidden sm:flex">History</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Upcoming Appointments">
+  //     Upcoming Appointments
+  //   </TabsContent>
+  //   <TabsContent value="Schedule Appointment">
+  //     Schedule Appointment
+  //   </TabsContent>
+  //   <TabsContent value="History">
+  //     History
+  //   </TabsContent>
+  // </Tabs>
+  // );
+
+  //Patient
+  //Health->Medications
+  // <Tabs defaultValue="Current Prescriptions">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Current Prescriptions">Current Prescriptions</TabsTrigger>
+  //       <TabsTrigger value="Prescription History">Prescription History</TabsTrigger>
+  //       <TabsTrigger value="Side Effects" className="hidden sm:flex">Side Effects</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Current Prescriptions">
+  //     Current Prescriptions
+  //   </TabsContent>
+  //   <TabsContent value="Prescription History">
+  //     Prescription History
+  //   </TabsContent>
+  //   <TabsContent value="Side Effects">
+  //     Side Effects
+  //   </TabsContent>
+  // </Tabs>
+
+  //Patient
+  //Health->Medications
+  // <Tabs defaultValue="Unread Notifications">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Unread Notifications">Unread Notifications</TabsTrigger>
+  //       <TabsTrigger value="All Notifications" className="hidden sm:flex">All Notifications</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Unread Notifications">
+  //     Unread Notifications
+  //   </TabsContent>
+  //   <TabsContent value="All Notifications">
+  //     All Notifications
+  //   </TabsContent>
+  // </Tabs>
+
+  //Staff Sidebar
+  //Patient Management->Patients
+  // <Tabs defaultValue="Search Patient Profiles">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Search Patient Profiles">Search Patient Profiles</TabsTrigger>
+  //       <TabsTrigger value="Households">Households</TabsTrigger>
+  //       <TabsTrigger value="Guardians" className="hidden sm:flex">Guardians</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Search Patient Profiles">
+  //     Search Patient Profiles
+  //   </TabsContent>
+  //   <TabsContent value="Households">
+  //     Households
+  //   </TabsContent>
+  //   <TabsContent value="Guardians">
+  //     Guardians
+  //   </TabsContent>
+  // </Tabs>
+
+  //Staff Sidebar
+  //Patient Management->Appointments
+  // <Tabs defaultValue="Upcoming Appointments">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Upcoming Appointments">Upcoming Appointments</TabsTrigger>
+  //       <TabsTrigger value="Appointment History" className="hidden sm:flex">Appointment History</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Upcoming Appointments">
+  //     Upcoming Appointments
+  //   </TabsContent>
+  //   <TabsContent value="Appointment History">
+  //     Appointment History
+  //   </TabsContent>
+  // </Tabs>
+
+  //Staff Sidebar
+  //System Management->Logs
+  // <Tabs defaultValue="Patient Logs">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Patient Logs">Patient Logs</TabsTrigger>
+  //       <TabsTrigger value="System Logs" className="hidden sm:flex">System Logs</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Patient Logs">
+  //     Patient Logs
+  //   </TabsContent>
+  //   <TabsContent value="System Logs">
+  //     System Logs
+  //   </TabsContent>
+  // </Tabs>
+
+  //Staff Sidebar
+  //System Management->Maintenance
+  // <Tabs defaultValue="System Backups">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="System Backups">System Backups</TabsTrigger>
+  //       <TabsTrigger value="Scheduled Maintenance" className="hidden sm:flex">Scheduled Maintenance</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="System Backups">
+  //     System Backups
+  //   </TabsContent>
+  //   <TabsContent value="Scheduled Maintenance">
+  //     Scheduled Maintenance
+  //   </TabsContent>
+  // </Tabs>
+
+  //Medical Staff Sidebar
+  //Patient Management->Patient Profiles
+  // <Tabs defaultValue="Search and Access Profiles">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Search and Access Profiles">Search and Access Profiles</TabsTrigger>
+  //       <TabsTrigger value="Household and Guardians" className="hidden sm:flex">Household and Guardians</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Search and Access Profiles">
+  //     Search and Access Profiles
+  //   </TabsContent>
+  //   <TabsContent value="Household and Guardians">
+  //     Household and Guardians
+  //   </TabsContent>
+  // </Tabs>
+
+  //Medical Staff Sidebar
+  //Patient Management->Medical Records
+  // <Tabs defaultValue="Medical History">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Medical History">Medical History</TabsTrigger>
+  //       <TabsTrigger value="Consent Forms" className="hidden sm:flex">Consent Forms</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Medical History">
+  //     Medical History
+  //   </TabsContent>
+  //   <TabsContent value="Consent Forms">
+  //     Consent Forms
+  //   </TabsContent>
+  // </Tabs>
+
+  //Medical Staff Sidebar
+  //Patient Management->Logs
+  // <Tabs defaultValue="Patient Logs">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Patient Logs">Patient Logs</TabsTrigger>
+  //       <TabsTrigger value="System Logs" className="hidden sm:flex">System Logs</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Patient Logs">
+  //     Patient Logs
+  //   </TabsContent>
+  //   <TabsContent value="System Logs">
+  //     System Logs
+  //   </TabsContent>
+  // </Tabs>
+
+  //Medical Staff Sidebar
+  //Prescriptions and Medications->Current Prescriptions
+  // <Tabs defaultValue="Prescribe Medication">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Prescribe Medication">Prescribe Medication</TabsTrigger>
+  //       <TabsTrigger value="Update Dosage" className="hidden sm:flex">Update Dosage</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Prescribe Medication">
+  //     Prescribe Medication
+  //   </TabsContent>
+  //   <TabsContent value="Update Dosage">
+  //     Update Dosage
+  //   </TabsContent>
+  // </Tabs>
+
+  //Medical Staff Sidebar
+  //Prescriptions and Medications->Side Effects
+  // <Tabs defaultValue="Reported Side Effects">
+  //   <div className="flex items-center">
+  //     <TabsList>
+  //       <TabsTrigger value="Reported Side Effects">Reported Side Effects</TabsTrigger>
+  //       <TabsTrigger value="Aggregated Data" className="hidden sm:flex">Aggregated Data</TabsTrigger>
+  //     </TabsList>
+  //     <div className="ml-auto flex items-center gap-2">
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline" size="sm" className="h-8 gap-1">
+  //             <ListFilter className="h-3.5 w-3.5" />
+  //             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //                 Filter
+  //               </span>
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuCheckboxItem checked>
+  //             Active
+  //           </DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+  //           <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //       <Button size="sm" variant="outline" className="h-8 gap-1">
+  //         <File className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Export
+  //           </span>
+  //       </Button>
+  //       <Button size="sm" className="h-8 gap-1">
+  //         <PlusCircle className="h-3.5 w-3.5" />
+  //         <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+  //             Add Product
+  //           </span>
+  //       </Button>
+  //     </div>
+  //   </div>
+  //   <TabsContent value="Reported Side Effects">
+  //     Reported Side Effects
+  //   </TabsContent>
+  //   <TabsContent value="Aggregated Data">
+  //     Aggregated Data
+  //   </TabsContent>
+  // </Tabs>
+);
 }

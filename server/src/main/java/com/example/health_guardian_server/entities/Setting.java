@@ -32,7 +32,7 @@ public class Setting {
   @Enumerated(EnumType.STRING)
   private SettingKey key;
 
-  @Column(name = "value", nullable = false)
+  @Column(name = "value", nullable = true)
   private String value;
 
   @Column(name = "description")
