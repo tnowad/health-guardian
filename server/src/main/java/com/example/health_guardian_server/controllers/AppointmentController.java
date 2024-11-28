@@ -68,16 +68,19 @@ public class AppointmentController {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
-   @PostMapping("/send")
-
-  public ResponseEntity<String> sendNotification() {
-    for (Appointment appointment : appointmentService.getAppointments()) {
-      User user = userService.getUserById(appointment.getPatient().getId());
-      Account account = accountService.getAccountByUserId(user.getId());
-      if (account.getExternalProviders() != null) {
-        for (ExternalProvider provider : account.getExternalProviders()) {
-          notificationService.sendEmail(provider.getProviderUserEmail(), "Notification","Your next appointment is coming up soon!: " + appointment.getAppointmentDate());
-        }
-      }
-  }
+//   @PostMapping("/send")
+//
+//  public ResponseEntity<String> sendNotification() {
+//     for (Appointment appointment : appointmentService.getAppointments()) {
+//       User user = userService.getUserById(appointment.getPatient().getId());
+//       Account account = accountService.getAccountByUserId(user.getId());
+//       if (account.getExternalProviders() != null) {
+//         for (ExternalProvider provider : account.getExternalProviders()) {
+//           notificationService.sendEmail(provider.getProviderUserEmail(), "Notification", "Your next appointment is coming up soon!: " + appointment.getAppointmentDate());
+//         }
+//       }
+//     }
+//
+//
+//  }
 }

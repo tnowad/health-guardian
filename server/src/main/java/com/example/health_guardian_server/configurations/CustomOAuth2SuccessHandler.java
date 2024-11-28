@@ -8,11 +8,14 @@ import com.example.health_guardian_server.repositories.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -42,7 +45,9 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     String provider = oauthUser.getName();
     String providerUserId = oauthUser.getAttribute("sub");
     String email = oauthUser.getAttribute("email");
-    OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(authentication.getName(), authentication.getName());
+    OAuth2AuthorizedClient authorizedClient = authorizedClientService
+      .loadAuthorizedClient("google", authentication.getName());
+
 
     if (authorizedClient == null) {
       // Handle the case where the authorized client is not found
@@ -85,6 +90,12 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
     // Chuyển hướng về trang home hoặc trang khác sau khi lưu thành công
     response.sendRedirect("/home");
+  }
+
+  @Bean
+  public OAuth2AuthorizedClientService authorizedClientService(
+    ClientRegistrationRepository clientRegistrationRepository) {
+      return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
   }
 
 }
