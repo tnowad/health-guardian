@@ -18,6 +18,7 @@ import java.util.List;
 public class AppointmentServiceImpl implements AppointmentService {
   AppointmentRepository appointmentRepository;
 
+
   public AppointmentServiceImpl(AppointmentRepository appointmentRepository) {
     this.appointmentRepository = appointmentRepository;
   }

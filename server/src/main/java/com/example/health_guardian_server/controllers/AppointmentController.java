@@ -1,7 +1,13 @@
 package com.example.health_guardian_server.controllers;
 
+import com.example.health_guardian_server.entities.Account;
 import com.example.health_guardian_server.entities.Appointment;
+import com.example.health_guardian_server.entities.ExternalProvider;
+import com.example.health_guardian_server.entities.User;
+import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AppointmentService;
+import com.example.health_guardian_server.services.NotificationService;
+import com.example.health_guardian_server.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +23,18 @@ import java.util.List;
 public class AppointmentController {
 
   private final AppointmentService appointmentService;
+  private final NotificationService notificationService;
+  private final UserService userService;
+  private final AccountService accountService;
 
-  public AppointmentController(AppointmentService appointmentService) {
+  public AppointmentController(AppointmentService appointmentService, NotificationService notificationService, UserService userService, AccountService accountService) {
     this.appointmentService = appointmentService;
+    this.notificationService = notificationService;
+    this.userService = userService;
+    this.accountService = accountService;
   }
+
+
 
   @PostMapping("/create")
   public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment) {
@@ -52,5 +66,18 @@ public class AppointmentController {
   public ResponseEntity<Void> deleteAppointment(@PathVariable String id) {
     appointmentService.deleteAppointment(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+   @PostMapping("/send")
+
+  public ResponseEntity<String> sendNotification() {
+    for (Appointment appointment : appointmentService.getAppointments()) {
+      User user = userService.getUserById(appointment.getPatient().getId());
+      Account account = accountService.getAccountByUserId(user.getId());
+      if (account.getExternalProviders() != null) {
+        for (ExternalProvider provider : account.getExternalProviders()) {
+          notificationService.sendEmail(provider.getProviderUserEmail(), "Notification","Your next appointment is coming up soon!: " + appointment.getAppointmentDate());
+        }
+      }
   }
 }

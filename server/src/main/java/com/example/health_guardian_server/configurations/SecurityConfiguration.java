@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -44,7 +45,8 @@ public class SecurityConfiguration {
         "/oauth2/authorization/google/**",
         //AI assistant
         "/api/ai-assistant/**",
-
+        //Notification
+        "/api/notifications/**",
         "/appointments/**",
         "/auth/sign-up",
         "/auth/sign-in",
@@ -129,5 +131,9 @@ public class SecurityConfiguration {
   @Bean
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+  @Bean
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
   }
 }
