@@ -15,4 +15,6 @@ public interface AccountService {
   void updateAccountStatus(String accountId, AccountStatus status);
 
   Account createAccountWithLocalProvider(User user, LocalProvider localProvider);
+
+  Account getAccountByUserId(String id);
 }

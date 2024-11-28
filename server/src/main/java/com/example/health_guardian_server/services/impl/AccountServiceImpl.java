@@ -52,4 +52,9 @@ public class AccountServiceImpl implements AccountService {
     accountRepository.save(account);
     return account;
   }
+
+  @Override
+  public Account getAccountByUserId(String id) {
+    return accountRepository.findByUserId(id).get(0);
+  }
 }
