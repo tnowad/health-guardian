@@ -1,0 +1,17 @@
+{
+  "name": "warehouse-pro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently --raw npm:client:dev npm:server:dev",
+    "client:dev": "cd client && pnpm dev",
+    "server:dev": "cd server && mvn spring-boot:run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
