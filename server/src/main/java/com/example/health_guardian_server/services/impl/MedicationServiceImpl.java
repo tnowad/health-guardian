@@ -1,34 +1,49 @@
 package com.example.health_guardian_server.services.impl;
 
-import com.example.health_guardian_server.dtos.responses.GetListMedicationResponse;
-import com.example.health_guardian_server.dtos.responses.MedicationResponse;
+import com.example.health_guardian_server.entities.Medication;
 import com.example.health_guardian_server.repositories.MedicationRepository;
 import com.example.health_guardian_server.services.MedicationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-@RequiredArgsConstructor
 public class MedicationServiceImpl implements MedicationService {
   private final MedicationRepository medicationRepository;
 
-  @Override
-  public GetListMedicationResponse getMedications() {
-
-    var medications =
-        medicationRepository.findAll().stream()
-            .map(
-                medication ->
-                    MedicationResponse.builder()
-                        .id(medication.getId())
-                        .name(medication.getName())
-                        .activeIngredient(medication.getActiveIngredient())
-                        .dosageForm(medication.getDosageForm())
-                        .standardDosage(medication.getStandardDosage())
-                        .manufacturer(medication.getManufacturer())
-                        .build())
-            .toList();
-
-    return GetListMedicationResponse.builder().items(medications).message("Success").build();
+  public MedicationServiceImpl(MedicationRepository medicationRepository) {
+    this.medicationRepository = medicationRepository;
   }
+  // Implement methods
+
+  @Override
+  public List<Medication> getAllMedications() {
+    return medicationRepository.findAll();
+  }
+
+  @Override
+  public Medication getMedicationById(String id) {
+    return medicationRepository.findById(id).orElse(null);
+  }
+
+  @Override
+  public Medication createMedication(Medication medication) {
+    return medicationRepository.save(medication);
+  }
+
+  @Override
+  public Medication updateMedication(Medication medication) {
+    return medicationRepository.save(medication);
+  }
+
+  @Override
+  public void deleteMedication(String id) {
+    medicationRepository.deleteById(id);
+  }
+
+  @Override
+  public List<Medication> getMedicationsByName(String name) {
+    return medicationRepository.findByName(name);
+  }
+
 }

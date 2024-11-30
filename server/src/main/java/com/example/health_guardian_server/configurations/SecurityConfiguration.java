@@ -1,6 +1,10 @@
 package com.example.health_guardian_server.configurations;
 
 import com.example.health_guardian_server.components.CustomJwtDecoder;
+import com.example.health_guardian_server.repositories.AccountRepository;
+import com.example.health_guardian_server.repositories.ExternalProviderRepository;
+import com.example.health_guardian_server.repositories.LocalProviderRepository;
+import com.example.health_guardian_server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -12,9 +16,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -27,8 +33,21 @@ import org.springframework.web.filter.CorsFilter;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class SecurityConfiguration {
   CustomJwtDecoder customJwtDecoder;
+  AccountRepository accountRepository;
+  ExternalProviderRepository externalProviderRepository;
+  UserRepository userRepository;
+  OAuth2AuthorizedClientService authorizedClientService;
+
   final String[] PUBLIC_ENDPOINTS =
       new String[] {
+        //Google login
+        "/login/oauth2/code/google/**",
+        "/oauth2/authorization/google/**",
+        //AI assistant
+        "/api/ai-assistant/**",
+        //Notification
+        "/api/notifications/**",
+        "/appointments/**",
         "/auth/sign-up",
         "/auth/sign-in",
         "/auth/refresh",
@@ -57,21 +76,25 @@ public class SecurityConfiguration {
 
   @Bean
   SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-    httpSecurity
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
-            requests ->
-                requests.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated())
-        .oauth2ResourceServer(
-            oauth2 ->
-                oauth2
-                    .jwt(
-                        jwtConfigurer ->
-                            jwtConfigurer
-                                .decoder(customJwtDecoder)
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                    .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
-
+    httpSecurity.csrf(AbstractHttpConfigurer::disable);
+    httpSecurity.authorizeHttpRequests(
+        request -> {
+          request.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated();
+        });
+    httpSecurity.oauth2Login(oauth2 -> oauth2
+      .loginPage("/oauth2/authorization/google")
+      .successHandler(customOAuth2SuccessHandler(externalProviderRepository,accountRepository,  userRepository,authorizedClientService)) // Thêm success handler
+      .failureUrl("/login?error=true") // Chuyển hướng đến trang lỗi nếu đăng nhập thất bại
+    );
+    httpSecurity.oauth2ResourceServer(
+        oauth2 ->
+            oauth2
+                .jwt(
+                    jwtConfigurer ->
+                        jwtConfigurer
+                            .decoder(customJwtDecoder)
+                            .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
     return httpSecurity.build();
   }
 
@@ -101,9 +124,16 @@ public class SecurityConfiguration {
 
     return jwtAuthenticationConverter;
   }
-
+  @Bean
+  public CustomOAuth2SuccessHandler customOAuth2SuccessHandler(ExternalProviderRepository externalProviderRepository, AccountRepository accountRepository, UserRepository userRepository,OAuth2AuthorizedClientService authorizedClientService) {
+    return new CustomOAuth2SuccessHandler(externalProviderRepository, accountRepository, userRepository, authorizedClientService);
+  }
   @Bean
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+  @Bean
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
   }
 }

@@ -71,6 +71,26 @@ spring:
       port: ${REDIS_PORT:6379}
       host: ${REDIS_HOST:localhost}
       database: 0
+  #configure google login
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_SECRET_KEY}
+            scope: profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+  #configure google ai
+  dialogflow:
+    project-id: health-guardian-439302
+    language-code: vi
+    credentials: classpath:health-guardian-439302-4ff9782bd0a5.json
 
 kafka:
   bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}

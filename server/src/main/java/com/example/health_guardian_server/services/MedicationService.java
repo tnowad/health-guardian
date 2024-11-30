@@ -1,9 +1,22 @@
 package com.example.health_guardian_server.services;
 
+import com.example.health_guardian_server.entities.Medication;
 
-import com.example.health_guardian_server.dtos.responses.GetListMedicationResponse;
+import java.util.List;
 
 public interface MedicationService {
+  // Define methods
 
-  GetListMedicationResponse getMedications();
+  List<Medication> getAllMedications();
+
+  Medication getMedicationById(String id);
+
+  Medication createMedication(Medication medication);
+
+  Medication updateMedication(Medication medication);
+
+  void deleteMedication(String id);
+
+  List<Medication> getMedicationsByName(String name);
+  
 }

@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.services;
 
 public interface NotificationService {
-  // Define methods
+
+  void sendEmail(String to, String subject, String body);
 }
