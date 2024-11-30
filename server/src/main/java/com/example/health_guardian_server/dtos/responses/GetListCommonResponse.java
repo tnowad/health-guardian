@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetListMedicationResponse {
-  List<MedicationResponse> items;
+public class GetListCommonResponse<T> {
+  List<T> items;
   String message;
 }

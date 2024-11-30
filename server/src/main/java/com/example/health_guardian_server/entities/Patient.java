@@ -28,7 +28,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @ToString
 @EqualsAndHashCode
 @Builder
@@ -38,13 +37,17 @@ public class Patient {
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
-  @NotBlank private String firstName;
+  @NotBlank
+  private String firstName;
 
-  @NotBlank private String lastName;
+  @NotBlank
+  private String lastName;
 
-  @Past private Date dob;
+  @Past
+  private Date dob;
 
-  @NotBlank private String gender;
+  @NotBlank
+  private String gender;
 
   @ManyToOne
   @JoinColumn(name = "guardian_id", referencedColumnName = "id")
@@ -53,7 +56,9 @@ public class Patient {
   @Enumerated(EnumType.STRING)
   private MedicalStatus status;
 
-  @CreationTimestamp private Date createdAt;
+  @CreationTimestamp
+  private Date createdAt;
 
-  @UpdateTimestamp private Date updatedAt;
+  @UpdateTimestamp
+  private Date updatedAt;
 }

@@ -11,6 +11,6 @@ public class PatientServiceImpl implements PatientService {
 
   @Override
   public Patient createPatient(String id, String firstName, String lastName) {
-    Patient patient = Patient.builder().id(id).firstName(firstName).lastName(lastName).build();
+    return Patient.builder().id(id).firstName(firstName).lastName(lastName).build();
   }
 }
