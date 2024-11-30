@@ -23,15 +23,16 @@ public class AIConfiguration {
   @Bean
   public SessionsClient sessionsClient() throws IOException {
     // Đọc tệp JSON từ classpath
-    Resource resource = new ClassPathResource("health-guardian-439302-4ff9782bd0a5.json"); // Đảm bảo rằng tệp ở trong thư mục resources
+    Resource resource = new ClassPathResource("google-credentials.json");
     try (InputStream inputStream = resource.getInputStream()) {
       GoogleCredentials credentials = GoogleCredentials.fromStream(inputStream);
       SessionsSettings sessionsSettings = SessionsSettings.newBuilder()
-        .setCredentialsProvider(() -> credentials)
-        .build();
+          .setCredentialsProvider(() -> credentials)
+          .build();
       return SessionsClient.create(sessionsSettings);
     }
   }
+
   @Bean
   public String projectId() {
     return projectId;
