@@ -14,11 +14,11 @@ public class FirebaseConfiguration {
 
   @PostConstruct
   public void initializeFirebase() throws IOException {
-    FileInputStream serviceAccount = new FileInputStream("src/main/resources/health-guardian-56573-firebase-adminsdk-zga83-8e173bcdd3.json.");
+    FileInputStream serviceAccount = new FileInputStream("src/main/resources/firebase-adminsdk.json");
 
-    FirebaseOptions options = new FirebaseOptions.Builder()
-      .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-      .build();
+    FirebaseOptions options = FirebaseOptions.builder()
+        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+        .build();
 
     if (FirebaseApp.getApps().isEmpty()) {
       FirebaseApp.initializeApp(options);
