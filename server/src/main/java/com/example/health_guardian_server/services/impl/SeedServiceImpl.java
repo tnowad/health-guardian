@@ -258,7 +258,7 @@ public class SeedServiceImpl implements SeedService {
         : null;
 
       User user = User.builder()
-//        .userType(userType)
+        .type(faker.options().option(UserType.class))
         .build();
 
       userRepository.save(user);

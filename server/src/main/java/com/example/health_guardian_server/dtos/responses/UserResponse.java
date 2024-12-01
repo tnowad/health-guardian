@@ -1,3 +1,8 @@
 package com.example.health_guardian_server.dtos.responses;
 
-public class UserResponse {}
+import lombok.Data;
+
+@Data
+public class UserResponse {
+  String id;
+}
