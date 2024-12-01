@@ -26,7 +26,7 @@ export type ListUsersErrorResponseSchema = z.infer<
 >;
 
 export async function listUsersApi(query: ListUsersQuerySchema) {
-  const response = await apiClient.get("/users", { params: query });
+  const response = await apiClient.get("/users", query);
   return listUsersResponseSchema.parse(response.data);
 }
 
