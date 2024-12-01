@@ -43,8 +43,13 @@ public class MedicationServiceImpl implements MedicationService {
 
   @Override
   public MedicationResponse updateMedication(String medicationId, UpdateMedicationRequest request) {
-    return medicationMapper.toMedicationResponse(
-        medicationRepository.save(medicationMapper.toMedication(request)));
+    var medication = medicationRepository
+        .findById(medicationId)
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Medication not found for id: " + medicationId));
+    var updatedMedication = medicationMapper.toMedication(request);
+    updatedMedication.setId(medication.getId());
+    return medicationMapper.toMedicationResponse(medicationRepository.save(updatedMedication));
   }
 
   @Override
