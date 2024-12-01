@@ -1,59 +1,72 @@
 package com.example.health_guardian_server.services.impl;
 
-import com.example.health_guardian_server.dtos.requests.CreateGuardianRequest;
-import com.example.health_guardian_server.dtos.requests.ListGuardiansRequest;
-import com.example.health_guardian_server.dtos.requests.UpdateGuardianRequest;
+import com.example.health_guardian_server.dtos.requests.ListGuardianRequest;
 import com.example.health_guardian_server.dtos.responses.GuardianResponse;
+import com.example.health_guardian_server.entities.Guardian;
 import com.example.health_guardian_server.mappers.GuardianMapper;
 import com.example.health_guardian_server.repositories.GuardianRepository;
 import com.example.health_guardian_server.services.GuardianService;
+import com.example.health_guardian_server.specifications.GuardianSpecification;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class GuardianServiceImpl implements GuardianService {
-  private final GuardianRepository guardianRepository;
-  private final GuardianMapper guardianMapper;
+
+  GuardianRepository guardianRepository;
+  GuardianMapper guardianMapper;
+  // Implement methods
 
   @Override
-  public Page<GuardianResponse> listGuardians(ListGuardiansRequest request) {
-    var guardians = guardianRepository
-        .findAll(request.toSpecification(), request.toPageable())
-        .map(guardianMapper::toGuardianResponse);
+  public Page<GuardianResponse> getAllGuardians(ListGuardianRequest request) {
+    PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+    GuardianSpecification specification = new GuardianSpecification(request);
+
+    var guardians = guardianRepository.findAll(specification, pageRequest).map(guardianMapper::toGuardianResponse);
+
+
     return guardians;
   }
 
   @Override
-  public GuardianResponse createGuardian(CreateGuardianRequest request) {
-    return guardianMapper.toGuardianResponse(
-        guardianRepository.save(guardianMapper.toGuardian(request)));
+
+  public GuardianResponse getGuardianById(String id) {
+    return guardianRepository.findById(id)
+      .map(guardianMapper::toGuardianResponse)
+      .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + id));
   }
 
   @Override
-  public GuardianResponse getGuardian(String guardianId) {
-    return guardianRepository
-        .findById(guardianId)
-        .map(guardianMapper::toGuardianResponse)
-        .orElseThrow(
-            () -> new ResourceNotFoundException("Guardian not found for id: " + guardianId));
+  public GuardianResponse createGuardian(GuardianResponse guardianResponse){
+    Guardian createdGuardian = guardianRepository.save(guardianMapper.toGuardian(guardianResponse));
+    return guardianMapper.toGuardianResponse(createdGuardian);
   }
 
   @Override
-  public void deleteGuardian(String guardianId) {
-    guardianRepository.deleteById(guardianId);
+  public GuardianResponse updateGuardian(String id, GuardianResponse guardianResponse) {
+    Guardian existingGuardian = guardianRepository.findById(id)
+      .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + id));
+
+    existingGuardian.setEmail(guardianResponse.getEmail());
+    existingGuardian.setName(guardianResponse.getName());
+    existingGuardian.setPhone(guardianResponse.getPhone());
+    existingGuardian.setRelationshipToPatient(guardianResponse.getRelationshipToPatient());
+
+    Guardian updatedGuardian = guardianRepository.save(existingGuardian);
+
+    return guardianMapper.toGuardianResponse(updatedGuardian);
   }
 
   @Override
-  public GuardianResponse updateGuardian(String guardianId, UpdateGuardianRequest request) {
-    var guardian = guardianRepository
-        .findById(guardianId)
-        .orElseThrow(
-            () -> new ResourceNotFoundException("Guardian not found for id: " + guardianId));
-    var updatedGuardian = guardianMapper.toGuardian(request);
-    updatedGuardian.setId(guardian.getId());
-    return guardianMapper.toGuardianResponse(guardianRepository.save(updatedGuardian));
+  public void deleteGuardian(String id) {
+    guardianRepository.deleteById(id);
   }
+
+
+
 }

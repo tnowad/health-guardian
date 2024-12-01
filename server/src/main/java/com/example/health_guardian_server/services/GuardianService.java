@@ -1,20 +1,24 @@
 package com.example.health_guardian_server.services;
 
-import com.example.health_guardian_server.dtos.requests.CreateGuardianRequest;
-import com.example.health_guardian_server.dtos.requests.ListGuardiansRequest;
-import com.example.health_guardian_server.dtos.requests.UpdateGuardianRequest;
+
+import com.example.health_guardian_server.dtos.requests.ListGuardianRequest;
+
 import com.example.health_guardian_server.dtos.responses.GuardianResponse;
 import org.springframework.data.domain.Page;
 
 public interface GuardianService {
 
-  Page<GuardianResponse> listGuardians(ListGuardiansRequest request);
+  // Define methods
 
-  GuardianResponse createGuardian(CreateGuardianRequest request);
+  Page<GuardianResponse> getAllGuardians(ListGuardianRequest request);
 
-  GuardianResponse getGuardian(String guardianId);
+  GuardianResponse getGuardianById(String id);
 
-  void deleteGuardian(String guardianId);
+  GuardianResponse createGuardian(GuardianResponse guardianResponse);
 
-  GuardianResponse updateGuardian(String guardianId, UpdateGuardianRequest request);
+  GuardianResponse updateGuardian(String id, GuardianResponse guardianResponse);
+
+  void deleteGuardian(String id);
+
+
 }

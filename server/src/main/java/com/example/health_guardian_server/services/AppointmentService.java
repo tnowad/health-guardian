@@ -1,17 +1,27 @@
 package com.example.health_guardian_server.services;
 
+import com.example.health_guardian_server.dtos.requests.CreateAppointmentRequest;
+import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
+import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
 import com.example.health_guardian_server.entities.Appointment;
+
+import org.springframework.data.domain.Page;
+
+
 import java.util.List;
 
 public interface AppointmentService {
   // Define methods
-  List<Appointment> getAppointments();
 
-  Appointment createAppointment(Appointment appointment);
 
-  Appointment getAppointmentById(String appointmentId);
+  Page<AppointmentResponse> getAllAppointments(ListAppointmentRequest request);
 
-  Appointment updateAppointment(Appointment appointment);
+  AppointmentResponse getAppointmentById(String id);
 
-  void deleteAppointment(String appointmentId);
+  AppointmentResponse createAppointment(Appointment appointment);
+
+  AppointmentResponse updateAppointment(String id, Appointment appointment);
+
+  void deleteAppointment(String id);
+
 }
