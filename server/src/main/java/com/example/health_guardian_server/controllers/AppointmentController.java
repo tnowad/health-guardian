@@ -10,19 +10,18 @@ import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AppointmentService;
 import com.example.health_guardian_server.services.NotificationService;
 import com.example.health_guardian_server.services.UserService;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/appointments")
-
 public class AppointmentController {
 
   private final AppointmentService appointmentService;
@@ -30,14 +29,16 @@ public class AppointmentController {
   private final UserService userService;
   private final AccountService accountService;
 
-  public AppointmentController(AppointmentService appointmentService, NotificationService notificationService, UserService userService, AccountService accountService) {
+  public AppointmentController(
+      AppointmentService appointmentService,
+      NotificationService notificationService,
+      UserService userService,
+      AccountService accountService) {
     this.appointmentService = appointmentService;
     this.notificationService = notificationService;
     this.userService = userService;
     this.accountService = accountService;
   }
-
-
 
   @PostMapping("/create")
   public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody Appointment appointment) {
@@ -69,6 +70,7 @@ public class AppointmentController {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
+
 //   @PostMapping("/send")
 //
 //  public ResponseEntity<String> sendNotification() {
@@ -89,4 +91,5 @@ public class AppointmentController {
 //
 //      return ResponseEntity.ok("Emails sent to all Users that have appointments");
 //  }
+
 }

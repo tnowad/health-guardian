@@ -1,7 +1,6 @@
 package com.example.health_guardian_server.services;
 
 import com.example.health_guardian_server.entities.Prescription;
-
 import java.util.Date;
 import java.util.List;
 
@@ -23,11 +22,10 @@ public interface PrescriptionService {
 
   List<Prescription> getPrescriptionsByStatus(String status);
 
-  List<Prescription> getPrescriptionsByPatientIdAndMedicationId(String patientId, String medicationId);
+  List<Prescription> getPrescriptionsByPatientIdAndMedicationId(
+      String patientId, String medicationId);
 
   List<Prescription> getPrescriptionsByPatientIdAndEndDate(String patientId, Date endDate);
 
   List<Prescription> getPrescriptionsByPatientIdAndStatus(String patientId, String status);
-
-
 }

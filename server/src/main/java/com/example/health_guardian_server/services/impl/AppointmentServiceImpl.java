@@ -11,22 +11,23 @@ import com.example.health_guardian_server.specifications.AppointmentSpecificatio
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+
 import lombok.RequiredArgsConstructor;
 import lombok.var;
+
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
+
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
   AppointmentRepository appointmentRepository;
 
   AppointmentMapper appointmentMapper;
+
 
 
   @Override
@@ -40,10 +41,12 @@ public class AppointmentServiceImpl implements AppointmentService {
   }
 
   @Override
+
   public AppointmentResponse getAppointmentById(String appointmentId) {
     return appointmentRepository.findById(appointmentId)
       .map(appointmentMapper::toAppointmentResponse)
       .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id " + appointmentId));
+
   }
 
   @Override
@@ -53,11 +56,13 @@ public class AppointmentServiceImpl implements AppointmentService {
   }
 
   @Override
+
   public AppointmentResponse updateAppointment(String appointmentId, Appointment appointment) {
     Appointment existingAppointment = appointmentRepository.findById(appointmentId)
       .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id " + appointmentId));
 
     existingAppointment.setAppointmentDate(appointment.getAppointmentDate());
+
 
     existingAppointment.setDoctor(appointment.getDoctor());
     existingAppointment.setPatient(appointment.getPatient());
@@ -68,20 +73,20 @@ public class AppointmentServiceImpl implements AppointmentService {
 
   @Override
   public void deleteAppointment(String appointmentId) {
+
     Appointment existingAppointment = appointmentRepository.findById(appointmentId)
       .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id " + appointmentId));
 
     appointmentRepository.delete(existingAppointment);
   }
+
   private void sendNotification(String title, String messageBody) {
     try {
-      Message message = Message.builder()
-        .setNotification(Notification.builder()
-          .setTitle(title)
-          .setBody(messageBody)
-          .build())
-        .setTopic("appointments")
-        .build();
+      Message message =
+          Message.builder()
+              .setNotification(Notification.builder().setTitle(title).setBody(messageBody).build())
+              .setTopic("appointments")
+              .build();
 
       FirebaseMessaging.getInstance().send(message);
     } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.specifications;
 
+
 import com.example.health_guardian_server.dtos.requests.ListGuardianRequest;
 import com.example.health_guardian_server.entities.Guardian;
 import com.example.health_guardian_server.entities.Patient;
@@ -37,6 +38,7 @@ public class GuardianSpecification implements Specification<Guardian> {
     if (ids != null && ids.length > 0) {
       Join<Guardian, Patient> join = root.join("patients");
       predicates.add(join.get("id").in((Object[]) ids));
+
     }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

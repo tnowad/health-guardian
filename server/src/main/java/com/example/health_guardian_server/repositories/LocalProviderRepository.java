@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LocalProviderRepository extends JpaRepository<LocalProvider, String> {
-   LocalProvider findByEmail(String email);
+  LocalProvider findByEmail(String email);
 }

@@ -4,14 +4,14 @@ import com.example.health_guardian_server.entities.Prescription;
 import com.example.health_guardian_server.entities.PrescriptionStatus;
 import com.example.health_guardian_server.repositories.PrescriptionRepository;
 import com.example.health_guardian_server.services.PrescriptionService;
-import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class PrescriptionServiceImpl implements PrescriptionService {
   private final PrescriptionRepository prescriptionRepository;
+
   // Implement methods
 
   public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository) {
@@ -48,7 +48,6 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     return prescriptionRepository.findByPatientId(patientId);
   }
 
-
   @Override
   public List<Prescription> getPrescriptionsByMedicationId(String medicationId) {
     return prescriptionRepository.findByMedicationId(medicationId);
@@ -59,13 +58,11 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     return prescriptionRepository.findByStatus(PrescriptionStatus.valueOf(status));
   }
 
-
   @Override
-  public List<Prescription> getPrescriptionsByPatientIdAndMedicationId(String patientId, String medicationId) {
+  public List<Prescription> getPrescriptionsByPatientIdAndMedicationId(
+      String patientId, String medicationId) {
     return prescriptionRepository.findByPatientIdAndMedicationId(patientId, medicationId);
   }
-
-
 
   @Override
   public List<Prescription> getPrescriptionsByPatientIdAndEndDate(String patientId, Date endDate) {
@@ -74,9 +71,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
   @Override
   public List<Prescription> getPrescriptionsByPatientIdAndStatus(String patientId, String status) {
-    return prescriptionRepository.findByPatientIdAndStatus(patientId, PrescriptionStatus.valueOf(status));
+    return prescriptionRepository.findByPatientIdAndStatus(
+        patientId, PrescriptionStatus.valueOf(status));
   }
-
-
-
 }

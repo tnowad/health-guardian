@@ -1,54 +1,59 @@
 package com.example.health_guardian_server.controllers;
 
-import com.example.health_guardian_server.entities.Medication;
+import com.example.health_guardian_server.dtos.requests.CreateMedicationRequest;
+import com.example.health_guardian_server.dtos.requests.ListMedicationRequest;
+import com.example.health_guardian_server.dtos.requests.UpdateMedicationRequest;
+import com.example.health_guardian_server.dtos.responses.MedicationResponse;
 import com.example.health_guardian_server.services.MedicationService;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/medications")
+@RequiredArgsConstructor
 public class MedicationController {
   private final MedicationService medicationService;
 
-  public MedicationController(MedicationService medicationService) {
-    this.medicationService = medicationService;
+  @GetMapping
+  public ResponseEntity<Page<MedicationResponse>> listMedications(
+      @ModelAttribute ListMedicationRequest request) {
+    Page<MedicationResponse> response = medicationService.listMedications(request);
+    return ResponseEntity.ok(response);
   }
 
-  // Define methods
-  @GetMapping("/all")
-  public ResponseEntity<List<Medication>> getAllMedications() {
-    return new ResponseEntity<>(medicationService.getAllMedications(), HttpStatus.OK);
+  @PostMapping
+  public ResponseEntity<MedicationResponse> createMedication(
+      @RequestBody CreateMedicationRequest request) {
+    MedicationResponse response = medicationService.createMedication(request);
+    return ResponseEntity.ok(response);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Medication> getMedicationById(@PathVariable String id) {
-    Medication medication = medicationService.getMedicationById(id);
-    return new ResponseEntity<>(medication, HttpStatus.OK);
+  @GetMapping("/{mediationId}")
+  public ResponseEntity<MedicationResponse> getMedication(@PathVariable String medicationId) {
+    MedicationResponse response = medicationService.getMedication(medicationId);
+    return ResponseEntity.ok(response);
   }
 
-  @GetMapping("/name/{name}")
-  public ResponseEntity<List<Medication>> getMedicationsByName(@PathVariable String name) {
-    return new ResponseEntity<>(medicationService.getMedicationsByName(name), HttpStatus.OK);
-  }
-  @PostMapping("/create")
-  public ResponseEntity<Medication> createMedication(@RequestBody Medication medication) {
-    Medication createdMedication = medicationService.createMedication(medication);
-    return new ResponseEntity<>(createdMedication, HttpStatus.CREATED);
+  @PutMapping("/{medicationId}")
+  public ResponseEntity<MedicationResponse> updateMedication(
+      @PathVariable String medicationId, @RequestBody UpdateMedicationRequest request) {
+    MedicationResponse response = medicationService.updateMedication(medicationId, request);
+    return ResponseEntity.ok(response);
   }
 
-  @PutMapping("/update")
-  public ResponseEntity<Medication> updateMedication(@RequestBody Medication medication) {
-    Medication updatedMedication = medicationService.updateMedication(medication);
-    return new ResponseEntity<>(updatedMedication, HttpStatus.OK);
+  @DeleteMapping("/{medicationId}")
+  public ResponseEntity<Void> deleteMedication(@PathVariable String medicationId) {
+    medicationService.deleteMedication(medicationId);
+    return ResponseEntity.noContent().build();
   }
-
-  @DeleteMapping("/delete/{id}")
-  public ResponseEntity<Void> deleteMedication(@PathVariable String id) {
-    medicationService.deleteMedication(id);
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-  }
-
 }

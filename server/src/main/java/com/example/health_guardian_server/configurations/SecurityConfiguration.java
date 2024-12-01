@@ -3,7 +3,6 @@ package com.example.health_guardian_server.configurations;
 import com.example.health_guardian_server.components.CustomJwtDecoder;
 import com.example.health_guardian_server.repositories.AccountRepository;
 import com.example.health_guardian_server.repositories.ExternalProviderRepository;
-import com.example.health_guardian_server.repositories.LocalProviderRepository;
 import com.example.health_guardian_server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -40,12 +39,12 @@ public class SecurityConfiguration {
 
   final String[] PUBLIC_ENDPOINTS =
       new String[] {
-        //Google login
+        // Google login
         "/login/oauth2/code/google/**",
         "/oauth2/authorization/google/**",
-        //AI assistant
+        // AI assistant
         "/api/ai-assistant/**",
-        //Notification
+        // Notification
         "/api/notifications/**",
         "/appointments/**",
         "/auth/sign-up",
@@ -81,11 +80,19 @@ public class SecurityConfiguration {
         request -> {
           request.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated();
         });
-    httpSecurity.oauth2Login(oauth2 -> oauth2
-      .loginPage("/oauth2/authorization/google")
-      .successHandler(customOAuth2SuccessHandler(externalProviderRepository,accountRepository,  userRepository,authorizedClientService)) // Thêm success handler
-      .failureUrl("/login?error=true") // Chuyển hướng đến trang lỗi nếu đăng nhập thất bại
-    );
+    httpSecurity.oauth2Login(
+        oauth2 ->
+            oauth2
+                .loginPage("/oauth2/authorization/google")
+                .successHandler(
+                    customOAuth2SuccessHandler(
+                        externalProviderRepository,
+                        accountRepository,
+                        userRepository,
+                        authorizedClientService)) // Thêm success handler
+                .failureUrl(
+                    "/login?error=true") // Chuyển hướng đến trang lỗi nếu đăng nhập thất bại
+        );
     httpSecurity.oauth2ResourceServer(
         oauth2 ->
             oauth2
@@ -124,14 +131,22 @@ public class SecurityConfiguration {
 
     return jwtAuthenticationConverter;
   }
+
   @Bean
-  public CustomOAuth2SuccessHandler customOAuth2SuccessHandler(ExternalProviderRepository externalProviderRepository, AccountRepository accountRepository, UserRepository userRepository,OAuth2AuthorizedClientService authorizedClientService) {
-    return new CustomOAuth2SuccessHandler(externalProviderRepository, accountRepository, userRepository, authorizedClientService);
+  public CustomOAuth2SuccessHandler customOAuth2SuccessHandler(
+      ExternalProviderRepository externalProviderRepository,
+      AccountRepository accountRepository,
+      UserRepository userRepository,
+      OAuth2AuthorizedClientService authorizedClientService) {
+    return new CustomOAuth2SuccessHandler(
+        externalProviderRepository, accountRepository, userRepository, authorizedClientService);
   }
+
   @Bean
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
+
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplate();

@@ -11,11 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class GuardianServiceImpl implements GuardianService {
+
   GuardianRepository guardianRepository;
   GuardianMapper guardianMapper;
   // Implement methods
@@ -27,10 +29,12 @@ public class GuardianServiceImpl implements GuardianService {
 
     var guardians = guardianRepository.findAll(specification, pageRequest).map(guardianMapper::toGuardianResponse);
 
+
     return guardians;
   }
 
   @Override
+
   public GuardianResponse getGuardianById(String id) {
     return guardianRepository.findById(id)
       .map(guardianMapper::toGuardianResponse)
@@ -62,6 +66,7 @@ public class GuardianServiceImpl implements GuardianService {
   public void deleteGuardian(String id) {
     guardianRepository.deleteById(id);
   }
+
 
 
 }

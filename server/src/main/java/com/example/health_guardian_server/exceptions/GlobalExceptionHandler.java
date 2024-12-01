@@ -1,11 +1,10 @@
 package com.example.health_guardian_server.exceptions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,13 +75,12 @@ public class GlobalExceptionHandler {
 
   private void sendNotificationToFirebase(String message) {
     try {
-      Message firebaseMessage = Message.builder()
-        .setNotification(Notification.builder()
-          .setTitle("Error in Application")
-          .setBody(message)
-          .build())
-        .setTopic("allUsers") // Hoặc sử dụng token thiết bị cụ thể
-        .build();
+      Message firebaseMessage =
+          Message.builder()
+              .setNotification(
+                  Notification.builder().setTitle("Error in Application").setBody(message).build())
+              .setTopic("allUsers") // Hoặc sử dụng token thiết bị cụ thể
+              .build();
 
       FirebaseMessaging.getInstance().send(firebaseMessage);
     } catch (Exception e) {

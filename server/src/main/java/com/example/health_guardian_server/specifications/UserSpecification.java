@@ -1,20 +1,17 @@
 package com.example.health_guardian_server.specifications;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.data.jpa.domain.Specification;
-
 import com.example.health_guardian_server.dtos.requests.ListUsersRequest;
 import com.example.health_guardian_server.entities.Account;
 import com.example.health_guardian_server.entities.User;
-
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 
 @RequiredArgsConstructor
 public class UserSpecification implements Specification<User> {
@@ -29,7 +26,8 @@ public class UserSpecification implements Specification<User> {
   }
 
   @Override
-  public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+  public Predicate toPredicate(
+      Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     List<Predicate> predicates = new ArrayList<>();
 
     if (search != null && !search.isEmpty()) {

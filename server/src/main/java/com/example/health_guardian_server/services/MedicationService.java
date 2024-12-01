@@ -1,22 +1,19 @@
 package com.example.health_guardian_server.services;
 
-import com.example.health_guardian_server.entities.Medication;
-
-import java.util.List;
+import com.example.health_guardian_server.dtos.requests.CreateMedicationRequest;
+import com.example.health_guardian_server.dtos.requests.ListMedicationRequest;
+import com.example.health_guardian_server.dtos.requests.UpdateMedicationRequest;
+import com.example.health_guardian_server.dtos.responses.MedicationResponse;
+import org.springframework.data.domain.Page;
 
 public interface MedicationService {
-  // Define methods
+  Page<MedicationResponse> listMedications(ListMedicationRequest request);
 
-  List<Medication> getAllMedications();
+  MedicationResponse createMedication(CreateMedicationRequest request);
 
-  Medication getMedicationById(String id);
+  MedicationResponse getMedication(String medicationId);
 
-  Medication createMedication(Medication medication);
+  MedicationResponse updateMedication(String medicationId, UpdateMedicationRequest request);
 
-  Medication updateMedication(Medication medication);
-
-  void deleteMedication(String id);
-
-  List<Medication> getMedicationsByName(String name);
-  
+  void deleteMedication(String medicationId);
 }

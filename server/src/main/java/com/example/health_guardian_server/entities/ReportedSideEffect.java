@@ -12,7 +12,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Past;
 import java.util.Date;
-
 import lombok.*;
 
 @Entity
