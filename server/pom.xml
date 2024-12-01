@@ -61,7 +61,7 @@
       <artifactId>spring-boot-starter-mail</artifactId>
       <version>${spring-boot-starter-mail.version}</version>
     </dependency>
-<!--    Google Email Login-->
+    <!--    Google Email Login-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
@@ -70,7 +70,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-client</artifactId>
     </dependency>
-<!--    AI Assistant-->
+    <!--    AI Assistant-->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-dialogflow</artifactId>
@@ -167,7 +167,11 @@
       <artifactId>firebase-admin</artifactId>
       <version>8.1.0</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.modelmapper</groupId>
+      <artifactId>modelmapper</artifactId>
+      <version>3.2.0</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -181,6 +185,20 @@
               <artifactId>lombok</artifactId>
             </exclude>
           </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.mapstruct</groupId>
+              <artifactId>mapstruct-processor</artifactId>
+              <version>1.6.0.Beta1</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>
