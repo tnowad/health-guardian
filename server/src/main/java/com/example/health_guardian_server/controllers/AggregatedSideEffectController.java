@@ -2,6 +2,7 @@ package com.example.health_guardian_server.controllers;
 
 import com.example.health_guardian_server.dtos.requests.CreateAggregatedSideEffectRequest;
 import com.example.health_guardian_server.dtos.requests.ListAggregatedSideEffectsRequest;
+import com.example.health_guardian_server.dtos.requests.UpdateAggregatedSideEffectRequest;
 import com.example.health_guardian_server.dtos.responses.AggregatedSideEffectResponse;
 import com.example.health_guardian_server.services.AggregatedSideEffectService;
 import lombok.RequiredArgsConstructor;

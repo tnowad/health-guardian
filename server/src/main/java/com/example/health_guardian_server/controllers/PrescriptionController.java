@@ -20,8 +20,6 @@ public class PrescriptionController {
     this.prescriptionService = prescriptionService;
   }
 
-  // Define methods
-
   @GetMapping("/all")
   public ResponseEntity<List<Prescription>> getAllPrescriptions() {
     return new ResponseEntity<>(prescriptionService.getAllPrescriptions(), HttpStatus.OK);
