@@ -21,6 +21,9 @@ export type ListUsersResponseSchema = z.infer<typeof listUsersResponseSchema>;
 export const listUsersErrorResponseSchema = z.discriminatedUnion("type", [
   unauthorizedResponseSchema,
 ]);
+export type ListUsersErrorResponseSchema = z.infer<
+  typeof listUsersErrorResponseSchema
+>;
 
 export async function listUsersApi(query: ListUsersQuerySchema) {
   const response = await apiClient.get("/users", { params: query });
@@ -29,7 +32,12 @@ export async function listUsersApi(query: ListUsersQuerySchema) {
 
 export function createListUsersQueryOptions(query: ListUsersQuerySchema) {
   const queryKey = ["users", query] as const;
-  return queryOptions({
+  return queryOptions<
+    ListUsersResponseSchema,
+    ListUsersErrorResponseSchema,
+    ListUsersQuerySchema,
+    typeof queryKey
+  >({
     queryKey,
     queryFn: () => listUsersApi(listUsersQuerySchema.parse(query)),
     throwOnError: isAxiosError,
