@@ -3,11 +3,10 @@ package com.example.health_guardian_server.repositories;
 import com.example.health_guardian_server.entities.Prescription;
 import com.example.health_guardian_server.entities.PrescriptionStatus;
 import jakarta.validation.constraints.Future;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.Date;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, String> {
@@ -16,7 +15,6 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Stri
   List<Prescription> findByMedicationId(String medicationId);
 
   List<Prescription> findByStatus(PrescriptionStatus status);
-
 
   List<Prescription> findByPatientIdAndMedicationId(String patientId, String medicationId);
 

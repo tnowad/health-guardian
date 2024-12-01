@@ -3,7 +3,6 @@ package com.example.health_guardian_server.services.impl;
 import com.example.health_guardian_server.services.AIService;
 import com.google.cloud.dialogflow.v2.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service

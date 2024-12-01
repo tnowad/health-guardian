@@ -2,11 +2,10 @@ package com.example.health_guardian_server.controllers;
 
 import com.example.health_guardian_server.entities.Medication;
 import com.example.health_guardian_server.services.MedicationService;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/medications")
@@ -33,6 +32,7 @@ public class MedicationController {
   public ResponseEntity<List<Medication>> getMedicationsByName(@PathVariable String name) {
     return new ResponseEntity<>(medicationService.getMedicationsByName(name), HttpStatus.OK);
   }
+
   @PostMapping("/create")
   public ResponseEntity<Medication> createMedication(@RequestBody Medication medication) {
     Medication createdMedication = medicationService.createMedication(medication);
@@ -50,5 +50,4 @@ public class MedicationController {
     medicationService.deleteMedication(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
-
 }

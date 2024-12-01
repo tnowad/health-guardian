@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/notifications")
-
 public class NotificationController {
-  private final  NotificationService notificationService;
+  private final NotificationService notificationService;
 
   public NotificationController(NotificationService notificationService) {
     this.notificationService = notificationService;
@@ -19,9 +18,7 @@ public class NotificationController {
 
   @PostMapping("/send")
   public ResponseEntity<String> sendEmail(
-    @RequestParam String to,
-    @RequestParam String subject,
-    @RequestParam String body) {
+      @RequestParam String to, @RequestParam String subject, @RequestParam String body) {
 
     notificationService.sendEmail(to, subject, body);
     return ResponseEntity.ok("Email sent to " + to);

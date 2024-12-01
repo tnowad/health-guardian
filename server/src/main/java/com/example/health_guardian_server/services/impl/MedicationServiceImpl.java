@@ -3,9 +3,8 @@ package com.example.health_guardian_server.services.impl;
 import com.example.health_guardian_server.entities.Medication;
 import com.example.health_guardian_server.repositories.MedicationRepository;
 import com.example.health_guardian_server.services.MedicationService;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MedicationServiceImpl implements MedicationService {
@@ -14,6 +13,7 @@ public class MedicationServiceImpl implements MedicationService {
   public MedicationServiceImpl(MedicationRepository medicationRepository) {
     this.medicationRepository = medicationRepository;
   }
+
   // Implement methods
 
   @Override
@@ -45,5 +45,4 @@ public class MedicationServiceImpl implements MedicationService {
   public List<Medication> getMedicationsByName(String name) {
     return medicationRepository.findByName(name);
   }
-
 }
