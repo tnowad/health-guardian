@@ -1,6 +1,7 @@
 package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.dtos.requests.CreateHospitalRequest;
+import com.example.health_guardian_server.dtos.requests.ListHospitalRequest;
 import com.example.health_guardian_server.dtos.responses.HospitalResponse;
 import com.example.health_guardian_server.entities.Hospital;
 import com.example.health_guardian_server.repositories.HospitalRepository;
@@ -19,9 +20,9 @@ public class HospitalServiceImpl implements HospitalService {
   }
 
   @Override
-  public Page<HospitalResponse> getAllHospitals(int page, int size) {
-    return hospitalRepository.findAll(PageRequest.of(page,size))
-      .map(hospital -> new HospitalResponse(hospital.getId(),hospital.getName(),hospital.getLocation(),hospital.getPhone(),hospital.getEmail()));
+  public Page<HospitalResponse> getAllHospitals(ListHospitalRequest request) {
+    Page<Hospital> hospitals = hospitalRepository.findAll(PageRequest.of(request.getPage(), request.getSize()));
+    return hospitals.map(hospital -> new HospitalResponse(hospital.getId(),hospital.getName(),hospital.getLocation(),hospital.getPhone(),hospital.getEmail()));
   }
 
   @Override

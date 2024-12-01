@@ -1,6 +1,7 @@
 package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.dtos.requests.CreateUserStaffRequest;
+import com.example.health_guardian_server.dtos.requests.ListUserStaffRequest;
 import com.example.health_guardian_server.dtos.responses.UserStaffResponse;
 import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.entities.UserStaff;
@@ -26,13 +27,11 @@ public class UserStaffServiceImpl implements UserStaffService {
     this.userRepository = userRepository;
   }
   // Implement methods
-
   @Override
-  public Page<UserStaffResponse> getAllUserStaffs(int page, int size) {
+  public Page<UserStaffResponse> getAllUserStaffs(ListUserStaffRequest request) {
 
-    return userStaffRepository.findAll(PageRequest.of(page,size))
-      .map(userStaff -> new UserStaffResponse(userStaff.getId(),userStaff.getUser(),userStaff.getRole(),userStaff.getRoleType()));
-
+    Page<UserStaff> userStaffs = userStaffRepository.findAll(PageRequest.of(request.getPage(), request.getSize()));
+    return userStaffs.map(userStaff -> new UserStaffResponse(userStaff.getId(),userStaff.getUser(),userStaff.getRole(),userStaff.getRoleType()));
   }
 
   @Override
@@ -60,16 +59,15 @@ public class UserStaffServiceImpl implements UserStaffService {
   }
 
   @Override
-  public UserStaffResponse updateUserStaff(String id, UserStaffResponse userStaff) {
+  public UserStaffResponse updateUserStaff(UserStaffResponse userStaff) {
 
-    UserStaff existingUserStaff = userStaffRepository.findById(id).orElse(null);
-    if (existingUserStaff == null) {
-      return null;
-    }
-    existingUserStaff.setUser(userStaff.getUser());
-    existingUserStaff.setRole(userStaff.getRole());
-    existingUserStaff.setRoleType(userStaff.getRoleType());
-    return new UserStaffResponse(userStaffRepository.save(existingUserStaff).getId(),existingUserStaff.getUser(),existingUserStaff.getRole(),existingUserStaff.getRoleType());
+      UserStaff userStaff1 = userStaffRepository.findById(userStaff.getId()).orElse(null);
+      if (userStaff1 == null) {
+        return null;
+      }
+      userStaff1.setRole(userStaff.getRole());
+      userStaff1.setRoleType(userStaff.getRoleType());
+      return new UserStaffResponse(userStaffRepository.save(userStaff1).getId(),userStaff1.getUser(),userStaff1.getRole(),userStaff1.getRoleType());
   }
 
   @Override

@@ -1,9 +1,11 @@
 package com.example.health_guardian_server.controllers;
 
 import com.example.health_guardian_server.dtos.requests.CreateHospitalRequest;
+import com.example.health_guardian_server.dtos.requests.ListHospitalRequest;
 import com.example.health_guardian_server.dtos.responses.HospitalResponse;
 import com.example.health_guardian_server.entities.Hospital;
 import com.example.health_guardian_server.services.HospitalService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,19 +13,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/hospitals")
+@RequiredArgsConstructor
 public class HospitalController {
   private final HospitalService hospitalService;
-
-  public HospitalController(HospitalService hospitalService) {
-    this.hospitalService = hospitalService;
-  }
-
   // Define methods
 
   @GetMapping("/all")
-  public ResponseEntity<Page<HospitalResponse>> getAllHospitals(@RequestParam (defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-    Page<HospitalResponse> hospitals = hospitalService.getAllHospitals(page, size);
-
+  public ResponseEntity<Page<HospitalResponse>> getAllHospitals(@ModelAttribute ListHospitalRequest request) {
+    Page<HospitalResponse> hospitals = hospitalService.getAllHospitals(request);
     return new ResponseEntity<>(hospitals, HttpStatus.OK);
   }
 

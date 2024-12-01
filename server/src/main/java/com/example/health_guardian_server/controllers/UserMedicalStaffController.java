@@ -1,6 +1,7 @@
 package com.example.health_guardian_server.controllers;
 
 import com.example.health_guardian_server.dtos.requests.CreateUserMedicalStaffRequest;
+import com.example.health_guardian_server.dtos.requests.ListUserMedicalStaffRequest;
 import com.example.health_guardian_server.dtos.responses.UserMedicalStaffResponse;
 import com.example.health_guardian_server.services.UserMedicalStaffService;
 import org.springframework.data.domain.Page;
@@ -21,8 +22,8 @@ public class UserMedicalStaffController {
   // Define methods
 
   @GetMapping("/all")
-  public ResponseEntity<Page<UserMedicalStaffResponse>> getAllUserMedicalStaffs(@RequestParam (defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-    Page<UserMedicalStaffResponse> userMedicalStaffs = userMedicalStaffService.getAllUserMedicalStaffs(page, size);
+  public ResponseEntity<Page<UserMedicalStaffResponse>> getAllUserMedicalStaffs(@ModelAttribute ListUserMedicalStaffRequest request) {
+    Page<UserMedicalStaffResponse> userMedicalStaffs = userMedicalStaffService.getAllUserMedicalStaffs(request);
 
     return new ResponseEntity<>(userMedicalStaffs, HttpStatus.OK);
   }
