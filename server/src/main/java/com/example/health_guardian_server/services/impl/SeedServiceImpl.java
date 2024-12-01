@@ -258,7 +258,7 @@ public class SeedServiceImpl implements SeedService {
         : null;
 
       User user = User.builder()
-        .userType(userType)
+//        .userType(userType)
         .build();
 
       userRepository.save(user);
