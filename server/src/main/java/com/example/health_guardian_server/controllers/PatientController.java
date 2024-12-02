@@ -16,15 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PatientController {
 
-  // Define methods
   private final PatientService patientService;
 
-
-
-  // Define methods
-
   @GetMapping("/all")
-  public ResponseEntity<Page<PatientResponse>> getAllPatients(@ModelAttribute ListPatientRequest request) {
+  public ResponseEntity<Page<PatientResponse>> getAllPatients(
+      @ModelAttribute ListPatientRequest request) {
     Page<PatientResponse> patients = patientService.getAllPatients(request);
 
     return new ResponseEntity<>(patients, HttpStatus.OK);

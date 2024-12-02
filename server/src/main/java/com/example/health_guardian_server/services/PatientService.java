@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.services;
 
+import com.example.health_guardian_server.dtos.requests.CreatePatientRequest;
 import com.example.health_guardian_server.dtos.requests.ListPatientRequest;
 import com.example.health_guardian_server.dtos.responses.PatientResponse;
 import com.example.health_guardian_server.entities.Patient;
@@ -17,5 +18,5 @@ public interface PatientService {
 
   void deletePatient(String id);
 
+  PatientResponse createPatient(CreatePatientRequest patient);
 }
-

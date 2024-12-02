@@ -1,12 +1,10 @@
 package com.example.health_guardian_server.controllers;
 
-import com.example.health_guardian_server.dtos.requests.ListGuardianRequest;
-
+import com.example.health_guardian_server.dtos.requests.ListGuardiansRequest;
 import com.example.health_guardian_server.dtos.responses.GuardianResponse;
 import com.example.health_guardian_server.services.GuardianService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +17,8 @@ public class GuardianController {
 
   // Define methods
   @GetMapping("/all")
-  public ResponseEntity<Page<GuardianResponse>> getAllGuardians(@ModelAttribute ListGuardianRequest request) {
+  public ResponseEntity<Page<GuardianResponse>> getAllGuardians(
+      @ModelAttribute ListGuardiansRequest request) {
     Page<GuardianResponse> guardians = guardianService.getAllGuardians(request);
 
     return new ResponseEntity<>(guardians, HttpStatus.OK);
@@ -32,13 +31,15 @@ public class GuardianController {
   }
 
   @PostMapping("/create")
-  public ResponseEntity<GuardianResponse> createGuardian(@RequestBody GuardianResponse guardianResponse) {
+  public ResponseEntity<GuardianResponse> createGuardian(
+      @RequestBody GuardianResponse guardianResponse) {
     GuardianResponse createdGuardian = guardianService.createGuardian(guardianResponse);
     return new ResponseEntity<>(createdGuardian, HttpStatus.CREATED);
   }
 
   @PutMapping("/update/{id}")
-  public ResponseEntity<GuardianResponse> updateGuardian(String id, GuardianResponse guardianResponse) {
+  public ResponseEntity<GuardianResponse> updateGuardian(
+      String id, GuardianResponse guardianResponse) {
     GuardianResponse updatedGuardian = guardianService.updateGuardian(id, guardianResponse);
     return new ResponseEntity<>(updatedGuardian, HttpStatus.OK);
   }
