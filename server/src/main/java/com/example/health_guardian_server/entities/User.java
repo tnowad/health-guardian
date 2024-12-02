@@ -50,18 +50,18 @@ public class User {
   @Enumerated(EnumType.STRING)
   private UserType type;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<Account> accounts;
-
-  @ManyToOne
-  @JoinColumn(name = "patient_id", referencedColumnName = "id")
-  private Patient patient;
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<UserStaff> userStaffs;
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<UserMedicalStaff> userMedicalStaffs;
+
+  @ManyToOne
+  @JoinColumn(name = "patient_id", referencedColumnName = "id")
+  private Patient patient;
 
   @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(

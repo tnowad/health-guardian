@@ -3,6 +3,7 @@ package com.example.health_guardian_server.controllers;
 import com.example.health_guardian_server.dtos.requests.CreateUserRequest;
 import com.example.health_guardian_server.dtos.requests.ListUsersRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateUserRequest;
+import com.example.health_guardian_server.dtos.responses.CurrentUserInfomationResponse;
 import com.example.health_guardian_server.dtos.responses.UserResponse;
 import com.example.health_guardian_server.services.UserService;
 import lombok.AccessLevel;
@@ -30,6 +31,12 @@ public class UserController {
   @GetMapping
   public ResponseEntity<Page<UserResponse>> listUsers(@ModelAttribute ListUsersRequest request) {
     Page<UserResponse> response = userService.listUsers(request);
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/current-user/information")
+  public ResponseEntity<CurrentUserInfomationResponse> getCurrentUserInformation() {
+    CurrentUserInfomationResponse response = userService.getCurrentUserInformation();
     return ResponseEntity.ok(response);
   }
 

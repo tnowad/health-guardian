@@ -1,5 +1,7 @@
 package com.example.health_guardian_server.controllers;
 
+import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
+import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
 import com.example.health_guardian_server.entities.Account;
 import com.example.health_guardian_server.entities.Appointment;
 import com.example.health_guardian_server.entities.ExternalProvider;
@@ -10,6 +12,10 @@ import com.example.health_guardian_server.services.NotificationService;
 import com.example.health_guardian_server.services.UserService;
 import java.util.List;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,28 +41,26 @@ public class AppointmentController {
   }
 
   @PostMapping("/create")
-  public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment) {
-    Appointment createdAppointment = appointmentService.createAppointment(appointment);
+  public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody Appointment appointment) {
+    AppointmentResponse createdAppointment = appointmentService.createAppointment(appointment);
     return new ResponseEntity<>(createdAppointment, HttpStatus.CREATED);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Appointment> getAppointmentById(@PathVariable String id) {
-    Appointment appointment = appointmentService.getAppointmentById(id);
-    if (appointment == null) {
-      throw new ResourceNotFoundException("Appointment not found with id " + id);
-    }
+  public ResponseEntity<AppointmentResponse> getAppointmentById(@PathVariable String id) {
+    AppointmentResponse appointment = appointmentService.getAppointmentById(id);
     return new ResponseEntity<>(appointment, HttpStatus.OK);
   }
 
   @GetMapping("/all")
-  public ResponseEntity<List<Appointment>> getAllAppointments() {
-    return new ResponseEntity<>(appointmentService.getAppointments(), HttpStatus.OK);
+  public ResponseEntity<Page<AppointmentResponse>> getAllAppointments(@ModelAttribute ListAppointmentRequest request) {
+    Page<AppointmentResponse> appointments = appointmentService.getAllAppointments(request);
+    return new ResponseEntity<>(appointments, HttpStatus.OK);
   }
 
   @PutMapping("/update/{id}")
-  public ResponseEntity<Appointment> updateAppointment(@RequestBody Appointment appointment) {
-    Appointment updatedAppointment = appointmentService.updateAppointment(appointment);
+  public ResponseEntity<AppointmentResponse> updateAppointment( @PathVariable String id,@RequestBody Appointment appointment) {
+    AppointmentResponse updatedAppointment = appointmentService.updateAppointment(id, appointment);
     return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
   }
 
@@ -66,29 +70,26 @@ public class AppointmentController {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
-  @PostMapping("/send")
-  public ResponseEntity<String> sendNotification() {
-    for (Appointment appointment : appointmentService.getAppointments()) {
-      User user = userService.getUserById(appointment.getPatient().getId());
-      Account account = accountService.getAccountByUserId(user.getId());
-      if (account.getExternalProviders() != null) {
-        for (ExternalProvider provider : account.getExternalProviders()) {
-          notificationService.sendEmail(
-              provider.getProviderUserEmail(),
-              "Notification",
-              "Your next appointment is coming up soon!: " + appointment.getAppointmentDate());
-        }
-      }
-      if (account.getLocalProviders() != null) {
-        for (ExternalProvider provider : account.getExternalProviders()) {
-          notificationService.sendEmail(
-              provider.getProviderUserEmail(),
-              "Notification",
-              "Your next appointment is coming up soon!: " + appointment.getAppointmentDate());
-        }
-      }
-    }
 
-    return ResponseEntity.ok("Emails sent to all Users that have appointments");
-  }
+//   @PostMapping("/send")
+//
+//  public ResponseEntity<String> sendNotification() {
+//     for (Appointment appointment : appointmentService.get()) {
+//       User user = userService.getUserById(appointment.getPatient().getId());
+//       Account account = accountService.getAccountByUserId(user.getId());
+//       if (account.getExternalProviders() != null) {
+//         for (ExternalProvider provider : account.getExternalProviders()) {
+//           notificationService.sendEmail(provider.getProviderUserEmail(), "Notification", "Your next appointment is coming up soon!: " + appointment.getAppointmentDate());
+//         }
+//       }
+//       if (account.getLocalProviders() != null) {
+//         for (ExternalProvider provider : account.getExternalProviders()) {
+//           notificationService.sendEmail(provider.getProviderUserEmail(), "Notification", "Your next appointment is coming up soon!: " + appointment.getAppointmentDate());
+//         }
+//       }
+//     }
+//
+//      return ResponseEntity.ok("Emails sent to all Users that have appointments");
+//  }
+
 }

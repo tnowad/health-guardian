@@ -1,48 +1,59 @@
 package com.example.health_guardian_server.services.impl;
 
-import com.example.health_guardian_server.entities.Medication;
+import com.example.health_guardian_server.dtos.requests.CreateMedicationRequest;
+import com.example.health_guardian_server.dtos.requests.ListMedicationRequest;
+import com.example.health_guardian_server.dtos.requests.UpdateMedicationRequest;
+import com.example.health_guardian_server.dtos.responses.MedicationResponse;
+import com.example.health_guardian_server.mappers.MedicationMapper;
 import com.example.health_guardian_server.repositories.MedicationRepository;
 import com.example.health_guardian_server.services.MedicationService;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class MedicationServiceImpl implements MedicationService {
   private final MedicationRepository medicationRepository;
-
-  public MedicationServiceImpl(MedicationRepository medicationRepository) {
-    this.medicationRepository = medicationRepository;
-  }
-
-  // Implement methods
+  private final MedicationMapper medicationMapper;
 
   @Override
-  public List<Medication> getAllMedications() {
-    return medicationRepository.findAll();
-  }
-
-  @Override
-  public Medication getMedicationById(String id) {
-    return medicationRepository.findById(id).orElse(null);
+  public Page<MedicationResponse> listMedications(ListMedicationRequest request) {
+    Page<MedicationResponse> medications = medicationRepository
+        .findAll(request.toSpecification(), request.toPageable())
+        .map(medicationMapper::toMedicationResponse);
+    return medications;
   }
 
   @Override
-  public Medication createMedication(Medication medication) {
-    return medicationRepository.save(medication);
+  public MedicationResponse createMedication(CreateMedicationRequest request) {
+    return medicationMapper.toMedicationResponse(
+        medicationRepository.save(medicationMapper.toMedication(request)));
   }
 
   @Override
-  public Medication updateMedication(Medication medication) {
-    return medicationRepository.save(medication);
+  public MedicationResponse getMedication(String medicationId) {
+    return medicationRepository
+        .findById(medicationId)
+        .map(medicationMapper::toMedicationResponse)
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Medication not found for id: " + medicationId));
   }
 
   @Override
-  public void deleteMedication(String id) {
-    medicationRepository.deleteById(id);
+  public MedicationResponse updateMedication(String medicationId, UpdateMedicationRequest request) {
+    var medication = medicationRepository
+        .findById(medicationId)
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Medication not found for id: " + medicationId));
+    var updatedMedication = medicationMapper.toMedication(request);
+    updatedMedication.setId(medication.getId());
+    return medicationMapper.toMedicationResponse(medicationRepository.save(updatedMedication));
   }
 
   @Override
-  public List<Medication> getMedicationsByName(String name) {
-    return medicationRepository.findByName(name);
+  public void deleteMedication(String medicationId) {
+    medicationRepository.deleteById(medicationId);
   }
 }

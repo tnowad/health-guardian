@@ -95,10 +95,9 @@ public class SeedServiceImpl implements SeedService {
   @Override
   @Transactional
   public void initial() {
-    List<Permission> permissions =
-        List.copyOf(EnumSet.allOf(Constants.PermissionName.class)).stream()
-            .map(permissionName -> Permission.builder().name(permissionName.name()).build())
-            .collect(Collectors.toList());
+    List<Permission> permissions = List.copyOf(EnumSet.allOf(Constants.PermissionName.class)).stream()
+        .map(permissionName -> Permission.builder().name(permissionName.name()).build())
+        .collect(Collectors.toList());
 
     permissionRepository.saveAll(permissions);
 
@@ -169,12 +168,11 @@ public class SeedServiceImpl implements SeedService {
     roleRepository.saveAll(roles);
 
     List<Setting> settings = new ArrayList<>();
-    Setting roleSetting =
-        Setting.builder()
-            .key(SettingKey.ROLE_DEFAULT_IDS)
-            .description("Default role for new users")
-            .type(SettingType.STRING_ARRAY)
-            .build();
+    Setting roleSetting = Setting.builder()
+        .key(SettingKey.ROLE_DEFAULT_IDS)
+        .description("Default role for new users")
+        .type(SettingType.STRING_ARRAY)
+        .build();
 
     roleSetting.setStringArrayValue(
         roles.stream()
@@ -207,12 +205,11 @@ public class SeedServiceImpl implements SeedService {
     accountRepository.save(adminAccount);
     userRepository.save(adminUser);
 
-    LocalProvider adminLocalProvider =
-        LocalProvider.builder()
-            .email("admin@health-guardian.com")
-            .passwordHash(passwordEncoder.encode("Password@123"))
-            .account(adminAccount)
-            .build();
+    LocalProvider adminLocalProvider = LocalProvider.builder()
+        .email("admin@health-guardian.com")
+        .passwordHash(passwordEncoder.encode("Password@123"))
+        .account(adminAccount)
+        .build();
     localProviderRepository.save(adminLocalProvider);
   }
 
@@ -687,6 +684,5 @@ public class SeedServiceImpl implements SeedService {
       userPatients.add(userPatient);
     }
     userPatientRepository.saveAll(userPatients);
-
   }
 }

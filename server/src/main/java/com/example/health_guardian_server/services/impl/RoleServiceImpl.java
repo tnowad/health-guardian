@@ -34,7 +34,8 @@ public class RoleServiceImpl implements RoleService {
 
   @Override
   public Set<String> getDefaultRoleIdsForPatient() {
-    var setting = settingService.getSettingByKey(SettingKey.ROLE_DEFAULT_IDS_FOR_PATIENT);
+//    var setting = settingService.getSettingByKey(SettingKey.ROLE_DEFAULT_IDS_FOR_PATIENT);
+    var setting = settingService.getSettingByKey(SettingKey.ROLE_DEFAULT_IDS);
     return Set.copyOf(setting.getStringArrayValue());
   }
 

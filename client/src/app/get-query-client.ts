@@ -3,12 +3,38 @@ import {
   defaultShouldDehydrateQuery,
   isServer,
 } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
+import { ZodError } from "zod";
 
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000,
+        throwOnError: (error) => {
+          if (isAxiosError(error)) return true;
+          if (error instanceof ZodError) {
+            console.error(
+              "ZodError",
+              error.errors.map((e) => e.message),
+              error,
+            );
+          }
+          return false;
+        },
+      },
+      mutations: {
+        throwOnError: (error) => {
+          if (isAxiosError(error)) return true;
+          if (error instanceof ZodError) {
+            console.error(
+              "ZodError",
+              error.errors.map((e) => e.message),
+              error,
+            );
+          }
+          return false;
+        },
       },
       dehydrate: {
         shouldDehydrateQuery: (query) =>
