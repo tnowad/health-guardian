@@ -39,6 +39,12 @@ public class User {
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
+  @Column(nullable = false, unique = true)
+  private String username;
+
+  @Column(nullable = false, unique = true)
+  private String email;
+
   @Column(name = "type", nullable = false)
   @Enumerated(EnumType.STRING)
   private UserType type;
