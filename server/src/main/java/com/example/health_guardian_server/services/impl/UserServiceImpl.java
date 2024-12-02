@@ -3,6 +3,10 @@ package com.example.health_guardian_server.services.impl;
 import com.example.health_guardian_server.dtos.requests.CreateUserRequest;
 import com.example.health_guardian_server.dtos.requests.ListUsersRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateUserRequest;
+import com.example.health_guardian_server.dtos.responses.CurrentUserInfomationResponse;
+import com.example.health_guardian_server.dtos.responses.MedicalStaffInforResponse;
+import com.example.health_guardian_server.dtos.responses.PatientInforResponse;
+import com.example.health_guardian_server.dtos.responses.StaffInforResponse;
 import com.example.health_guardian_server.dtos.responses.UserResponse;
 import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.entities.UserType;
@@ -13,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,10 +50,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Page<UserResponse> listUsers(ListUsersRequest request) {
-    var users =
-        userRepository
-            .findAll(request.toSpecification(), request.toPageable())
-            .map(userMapper::toUserResponse);
+    var users = userRepository
+        .findAll(request.toSpecification(), request.toPageable())
+        .map(userMapper::toUserResponse);
     return users;
   }
 
@@ -72,7 +76,52 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void deleteUser(String userId) {
-    // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+  }
+
+  @Override
+  public CurrentUserInfomationResponse getCurrentUserInformation() {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+    return buildResponse(user);
+  }
+
+  private CurrentUserInfomationResponse buildResponse(User user) {
+    CurrentUserInfomationResponse response = new CurrentUserInfomationResponse();
+
+    response.setUserId(user.getId());
+    response.setUsername(user.getUsername());
+    response.setEmail(user.getEmail());
+    response.setName(user.getUsername());
+    response.setRole(user.getType());
+
+    if (user.getUserStaffs() != null) {
+      response.setName(
+          user.getUserStaffs().getFirst().getFirstName()
+              + " "
+              + user.getUserStaffs().getFirst().getLastName());
+      StaffInforResponse staffResponse = new StaffInforResponse();
+      staffResponse.setId(user.getUserStaffs().getFirst().getId());
+      response.setStaff(staffResponse);
+    }
+
+    if (user.getUserMedicalStaffs() != null) {
+      MedicalStaffInforResponse medicalStaffResponse = new MedicalStaffInforResponse();
+      medicalStaffResponse.setId(user.getUserMedicalStaffs().getFirst().getId());
+      medicalStaffResponse.setSpecialization(
+          user.getUserMedicalStaffs().getFirst().getSpecialization());
+      response.setMedicalStaff(medicalStaffResponse);
+    }
+
+    if (user.getPatient() != null) {
+      response.setName(user.getPatient().getFirstName() + " " + user.getPatient().getLastName());
+      PatientInforResponse patientResponse = new PatientInforResponse();
+      patientResponse.setId(user.getPatient().getId());
+      response.setPatient(patientResponse);
+    }
+
+    return response;
   }
 }

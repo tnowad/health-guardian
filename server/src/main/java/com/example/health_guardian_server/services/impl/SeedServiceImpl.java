@@ -91,10 +91,9 @@ public class SeedServiceImpl implements SeedService {
   @Override
   @Transactional
   public void initial() {
-    List<Permission> permissions =
-        List.copyOf(EnumSet.allOf(Constants.PermissionName.class)).stream()
-            .map(permissionName -> Permission.builder().name(permissionName.name()).build())
-            .collect(Collectors.toList());
+    List<Permission> permissions = List.copyOf(EnumSet.allOf(Constants.PermissionName.class)).stream()
+        .map(permissionName -> Permission.builder().name(permissionName.name()).build())
+        .collect(Collectors.toList());
 
     permissionRepository.saveAll(permissions);
 
@@ -143,33 +142,30 @@ public class SeedServiceImpl implements SeedService {
     permissionRoleMapping.add(doctorRolePermissions);
     permissionRoleMapping.add(nurseRolePermissions);
 
-    List<Role> roles =
-        permissionRoleMapping.stream()
-            .map(
-                rolePermissions -> {
-                  Role role = new Role();
-                  role.setName(rolePermissions.keySet().iterator().next());
-                  role.setPermissions(
-                      permissions.stream()
-                          .filter(
-                              permission ->
-                                  rolePermissions
-                                      .get(role.getName())
-                                      .contains(permission.getName()))
-                          .collect(Collectors.toSet()));
-                  return role;
-                })
-            .collect(Collectors.toList());
+    List<Role> roles = permissionRoleMapping.stream()
+        .map(
+            rolePermissions -> {
+              Role role = new Role();
+              role.setName(rolePermissions.keySet().iterator().next());
+              role.setPermissions(
+                  permissions.stream()
+                      .filter(
+                          permission -> rolePermissions
+                              .get(role.getName())
+                              .contains(permission.getName()))
+                      .collect(Collectors.toSet()));
+              return role;
+            })
+        .collect(Collectors.toList());
 
     roleRepository.saveAll(roles);
 
     List<Setting> settings = new ArrayList<>();
-    Setting roleSetting =
-        Setting.builder()
-            .key(SettingKey.ROLE_DEFAULT_IDS)
-            .description("Default role for new users")
-            .type(SettingType.STRING_ARRAY)
-            .build();
+    Setting roleSetting = Setting.builder()
+        .key(SettingKey.ROLE_DEFAULT_IDS)
+        .description("Default role for new users")
+        .type(SettingType.STRING_ARRAY)
+        .build();
 
     roleSetting.setStringArrayValue(
         roles.stream()
@@ -181,69 +177,69 @@ public class SeedServiceImpl implements SeedService {
 
     settingRepository.saveAll(settings);
 
-    User adminUser =
-        User.builder()
-            .roles(
-                adminRolePermissions.keySet().stream()
-                    .map(
-                        roleName ->
-                            roles.stream()
-                                .filter(role -> role.getName().equals(roleName))
-                                .findFirst()
-                                .get())
-                    .collect(Collectors.toSet()))
-            .type(UserType.STAFF)
-            .build();
+    User adminUser = User.builder()
+        .roles(
+            adminRolePermissions.keySet().stream()
+                .map(
+                    roleName -> roles.stream()
+                        .filter(role -> role.getName().equals(roleName))
+                        .findFirst()
+                        .get())
+                .collect(Collectors.toSet()))
+        .username("admin")
+        .email("admin@health-guardian.com")
+        .type(UserType.STAFF)
+        .build();
     userRepository.save(adminUser);
 
     Account adminAccount = Account.builder().user(adminUser).status(AccountStatus.ACTIVE).build();
     accountRepository.save(adminAccount);
     userRepository.save(adminUser);
 
-    LocalProvider adminLocalProvider =
-        LocalProvider.builder()
-            .email("admin@health-guardian.com")
-            .passwordHash(passwordEncoder.encode("Password@123"))
-            .account(adminAccount)
-            .build();
+    LocalProvider adminLocalProvider = LocalProvider.builder()
+        .email("admin@health-guardian.com")
+        .passwordHash(passwordEncoder.encode("Password@123"))
+        .account(adminAccount)
+        .build();
     localProviderRepository.save(adminLocalProvider);
   }
 
   @Override
   public void mock() {
-    //    List<Patient> patients = patientRepository.findAll();
-    //    List<UserMedicalStaff> medicalStaff = userMedicalStaffRepository.findAll();
+    // List<Patient> patients = patientRepository.findAll();
+    // List<UserMedicalStaff> medicalStaff = userMedicalStaffRepository.findAll();
     //
-    //    for (Patient patient : patients) {
-    //      for (UserMedicalStaff doctor : medicalStaff) {
-    //        Appointment appointment =
-    //            new Appointment(
-    //                faker.idNumber().valid(),
-    //                patient,
-    //                doctor,
-    //                faker.date().future(30, TimeUnit.DAYS),
-    //                "Checkup",
-    //                AppointmentStatus.SCHEDULED);
-    //        appointmentRepository.save(appointment);
-    //      }
-    //    }
-    //    List<Medication> medications = new ArrayList<>();
-    //    for (int i = 0; i < 100; i++) {
-    //      String name = faker.medical().medicineName();
-    //      String activeIngredient = faker.medical().symptoms();
-    //      String dosageForm = faker.options().option("Tablet", "Capsule", "Injection", "Syrup");
-    //      String standardDosage = faker.number().numberBetween(10, 500) + " mg";
-    //      String manufacturer = faker.company().name();
-    //      medications.add(
-    //          Medication.builder()
-    //              .name(name)
-    //              .activeIngredient(activeIngredient)
-    //              .dosageForm(dosageForm)
-    //              .standardDosage(standardDosage)
-    //              .manufacturer(manufacturer)
-    //              .build());
-    //    }
-    //    medicationRepository.saveAll(medications);
+    // for (Patient patient : patients) {
+    // for (UserMedicalStaff doctor : medicalStaff) {
+    // Appointment appointment =
+    // new Appointment(
+    // faker.idNumber().valid(),
+    // patient,
+    // doctor,
+    // faker.date().future(30, TimeUnit.DAYS),
+    // "Checkup",
+    // AppointmentStatus.SCHEDULED);
+    // appointmentRepository.save(appointment);
+    // }
+    // }
+    // List<Medication> medications = new ArrayList<>();
+    // for (int i = 0; i < 100; i++) {
+    // String name = faker.medical().medicineName();
+    // String activeIngredient = faker.medical().symptoms();
+    // String dosageForm = faker.options().option("Tablet", "Capsule", "Injection",
+    // "Syrup");
+    // String standardDosage = faker.number().numberBetween(10, 500) + " mg";
+    // String manufacturer = faker.company().name();
+    // medications.add(
+    // Medication.builder()
+    // .name(name)
+    // .activeIngredient(activeIngredient)
+    // .dosageForm(dosageForm)
+    // .standardDosage(standardDosage)
+    // .manufacturer(manufacturer)
+    // .build());
+    // }
+    // medicationRepository.saveAll(medications);
 
     // Seed User with Faker
     for (int i = 0; i < 100; i++) {
@@ -251,10 +247,9 @@ public class SeedServiceImpl implements SeedService {
       String userType = faker.options().option("Admin", "Moderator", "Medical", "Non-medical");
 
       // If the user is medical, we can link to a patient
-      Patient linkedPatient =
-          (userType.equals("Medical") || userType.equals("Non-medical"))
-              ? patientRepository.findAll().get(faker.number().numberBetween(0, 99))
-              : null;
+      Patient linkedPatient = (userType.equals("Medical") || userType.equals("Non-medical"))
+          ? patientRepository.findAll().get(faker.number().numberBetween(0, 99))
+          : null;
 
       User user = User.builder().type(faker.options().option(UserType.class)).build();
 
@@ -268,18 +263,17 @@ public class SeedServiceImpl implements SeedService {
 
       // Optionally, link user to medical staff roles if medical user
       if (userType.equals("Medical")) {
-        UserMedicalStaff medicalStaff =
-            UserMedicalStaff.builder()
-                .user(user)
-                .hospital(
-                    hospitalRepository
-                        .findAll()
-                        .get(faker.number().numberBetween(0, 99))) // Link to random hospital
-                .staffType(faker.options().option("Doctor", "Nurse", "Technician"))
-                .specialization(faker.medical().medicineName())
-                .role(faker.options().option("Senior", "Junior", "Intern"))
-                .active(faker.bool().bool())
-                .build();
+        UserMedicalStaff medicalStaff = UserMedicalStaff.builder()
+            .user(user)
+            .hospital(
+                hospitalRepository
+                    .findAll()
+                    .get(faker.number().numberBetween(0, 99))) // Link to random hospital
+            .staffType(faker.options().option("Doctor", "Nurse", "Technician"))
+            .specialization(faker.medical().medicineName())
+            .role(faker.options().option("Senior", "Junior", "Intern"))
+            .active(faker.bool().bool())
+            .build();
         userMedicalStaffRepository.save(medicalStaff);
       }
     }
@@ -312,8 +306,7 @@ public class SeedServiceImpl implements SeedService {
                                 LocalDate.now().minusYears(faker.number().numberBetween(1, 100))))
                         .gender(faker.options().option("Male", "Female"))
                         .status(
-                            MedicalStatus.values()[
-                                faker.number().numberBetween(0, MedicalStatus.values().length)])
+                            MedicalStatus.values()[faker.number().numberBetween(0, MedicalStatus.values().length)])
                         .guardian(guardian)
                         .build());
               }
@@ -368,24 +361,22 @@ public class SeedServiceImpl implements SeedService {
                                           LocalDate.now()
                                               .plusDays(faker.number().numberBetween(1, 90))))
                                   .status(
-                                      PrescriptionStatus.values()[
-                                          faker
-                                              .number()
-                                              .numberBetween(
-                                                  0, PrescriptionStatus.values().length)])
+                                      PrescriptionStatus.values()[faker
+                                          .number()
+                                          .numberBetween(
+                                              0, PrescriptionStatus.values().length)])
                                   .build());
                         }
                       });
             });
     // Seed Hospitals
     for (int i = 0; i < 100; i++) {
-      Hospital hospital =
-          Hospital.builder()
-              .name(faker.company().name())
-              .location(faker.address().fullAddress())
-              .phone(faker.phoneNumber().phoneNumber())
-              .email(faker.internet().emailAddress())
-              .build();
+      Hospital hospital = Hospital.builder()
+          .name(faker.company().name())
+          .location(faker.address().fullAddress())
+          .phone(faker.phoneNumber().phoneNumber())
+          .email(faker.internet().emailAddress())
+          .build();
       hospitalRepository.save(hospital);
     }
 
@@ -394,38 +385,35 @@ public class SeedServiceImpl implements SeedService {
         .findAll()
         .forEach(
             user -> {
-              Hospital hospital =
-                  hospitalRepository.findAll().get(faker.number().numberBetween(0, 99));
-              UserMedicalStaff userMedicalStaff =
-                  UserMedicalStaff.builder()
-                      .user(user)
-                      .hospital(hospital)
-                      .staffType(faker.options().option("Doctor", "Nurse", "Technician"))
-                      .specialization(
-                          faker.options().option("Pediatrics", "Cardiology", "Radiology"))
-                      .role(faker.job().title())
-                      .active(faker.bool().bool())
-                      .endDate(
-                          Date.valueOf(
-                              LocalDate.now().minusDays(faker.number().numberBetween(1, 365))))
-                      .build();
+              Hospital hospital = hospitalRepository.findAll().get(faker.number().numberBetween(0, 99));
+              UserMedicalStaff userMedicalStaff = UserMedicalStaff.builder()
+                  .user(user)
+                  .hospital(hospital)
+                  .staffType(faker.options().option("Doctor", "Nurse", "Technician"))
+                  .specialization(
+                      faker.options().option("Pediatrics", "Cardiology", "Radiology"))
+                  .role(faker.job().title())
+                  .active(faker.bool().bool())
+                  .endDate(
+                      Date.valueOf(
+                          LocalDate.now().minusDays(faker.number().numberBetween(1, 365))))
+                  .build();
               userMedicalStaffRepository.save(userMedicalStaff);
             });
 
     // Seed Side Effects
     for (int i = 0; i < 100; i++) {
-      SideEffect sideEffect =
-          SideEffect.builder()
-              .name(faker.medical().symptoms())
-              .severity(
-                  SideEffectSeverity.values()[
-                      faker.number().numberBetween(0, SideEffectSeverity.values().length)])
-              .description(faker.lorem().sentence())
-              .build();
+      SideEffect sideEffect = SideEffect.builder()
+          .name(faker.medical().symptoms())
+          .severity(
+              SideEffectSeverity.values()[faker.number().numberBetween(0, SideEffectSeverity.values().length)])
+          .description(faker.lorem().sentence())
+          .build();
       sideEffectRepository.save(sideEffect);
     }
 
-    // Seed Reported Side Effects (linking patients, prescriptions, and side effects)
+    // Seed Reported Side Effects (linking patients, prescriptions, and side
+    // effects)
     patientRepository
         .findAll()
         .forEach(
@@ -434,34 +422,29 @@ public class SeedServiceImpl implements SeedService {
                   .findAll()
                   .forEach(
                       prescription -> {
-                        for (int i = 0;
-                            i < 10;
-                            i++) { // Assuming each patient might report several side effects per
+                        for (int i = 0; i < 10; i++) { // Assuming each patient might report several side effects per
                           // prescription
-                          SideEffect sideEffect =
-                              sideEffectRepository
-                                  .findAll()
-                                  .get(faker.number().numberBetween(0, 99));
-                          ReportedSideEffect reportedSideEffect =
-                              ReportedSideEffect.builder()
-                                  .patient(patient)
-                                  .sideEffect(sideEffect)
-                                  .prescription(prescription)
-                                  .reportDate(
-                                      Date.valueOf(
-                                          LocalDate.now()
-                                              .minusDays(faker.number().numberBetween(1, 365))))
-                                  .severity(
-                                      SideEffectSeverity.values()[
-                                          faker
-                                              .number()
-                                              .numberBetween(
-                                                  0, SideEffectSeverity.values().length)])
-                                  .notes(faker.lorem().paragraph())
-                                  .reportedBy(faker.name().fullName())
-                                  .outcome(
-                                      faker.options().option("Resolved", "Ongoing", "Worsened"))
-                                  .build();
+                          SideEffect sideEffect = sideEffectRepository
+                              .findAll()
+                              .get(faker.number().numberBetween(0, 99));
+                          ReportedSideEffect reportedSideEffect = ReportedSideEffect.builder()
+                              .patient(patient)
+                              .sideEffect(sideEffect)
+                              .prescription(prescription)
+                              .reportDate(
+                                  Date.valueOf(
+                                      LocalDate.now()
+                                          .minusDays(faker.number().numberBetween(1, 365))))
+                              .severity(
+                                  SideEffectSeverity.values()[faker
+                                      .number()
+                                      .numberBetween(
+                                          0, SideEffectSeverity.values().length)])
+                              .notes(faker.lorem().paragraph())
+                              .reportedBy(faker.name().fullName())
+                              .outcome(
+                                  faker.options().option("Resolved", "Ongoing", "Worsened"))
+                              .build();
                           reportedSideEffectRepository.save(reportedSideEffect);
                         }
                       });
@@ -474,14 +457,12 @@ public class SeedServiceImpl implements SeedService {
 
       // Seed Household Members (each household with 1-5 members)
       for (int j = 0; j < faker.number().numberBetween(1, 5); j++) {
-        Patient memberPatient =
-            patientRepository.findAll().get(faker.number().numberBetween(0, 99));
-        HouseholdMember householdMember =
-            HouseholdMember.builder()
-                .household(household)
-                .patient(memberPatient)
-                .relationshipToPatient(faker.options().option("Sibling", "Child", "Spouse"))
-                .build();
+        Patient memberPatient = patientRepository.findAll().get(faker.number().numberBetween(0, 99));
+        HouseholdMember householdMember = HouseholdMember.builder()
+            .household(household)
+            .patient(memberPatient)
+            .relationshipToPatient(faker.options().option("Sibling", "Child", "Spouse"))
+            .build();
         householdMemberRepository.save(householdMember);
       }
     }
@@ -490,21 +471,18 @@ public class SeedServiceImpl implements SeedService {
         .findAll()
         .forEach(
             patient -> {
-              UserMedicalStaff doctor =
-                  userMedicalStaffRepository.findAll().get(faker.number().numberBetween(0, 99));
+              UserMedicalStaff doctor = userMedicalStaffRepository.findAll().get(faker.number().numberBetween(0, 99));
               for (int i = 0; i < 5; i++) { // Each patient has multiple appointments
-                Appointment appointment =
-                    Appointment.builder()
-                        .patient(patient)
-                        .doctor(doctor)
-                        .appointmentDate(
-                            Date.valueOf(
-                                LocalDate.now().plusDays(faker.number().numberBetween(1, 30))))
-                        .reasonForVisit(faker.medical().diseaseName())
-                        .status(
-                            AppointmentStatus.values()[
-                                faker.number().numberBetween(0, AppointmentStatus.values().length)])
-                        .build();
+                Appointment appointment = Appointment.builder()
+                    .patient(patient)
+                    .doctor(doctor)
+                    .appointmentDate(
+                        Date.valueOf(
+                            LocalDate.now().plusDays(faker.number().numberBetween(1, 30))))
+                    .reasonForVisit(faker.medical().diseaseName())
+                    .status(
+                        AppointmentStatus.values()[faker.number().numberBetween(0, AppointmentStatus.values().length)])
+                    .build();
                 appointmentRepository.save(appointment);
               }
             });
@@ -514,17 +492,15 @@ public class SeedServiceImpl implements SeedService {
         .forEach(
             patient -> {
               for (int i = 0; i < 5; i++) {
-                ConsentForm consentForm =
-                    ConsentForm.builder()
-                        .patient(patient)
-                        .formName("Consent Form " + faker.number().numberBetween(1, 100))
-                        .consentDate(
-                            Date.valueOf(
-                                LocalDate.now().minusDays(faker.number().numberBetween(1, 365))))
-                        .status(
-                            ConsentStatus.values()[
-                                faker.number().numberBetween(0, ConsentStatus.values().length)])
-                        .build();
+                ConsentForm consentForm = ConsentForm.builder()
+                    .patient(patient)
+                    .formName("Consent Form " + faker.number().numberBetween(1, 100))
+                    .consentDate(
+                        Date.valueOf(
+                            LocalDate.now().minusDays(faker.number().numberBetween(1, 365))))
+                    .status(
+                        ConsentStatus.values()[faker.number().numberBetween(0, ConsentStatus.values().length)])
+                    .build();
                 consentFormRepository.save(consentForm);
               }
             });
@@ -534,18 +510,16 @@ public class SeedServiceImpl implements SeedService {
         .forEach(
             user -> {
               for (int i = 0; i < 5; i++) {
-                Notification notification =
-                    Notification.builder()
-                        .user(user)
-                        .type(
-                            NotificationType.values()[
-                                faker.number().numberBetween(0, NotificationType.values().length)])
-                        .notificationDate(
-                            Timestamp.valueOf(
-                                LocalDateTime.now()
-                                    .minusDays(faker.number().numberBetween(1, 365))))
-                        .readStatus(faker.bool().bool())
-                        .build();
+                Notification notification = Notification.builder()
+                    .user(user)
+                    .type(
+                        NotificationType.values()[faker.number().numberBetween(0, NotificationType.values().length)])
+                    .notificationDate(
+                        Timestamp.valueOf(
+                            LocalDateTime.now()
+                                .minusDays(faker.number().numberBetween(1, 365))))
+                    .readStatus(faker.bool().bool())
+                    .build();
                 notificationRepository.save(notification);
               }
             });
