@@ -3,6 +3,7 @@ package com.example.health_guardian_server.services;
 import com.example.health_guardian_server.dtos.requests.CreateUserRequest;
 import com.example.health_guardian_server.dtos.requests.ListUsersRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateUserRequest;
+import com.example.health_guardian_server.dtos.responses.CurrentUserInfomationResponse;
 import com.example.health_guardian_server.dtos.responses.UserResponse;
 import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.entities.UserType;
@@ -26,4 +27,6 @@ public interface UserService {
   UserResponse updateUser(String userId, UpdateUserRequest request);
 
   void deleteUser(String userId);
+
+  CurrentUserInfomationResponse getCurrentUserInformation();
 }
