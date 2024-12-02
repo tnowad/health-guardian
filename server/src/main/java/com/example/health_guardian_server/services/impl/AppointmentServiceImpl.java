@@ -1,6 +1,5 @@
 package com.example.health_guardian_server.services.impl;
 
-import com.example.health_guardian_server.dtos.requests.CreateAppointmentRequest;
 import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
 import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
 import com.example.health_guardian_server.entities.Appointment;
@@ -11,58 +10,58 @@ import com.example.health_guardian_server.specifications.AppointmentSpecificatio
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-
 import lombok.RequiredArgsConstructor;
-import lombok.var;
-
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
   AppointmentRepository appointmentRepository;
 
   AppointmentMapper appointmentMapper;
 
-
-
   @Override
   public Page<AppointmentResponse> getAllAppointments(ListAppointmentRequest request) {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     AppointmentSpecification specification = new AppointmentSpecification(request);
 
-    var appointments = appointmentRepository.findAll(specification, pageRequest).map(appointmentMapper::toAppointmentResponse);
+    var appointments =
+        appointmentRepository
+            .findAll(specification, pageRequest)
+            .map(appointmentMapper::toAppointmentResponse);
 
     return appointments;
   }
 
   @Override
-
   public AppointmentResponse getAppointmentById(String appointmentId) {
-    return appointmentRepository.findById(appointmentId)
-      .map(appointmentMapper::toAppointmentResponse)
-      .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id " + appointmentId));
-
+    return appointmentRepository
+        .findById(appointmentId)
+        .map(appointmentMapper::toAppointmentResponse)
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Appointment not found with id " + appointmentId));
   }
 
   @Override
-  public AppointmentResponse createAppointment(Appointment appointment){
+  public AppointmentResponse createAppointment(Appointment appointment) {
     Appointment createdAppointment = appointmentRepository.save(appointment);
     return appointmentMapper.toAppointmentResponse(createdAppointment);
   }
 
   @Override
-
   public AppointmentResponse updateAppointment(String appointmentId, Appointment appointment) {
-    Appointment existingAppointment = appointmentRepository.findById(appointmentId)
-      .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id " + appointmentId));
+    Appointment existingAppointment =
+        appointmentRepository
+            .findById(appointmentId)
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
+                        "Appointment not found with id " + appointmentId));
 
     existingAppointment.setAppointmentDate(appointment.getAppointmentDate());
-
 
     existingAppointment.setDoctor(appointment.getDoctor());
     existingAppointment.setPatient(appointment.getPatient());
@@ -74,8 +73,13 @@ public class AppointmentServiceImpl implements AppointmentService {
   @Override
   public void deleteAppointment(String appointmentId) {
 
-    Appointment existingAppointment = appointmentRepository.findById(appointmentId)
-      .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id " + appointmentId));
+    Appointment existingAppointment =
+        appointmentRepository
+            .findById(appointmentId)
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
+                        "Appointment not found with id " + appointmentId));
 
     appointmentRepository.delete(existingAppointment);
   }

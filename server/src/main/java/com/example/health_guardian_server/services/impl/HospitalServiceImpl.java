@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HospitalServiceImpl implements HospitalService {
-  // Implement methods
   private final HospitalRepository hospitalRepository;
 
   public HospitalServiceImpl(HospitalRepository hospitalRepository) {
@@ -21,26 +20,48 @@ public class HospitalServiceImpl implements HospitalService {
 
   @Override
   public Page<HospitalResponse> getAllHospitals(ListHospitalRequest request) {
-    Page<Hospital> hospitals = hospitalRepository.findAll(PageRequest.of(request.getPage(), request.getSize()));
-    return hospitals.map(hospital -> new HospitalResponse(hospital.getId(),hospital.getName(),hospital.getLocation(),hospital.getPhone(),hospital.getEmail()));
+    Page<Hospital> hospitals =
+        hospitalRepository.findAll(PageRequest.of(request.getPage(), request.getSize()));
+    return hospitals.map(
+        hospital ->
+            new HospitalResponse(
+                hospital.getId(),
+                hospital.getName(),
+                hospital.getLocation(),
+                hospital.getPhone(),
+                hospital.getEmail()));
   }
 
   @Override
   public HospitalResponse getHospitalById(String id) {
-    return hospitalRepository.findById(id)
-      .map(hospital -> new HospitalResponse(hospital.getId(),hospital.getName(),hospital.getLocation(),hospital.getPhone(),hospital.getEmail()))
-      .orElse(null);
+    return hospitalRepository
+        .findById(id)
+        .map(
+            hospital ->
+                new HospitalResponse(
+                    hospital.getId(),
+                    hospital.getName(),
+                    hospital.getLocation(),
+                    hospital.getPhone(),
+                    hospital.getEmail()))
+        .orElse(null);
   }
 
   @Override
   public HospitalResponse createHospital(CreateHospitalRequest hospital) {
-    Hospital newHospital = Hospital.builder()
-      .name(hospital.getName())
-      .location(hospital.getLocation())
-      .phone(hospital.getPhone())
-      .email(hospital.getEmail())
-      .build();
-    return new HospitalResponse(hospitalRepository.save(newHospital).getId(),newHospital.getName(),newHospital.getLocation(),newHospital.getPhone(),newHospital.getEmail());
+    Hospital newHospital =
+        Hospital.builder()
+            .name(hospital.getName())
+            .location(hospital.getLocation())
+            .phone(hospital.getPhone())
+            .email(hospital.getEmail())
+            .build();
+    return new HospitalResponse(
+        hospitalRepository.save(newHospital).getId(),
+        newHospital.getName(),
+        newHospital.getLocation(),
+        newHospital.getPhone(),
+        newHospital.getEmail());
   }
 
   @Override
@@ -53,7 +74,12 @@ public class HospitalServiceImpl implements HospitalService {
     existingHospital.setLocation(hospital.getLocation());
     existingHospital.setPhone(hospital.getPhone());
     existingHospital.setEmail(hospital.getEmail());
-    return new HospitalResponse(hospitalRepository.save(existingHospital).getId(),existingHospital.getName(),existingHospital.getLocation(),existingHospital.getPhone(),existingHospital.getEmail());
+    return new HospitalResponse(
+        hospitalRepository.save(existingHospital).getId(),
+        existingHospital.getName(),
+        existingHospital.getLocation(),
+        existingHospital.getPhone(),
+        existingHospital.getEmail());
   }
 
   @Override
