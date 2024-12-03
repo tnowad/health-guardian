@@ -71,6 +71,25 @@ spring:
       port: ${REDIS_PORT:6379}
       host: ${REDIS_HOST:localhost}
       database: 0
+  mail:
+    from: ${FROM_MAIL}
+    host: smtp.gmail.com
+    port: 587
+    username: ${FROM_MAIL}
+    password: ${SMTP_PASSWORD} # wzjg pkgh yvmv noyz
+    default-encoding: UTF-8
+    properties:
+      mail:
+        mime:
+          charset: UTF
+        smtp:
+          writetimeout: 10000
+          connectiontimeout: 10000
+          timeout: 10000
+          auth: true
+          starttls:
+            enable: true
+            required: true
   #configure google login
   security:
     oauth2:

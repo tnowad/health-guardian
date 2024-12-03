@@ -7,6 +7,7 @@ import com.example.health_guardian_server.dtos.responses.GetCurrentUserPermissio
 import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.dtos.responses.SignUpResponse;
+import com.example.health_guardian_server.entities.LocalProvider;
 
 public interface AuthService {
   SignInResponse signIn(SignInRequest request);
@@ -16,4 +17,8 @@ public interface AuthService {
   GetCurrentUserPermissionsResponse getCurrentUserPermissions(String accessToken);
 
   SignUpResponse signUp(SignUpRequest request);
+
+  void verifyEmail(LocalProvider LocalProvider, String code, String token);
+
+  void sendEmailVerification(String email, Object verificationType);
 }
