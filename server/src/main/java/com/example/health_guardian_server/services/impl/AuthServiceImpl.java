@@ -8,6 +8,7 @@ import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.dtos.responses.SignUpResponse;
 import com.example.health_guardian_server.entities.AccountStatus;
+import com.example.health_guardian_server.entities.LocalProvider;
 import com.example.health_guardian_server.entities.UserType;
 import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AuthService;
@@ -108,5 +109,15 @@ public class AuthServiceImpl implements AuthService {
     var tokens = tokenService.generateTokens(user.getId(), permissionNames);
 
     return SignUpResponse.builder().tokens(tokens).message("Sign up successfully").build();
+  }
+
+  @Override
+  public void verifyEmail(LocalProvider LocalProvider, String code, String token) {
+    throw new UnsupportedOperationException("Unimplemented method 'verifyEmail'");
+  }
+
+  @Override
+  public void sendEmailVerification(String email, Object verificationType) {
+    throw new UnsupportedOperationException("Unimplemented method 'sendEmailVerification'");
   }
 }
