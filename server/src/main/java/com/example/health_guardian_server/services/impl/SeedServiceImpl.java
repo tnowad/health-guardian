@@ -6,12 +6,11 @@ import com.example.health_guardian_server.services.SeedService;
 import com.example.health_guardian_server.utils.Constants;
 import com.example.health_guardian_server.utils.Constants.PermissionName;
 import com.github.javafaker.Faker;
+import com.mifmif.common.regex.Generex;
 import jakarta.transaction.Transactional;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +52,7 @@ public class SeedServiceImpl implements SeedService {
   PasswordEncoder passwordEncoder;
 
   Faker faker = new Faker();
+  Random random = new Random();
 
   @Override
   @Transactional
@@ -61,28 +61,28 @@ public class SeedServiceImpl implements SeedService {
     permissionRepository.deleteAllInBatch();
     roleRepository.deleteAllInBatch();
 
-    userMedicalStaffRepository.deleteAllInBatch();
     userPatientRepository.deleteAllInBatch();
     userStaffRepository.deleteAllInBatch();
 
     localProviderRepository.deleteAllInBatch();
+    externalProviderRepository.deleteAllInBatch();
     accountRepository.deleteAllInBatch();
-    userRepository.deleteAllInBatch();
 
     aggregatedSideEffectRepository.deleteAllInBatch();
     appointmentRepository.deleteAllInBatch();
+    userMedicalStaffRepository.deleteAllInBatch();
     consentFormRepository.deleteAllInBatch();
-    externalProviderRepository.deleteAllInBatch();
     hospitalRepository.deleteAllInBatch();
     householdMemberRepository.deleteAllInBatch();
     householdRepository.deleteAllInBatch();
-    medicationRepository.deleteAllInBatch();
     notificationRepository.deleteAllInBatch();
     patientLogRepository.deleteAllInBatch();
+    reportedSideEffectRepository.deleteAllInBatch();
+    prescriptionRepository.deleteAllInBatch();
+    medicationRepository.deleteAllInBatch();
+    userRepository.deleteAllInBatch();
     patientRepository.deleteAllInBatch();
     guardianRepository.deleteAllInBatch();
-    prescriptionRepository.deleteAllInBatch();
-    reportedSideEffectRepository.deleteAllInBatch();
     sideEffectRepository.deleteAllInBatch();
 
     log.info("Database cleared");
@@ -147,6 +147,7 @@ public class SeedServiceImpl implements SeedService {
             rolePermissions -> {
               Role role = new Role();
               role.setName(rolePermissions.keySet().iterator().next());
+              role.setDescription(faker.lorem().sentence(10));
               role.setPermissions(
                   permissions.stream()
                       .filter(
@@ -206,322 +207,471 @@ public class SeedServiceImpl implements SeedService {
 
   @Override
   public void mock() {
-    // List<Patient> patients = patientRepository.findAll();
-    // List<UserMedicalStaff> medicalStaff = userMedicalStaffRepository.findAll();
-    //
-    // for (Patient patient : patients) {
-    // for (UserMedicalStaff doctor : medicalStaff) {
-    // Appointment appointment =
-    // new Appointment(
-    // faker.idNumber().valid(),
-    // patient,
-    // doctor,
-    // faker.date().future(30, TimeUnit.DAYS),
-    // "Checkup",
-    // AppointmentStatus.SCHEDULED);
-    // appointmentRepository.save(appointment);
-    // }
-    // }
-    // List<Medication> medications = new ArrayList<>();
-    // for (int i = 0; i < 100; i++) {
-    // String name = faker.medical().medicineName();
-    // String activeIngredient = faker.medical().symptoms();
-    // String dosageForm = faker.options().option("Tablet", "Capsule", "Injection",
-    // "Syrup");
-    // String standardDosage = faker.number().numberBetween(10, 500) + " mg";
-    // String manufacturer = faker.company().name();
-    // medications.add(
-    // Medication.builder()
-    // .name(name)
-    // .activeIngredient(activeIngredient)
-    // .dosageForm(dosageForm)
-    // .standardDosage(standardDosage)
-    // .manufacturer(manufacturer)
-    // .build());
-    // }
-    // medicationRepository.saveAll(medications);
-
-    // Seed User with Faker
-    for (int i = 0; i < 100; i++) {
-      // Generate a random user type
-      String userType = faker.options().option("Admin", "Moderator", "Medical", "Non-medical");
-
-      // If the user is medical, we can link to a patient
-      Patient linkedPatient = (userType.equals("Medical") || userType.equals("Non-medical"))
-          ? patientRepository.findAll().get(faker.number().numberBetween(0, 99))
-          : null;
-
-      User user = User.builder().type(faker.options().option(UserType.class)).build();
-
-      userRepository.save(user);
-
-      // Create an account for the user
-      if (userType.equals("Medical") || userType.equals("Non-medical")) {
-        Account account = Account.builder().user(user).build();
-        accountRepository.save(account);
-      }
-
-      // Optionally, link user to medical staff roles if medical user
-      if (userType.equals("Medical")) {
-        UserMedicalStaff medicalStaff = UserMedicalStaff.builder()
-            .user(user)
-            .hospital(
-                hospitalRepository
-                    .findAll()
-                    .get(faker.number().numberBetween(0, 99))) // Link to random hospital
-            .staffType(faker.options().option("Doctor", "Nurse", "Technician"))
-            .specialization(faker.medical().medicineName())
-            .role(faker.options().option("Senior", "Junior", "Intern"))
-            .active(faker.bool().bool())
-            .build();
-        userMedicalStaffRepository.save(medicalStaff);
-      }
-    }
-
-    // Seed Guardians
+    // Guardian
     List<Guardian> guardians = new ArrayList<>();
-    for (int i = 0; i < 100; i++) {
-      guardians.add(
-          Guardian.builder()
-              .name(faker.name().fullName())
-              .relationshipToPatient(faker.options().option("Parent", "Spouse", "Sibling"))
-              .phone(faker.phoneNumber().cellPhone().replaceAll("[^\\d+]", ""))
-              .email(faker.internet().emailAddress())
-              .build());
+    for (int i = 0; i < 500; i++) {
+      Guardian guardian = Guardian.builder()
+          .name(faker.name().fullName())
+          .relationshipToPatient(faker.relationships().any())
+          .phone(new Generex("0[1-9][0-9]{8}").random())
+          .email(faker.internet().emailAddress())
+          .build();
+      guardians.add(guardian);
     }
     guardianRepository.saveAll(guardians);
 
-    // Seed Patients
-    guardianRepository
-        .findAll()
-        .forEach(
-            guardian -> {
-              for (int i = 0; i < 100; i++) {
-                patientRepository.save(
-                    Patient.builder()
-                        .firstName(faker.name().firstName())
-                        .lastName(faker.name().lastName())
-                        .dob(
-                            Date.valueOf(
-                                LocalDate.now().minusYears(faker.number().numberBetween(1, 100))))
-                        .gender(faker.options().option("Male", "Female"))
-                        .status(
-                            MedicalStatus.values()[faker.number().numberBetween(0, MedicalStatus.values().length)])
-                        .guardian(guardian)
-                        .build());
-              }
-            });
-
-    // Seed Medications
-    for (int i = 0; i < 100; i++) {
-      medicationRepository.save(
-          Medication.builder()
-              .name(faker.medical().medicineName())
-              .activeIngredient(faker.medical().symptoms())
-              .dosageForm(faker.options().option("Tablet", "Capsule", "Injection", "Syrup"))
-              .standardDosage(faker.number().numberBetween(1, 500) + " mg")
-              .manufacturer(faker.company().name())
-              .build());
+    // Patient
+    List<Patient> patients = new ArrayList<>();
+    List<String> genders = Arrays.asList("Male", "Female");
+    for (int i = 0; i < 500; i++) {
+      Patient patient1 = Patient.builder()
+          .firstName(faker.name().firstName())
+          .lastName(faker.name().lastName())
+          .dob(faker.date().past(300, TimeUnit.DAYS))
+          .gender(genders.get(random.nextInt(genders.size())))
+          .guardian(guardians.get(i))
+          .status(MedicalStatus.values()[random.nextInt(MedicalStatus.values().length)])
+          .createdAt(faker.date().past(390, TimeUnit.DAYS))
+          .updatedAt(faker.date().past(380, TimeUnit.DAYS))
+          .build();
+      patients.add(patient1);
     }
+    for (int i = 0; i < 200; i++) {
+      Patient patient2 = Patient.builder()
+          .firstName(faker.name().firstName())
+          .lastName(faker.name().lastName())
+          .dob(faker.date().past(300, TimeUnit.DAYS))
+          .gender(genders.get(random.nextInt(genders.size())))
+          .guardian(guardians.get(i))
+          .status(MedicalStatus.values()[random.nextInt(MedicalStatus.values().length)])
+          .createdAt(faker.date().past(390, TimeUnit.DAYS))
+          .updatedAt(faker.date().past(380, TimeUnit.DAYS))
+          .build();
+      patients.add(patient2);
 
-    // Seed Prescriptions (linking patients and medications)
-    patientRepository
-        .findAll()
-        .forEach(
-            patient -> {
-              medicationRepository
-                  .findAll()
-                  .forEach(
-                      medication -> {
-                        for (int i = 0; i < 100; i++) {
-                          prescriptionRepository.save(
-                              Prescription.builder()
-                                  .patient(patient)
-                                  .medication(medication)
-                                  .prescribedBy(
-                                      userRepository
-                                          .findAll()
-                                          .get(
-                                              faker
-                                                  .number()
-                                                  .numberBetween(
-                                                      0,
-                                                      userRepository
-                                                          .findAll()
-                                                          .size()))) // Assuming you have a list of
-                                  // doctor IDs to pull from
-                                  .dosage(faker.number().numberBetween(1, 5) + " times a day")
-                                  .frequency("Daily")
-                                  .startDate(
-                                      Date.valueOf(
-                                          LocalDate.now()
-                                              .minusDays(faker.number().numberBetween(1, 30))))
-                                  .endDate(
-                                      Date.valueOf(
-                                          LocalDate.now()
-                                              .plusDays(faker.number().numberBetween(1, 90))))
-                                  .status(
-                                      PrescriptionStatus.values()[faker
-                                          .number()
-                                          .numberBetween(
-                                              0, PrescriptionStatus.values().length)])
-                                  .build());
-                        }
-                      });
-            });
-    // Seed Hospitals
-    for (int i = 0; i < 100; i++) {
+      Patient patient3 = Patient.builder()
+          .firstName(faker.name().firstName())
+          .lastName(faker.name().lastName())
+          .dob(faker.date().past(300, TimeUnit.DAYS))
+          .gender(genders.get(random.nextInt(genders.size())))
+          .guardian(null)
+          .status(MedicalStatus.values()[random.nextInt(MedicalStatus.values().length)])
+          .createdAt(faker.date().past(390, TimeUnit.DAYS))
+          .updatedAt(faker.date().past(380, TimeUnit.DAYS))
+          .build();
+      patients.add(patient3);
+    }
+    patientRepository.saveAll(patients);
+
+    // PatientLog
+    List<PatientLog> patientLogs = new ArrayList<>();
+    for (int i = 0; i < 500; i++) {
+      PatientLog patientLog = PatientLog.builder()
+          .patient(patients.get(random.nextInt(patients.size())))
+          .logType(faker.lorem().sentence(5))
+          .message(faker.lorem().sentence(10))
+          .createdAt(faker.date().past(390, TimeUnit.DAYS))
+          .build();
+      patientLogs.add(patientLog);
+    }
+    patientLogRepository.saveAll(patientLogs);
+
+    // Hospital
+    List<Hospital> hospitals = new ArrayList<>();
+    for (int i = 0; i < 500; i++) {
       Hospital hospital = Hospital.builder()
-          .name(faker.company().name())
+          .name(faker.medical().hospitalName())
           .location(faker.address().fullAddress())
-          .phone(faker.phoneNumber().phoneNumber())
+          .phone(new Generex("0[1-9][0-9]{8}").random())
           .email(faker.internet().emailAddress())
           .build();
-      hospitalRepository.save(hospital);
+      hospitals.add(hospital);
     }
+    hospitalRepository.saveAll(hospitals);
 
-    // Seed User Medical Staffs
-    userRepository
-        .findAll()
-        .forEach(
-            user -> {
-              Hospital hospital = hospitalRepository.findAll().get(faker.number().numberBetween(0, 99));
-              UserMedicalStaff userMedicalStaff = UserMedicalStaff.builder()
-                  .user(user)
-                  .hospital(hospital)
-                  .staffType(faker.options().option("Doctor", "Nurse", "Technician"))
-                  .specialization(
-                      faker.options().option("Pediatrics", "Cardiology", "Radiology"))
-                  .role(faker.job().title())
-                  .active(faker.bool().bool())
-                  .endDate(
-                      Date.valueOf(
-                          LocalDate.now().minusDays(faker.number().numberBetween(1, 365))))
-                  .build();
-              userMedicalStaffRepository.save(userMedicalStaff);
-            });
-
-    // Seed Side Effects
-    for (int i = 0; i < 100; i++) {
-      SideEffect sideEffect = SideEffect.builder()
-          .name(faker.medical().symptoms())
-          .severity(
-              SideEffectSeverity.values()[faker.number().numberBetween(0, SideEffectSeverity.values().length)])
-          .description(faker.lorem().sentence())
-          .build();
-      sideEffectRepository.save(sideEffect);
-    }
-
-    // Seed Reported Side Effects (linking patients, prescriptions, and side
-    // effects)
-    patientRepository
-        .findAll()
-        .forEach(
-            patient -> {
-              prescriptionRepository
-                  .findAll()
-                  .forEach(
-                      prescription -> {
-                        for (int i = 0; i < 10; i++) { // Assuming each patient might report several side effects per
-                          // prescription
-                          SideEffect sideEffect = sideEffectRepository
-                              .findAll()
-                              .get(faker.number().numberBetween(0, 99));
-                          ReportedSideEffect reportedSideEffect = ReportedSideEffect.builder()
-                              .patient(patient)
-                              .sideEffect(sideEffect)
-                              .prescription(prescription)
-                              .reportDate(
-                                  Date.valueOf(
-                                      LocalDate.now()
-                                          .minusDays(faker.number().numberBetween(1, 365))))
-                              .severity(
-                                  SideEffectSeverity.values()[faker
-                                      .number()
-                                      .numberBetween(
-                                          0, SideEffectSeverity.values().length)])
-                              .notes(faker.lorem().paragraph())
-                              .reportedBy(faker.name().fullName())
-                              .outcome(
-                                  faker.options().option("Resolved", "Ongoing", "Worsened"))
-                              .build();
-                          reportedSideEffectRepository.save(reportedSideEffect);
-                        }
-                      });
-            });
-    // Seed Households
-    for (int i = 0; i < 100; i++) {
-      Patient headPatient = patientRepository.findAll().get(faker.number().numberBetween(0, 99));
-      Household household = Household.builder().head(headPatient).build();
-      householdRepository.save(household);
-
-      // Seed Household Members (each household with 1-5 members)
-      for (int j = 0; j < faker.number().numberBetween(1, 5); j++) {
-        Patient memberPatient = patientRepository.findAll().get(faker.number().numberBetween(0, 99));
-        HouseholdMember householdMember = HouseholdMember.builder()
-            .household(household)
-            .patient(memberPatient)
-            .relationshipToPatient(faker.options().option("Sibling", "Child", "Spouse"))
-            .build();
-        householdMemberRepository.save(householdMember);
+    // Get Roles
+    List<Role> roles = roleRepository.findAll();
+    Set<Role> patientRole = new HashSet<>();
+    Set<Role> adminRole = new HashSet<>();
+    Set<Role> staffRole = new HashSet<>();
+    for (Role x : roles) {
+      if (x.getName().equals("anonymous")) {
+        patientRole.add(x);
+      } else if (x.getName().equals("admin")) {
+        adminRole.add(x);
+      } else if (x.getName().equals("nurse") || x.getName().equals("doctor")) {
+        staffRole.add(x);
       }
     }
-    // Seed Appointments (linking patients and doctors)
-    patientRepository
-        .findAll()
-        .forEach(
-            patient -> {
-              UserMedicalStaff doctor = userMedicalStaffRepository.findAll().get(faker.number().numberBetween(0, 99));
-              for (int i = 0; i < 5; i++) { // Each patient has multiple appointments
-                Appointment appointment = Appointment.builder()
-                    .patient(patient)
-                    .doctor(doctor)
-                    .appointmentDate(
-                        Date.valueOf(
-                            LocalDate.now().plusDays(faker.number().numberBetween(1, 30))))
-                    .reasonForVisit(faker.medical().diseaseName())
-                    .status(
-                        AppointmentStatus.values()[faker.number().numberBetween(0, AppointmentStatus.values().length)])
-                    .build();
-                appointmentRepository.save(appointment);
-              }
-            });
-    // Seed Consent Forms
-    patientRepository
-        .findAll()
-        .forEach(
-            patient -> {
-              for (int i = 0; i < 5; i++) {
-                ConsentForm consentForm = ConsentForm.builder()
-                    .patient(patient)
-                    .formName("Consent Form " + faker.number().numberBetween(1, 100))
-                    .consentDate(
-                        Date.valueOf(
-                            LocalDate.now().minusDays(faker.number().numberBetween(1, 365))))
-                    .status(
-                        ConsentStatus.values()[faker.number().numberBetween(0, ConsentStatus.values().length)])
-                    .build();
-                consentFormRepository.save(consentForm);
-              }
-            });
-    // Seed Notifications
-    userRepository
-        .findAll()
-        .forEach(
-            user -> {
-              for (int i = 0; i < 5; i++) {
-                Notification notification = Notification.builder()
-                    .user(user)
-                    .type(
-                        NotificationType.values()[faker.number().numberBetween(0, NotificationType.values().length)])
-                    .notificationDate(
-                        Timestamp.valueOf(
-                            LocalDateTime.now()
-                                .minusDays(faker.number().numberBetween(1, 365))))
-                    .readStatus(faker.bool().bool())
-                    .build();
-                notificationRepository.save(notification);
-              }
-            });
+
+    // User
+    List<User> users = userRepository.findAll();
+    for (int i = 0; i < patients.size(); i++) {
+      User user = User.builder()
+          .username(faker.name().username() + i)
+          .email(i + faker.internet().emailAddress())
+          .type(UserType.PATIENT)
+          .patient(patients.get(i))
+          .roles(patientRole)
+          .build();
+      users.add(user);
+    }
+    for (int i = 0; i < 50; i++) {
+      User user = User.builder()
+          .username(faker.name().username() + i)
+          .email(i + faker.internet().emailAddress())
+          .type(UserType.STAFF)
+          .patient(null)
+          .roles(adminRole)
+          .build();
+      users.add(user);
+    }
+    for (int i = 0; i < 200; i++) {
+      User user = User.builder()
+          .username(faker.name().username() + i)
+          .email(i + faker.internet().emailAddress())
+          .type(UserType.MEDICAL_STAFF)
+          .patient(null)
+          .roles(staffRole)
+          .build();
+      users.add(user);
+    }
+    userRepository.saveAll(users);
+
+    // UserStaff, UserMedicalStaff
+    List<UserStaff> userStaffs = new ArrayList<>();
+    List<UserMedicalStaff> userMedicalStaffs = new ArrayList<>();
+    for (User x : users) {
+      if (x.getType().equals(UserType.STAFF)) {
+        UserStaff userStaff = UserStaff.builder()
+            .user(x)
+            .firstName(faker.name().firstName())
+            .lastName(faker.name().lastName())
+            .dateOfBirth(faker.date().past(80, TimeUnit.DAYS))
+            .role(faker.lorem().sentence(10))
+            .roleType(faker.job().position())
+            .build();
+        userStaffs.add(userStaff);
+      } else if (x.getType().equals(UserType.MEDICAL_STAFF)) {
+        UserMedicalStaff userMedicalStaff = UserMedicalStaff.builder()
+            .user(x)
+            .hospital(hospitals.get(random.nextInt(hospitals.size())))
+            .staffType(faker.job().field())
+            .specialization(faker.lorem().sentence(10))
+            .role(faker.job().position())
+            .active(true)
+            .endDate(faker.date().past(50, TimeUnit.DAYS))
+            .build();
+        userMedicalStaffs.add(userMedicalStaff);
+      }
+    }
+    userStaffRepository.saveAll(userStaffs);
+    userMedicalStaffRepository.saveAll(userMedicalStaffs);
+
+    // Account
+    List<Account> accounts = new ArrayList<>();
+    for (User x : users) {
+      if (x.getType().equals(UserType.PATIENT)) {
+        Account account1 = Account.builder()
+            .profileType("PatientProfile")
+            .userId(x.getId())
+            .user(x)
+            .status(AccountStatus.ACTIVE)
+            .build();
+        accounts.add(account1);
+      } else if (x.getType().equals(UserType.STAFF)) {
+        Account account2 = Account.builder()
+            .profileType("StaffProfile")
+            .userId(x.getId())
+            .user(x)
+            .status(AccountStatus.ACTIVE)
+            .build();
+        accounts.add(account2);
+      } else if (x.getType().equals(UserType.MEDICAL_STAFF)) {
+        Account account3 = Account.builder()
+            .profileType("MedicalStaffProfile")
+            .userId(x.getId())
+            .user(x)
+            .status(AccountStatus.ACTIVE)
+            .build();
+        accounts.add(account3);
+      }
+    }
+    accountRepository.saveAll(accounts);
+
+    // LocalProvider, ExternalProvider
+    List<LocalProvider> localProviders = localProviderRepository.findAll();
+    List<ExternalProvider> externalProviders = new ArrayList<>();
+    for (Account x : accounts) {
+      if (x.getProfileType().equals("StaffProfile") || x.getProfileType().equals("StaffProfile")) {
+        LocalProvider localProvider = LocalProvider.builder()
+            .email("admin@health-guardian.com")
+            .passwordHash(passwordEncoder.encode("Password@123"))
+            .account(x)
+            .build();
+        localProviders.add(localProvider);
+      } else if (x.getProfileType().equals("PatientProfile")) {
+        ExternalProvider externalProvider = ExternalProvider.builder()
+            .providerUserId(faker.idNumber().valid())
+            .providerName(faker.name().fullName())
+            .providerUserEmail(faker.internet().emailAddress())
+            .account(x)
+            .token(faker.crypto().sha256())
+            .build();
+        externalProviders.add(externalProvider);
+      }
+    }
+    localProviderRepository.saveAll(localProviders);
+    externalProviderRepository.saveAll(externalProviders);
+
+    // Notifications
+    List<Notification> notifications = new ArrayList<>();
+    for (int i = 0; i < users.size(); i++) {
+      Notification notification1 = Notification.builder()
+          .user(users.get(i))
+          .type(NotificationType.values()[random.nextInt(NotificationType.values().length)])
+          .notificationDate(new Timestamp(faker.date().past(2, TimeUnit.DAYS).getTime()))
+          .readStatus(false)
+          .build();
+      notifications.add(notification1);
+    }
+    for (int i = 0; i < 200; i++) {
+      Notification notification2 = Notification.builder()
+          .user(users.get(random.nextInt(users.size())))
+          .type(NotificationType.values()[random.nextInt(NotificationType.values().length)])
+          .notificationDate(new Timestamp(faker.date().past(5, TimeUnit.DAYS).getTime()))
+          .readStatus(false)
+          .build();
+      notifications.add(notification2);
+    }
+    notificationRepository.saveAll(notifications);
+
+    // Appointment
+    List<Appointment> appointments = new ArrayList<>();
+    for (int i = 0; i < 500; i++) {
+      if (i % 2 == 0) {
+        Appointment appointment = Appointment.builder()
+            .patient(patients.get(random.nextInt(patients.size())))
+            .doctor(userMedicalStaffs.get(random.nextInt(userMedicalStaffs.size())))
+            .appointmentDate(faker.date().future(10, TimeUnit.DAYS))
+            .reasonForVisit(faker.lorem().sentence(10))
+            .status(AppointmentStatus.SCHEDULED)
+            .build();
+        appointments.add(appointment);
+      } else if (i % 3 == 0) {
+        Appointment appointment = Appointment.builder()
+            .patient(patients.get(random.nextInt(patients.size())))
+            .doctor(userMedicalStaffs.get(random.nextInt(userMedicalStaffs.size())))
+            .appointmentDate(faker.date().past(30, TimeUnit.DAYS))
+            .reasonForVisit(faker.lorem().sentence(10))
+            .status(AppointmentStatus.COMPLETED)
+            .build();
+        appointments.add(appointment);
+      } else {
+        Appointment appointment = Appointment.builder()
+            .patient(patients.get(random.nextInt(patients.size())))
+            .doctor(userMedicalStaffs.get(random.nextInt(userMedicalStaffs.size())))
+            .appointmentDate(faker.date().past(30, TimeUnit.DAYS))
+            .reasonForVisit(faker.lorem().sentence(10))
+            .status(AppointmentStatus.CANCELED)
+            .build();
+        appointments.add(appointment);
+      }
+    }
+    appointmentRepository.saveAll(appointments);
+
+    // ConsentForms
+    List<ConsentForm> consentForms = new ArrayList<>();
+    for (int i = 0; i < 900; i++) {
+      if (i % 3 == 0) {
+        ConsentForm consentForm = ConsentForm.builder()
+            .patient(patients.get(random.nextInt(patients.size())))
+            .formName(faker.name().title())
+            .consentDate(faker.date().past(30, TimeUnit.DAYS))
+            .status(ConsentStatus.GRANTED)
+            .build();
+        consentForms.add(consentForm);
+      } else {
+        ConsentForm consentForm = ConsentForm.builder()
+            .patient(patients.get(random.nextInt(patients.size())))
+            .formName(faker.name().title())
+            .consentDate(faker.date().past(30, TimeUnit.DAYS))
+            .status(ConsentStatus.REVOKED)
+            .build();
+        consentForms.add(consentForm);
+      }
+      ;
+    }
+    consentFormRepository.saveAll(consentForms);
+
+    // Households
+    List<Household> households = new ArrayList<>();
+    List<HouseholdMember> householdMembers = new ArrayList<>();
+    for (int i = 0; i < patients.size(); i += 5) {
+      Household household = Household.builder().head(patients.get(i)).build();
+      households.add(household);
+
+      for (int j = 1; j <= 4; j++) {
+        HouseholdMember householdMember = HouseholdMember.builder()
+            .household(household)
+            .patient(patients.get(i + j))
+            .relationshipToPatient(faker.relationships().any())
+            .build();
+        householdMembers.add(householdMember);
+      }
+    }
+    householdRepository.saveAll(households);
+    householdMemberRepository.saveAll(householdMembers);
+
+    // Medications
+    List<Medication> medications = new ArrayList<>();
+    List<String> dosageFormEnum = Arrays.asList("Tablet", "Capsule", "Solution", "Ointment");
+    List<String> standardDosageEnum = Arrays.asList(
+        "500mg per dose, taken twice a day.",
+        "500mg per dose, taken third a day.",
+        "1 tablet before meals.");
+    for (int i = 0; i < 300; i++) {
+      Medication medication = Medication.builder()
+          .name(faker.medical().medicineName())
+          .activeIngredient(faker.lorem().sentence(5))
+          .dosageForm(dosageFormEnum.get(random.nextInt(dosageFormEnum.size())))
+          .standardDosage(standardDosageEnum.get(random.nextInt(standardDosageEnum.size())))
+          .manufacturer(faker.company().industry())
+          .build();
+      medications.add(medication);
+    }
+    medicationRepository.saveAll(medications);
+
+    // Prescriptions
+    List<String> dosageEnum = Arrays.asList("500mg", "10ml", "200mg", "20ml");
+    List<String> frequencyEnum = Arrays.asList("Twice/days", "Third/days", "Each 8 hours", "Each 24 hours");
+    List<Prescription> prescriptions = new ArrayList<>();
+    for (int i = 0; i < 300; i++) {
+      Prescription prescription = new Prescription();
+      prescription.setPatient(patients.get(random.nextInt(patients.size())));
+      prescription.setMedication(medications.get(random.nextInt(medications.size())));
+
+      while (true) {
+        User usertemp = users.get(random.nextInt(users.size()));
+        if (usertemp.getType().equals(UserType.MEDICAL_STAFF)) {
+          prescription.setPrescribedBy(usertemp);
+          break;
+        }
+      }
+
+      prescription.setDosage(dosageEnum.get(random.nextInt(dosageEnum.size())));
+      prescription.setFrequency(frequencyEnum.get(random.nextInt(frequencyEnum.size())));
+      prescription.setStartDate(faker.date().past(100, TimeUnit.DAYS));
+      prescription.setEndDate(faker.date().future(50, TimeUnit.DAYS));
+      prescription.setStatus(PrescriptionStatus.COMPLETED);
+
+      prescriptions.add(prescription);
+    }
+    for (int i = 0; i < 300; i++) {
+      Prescription prescription = new Prescription();
+      prescription.setPatient(patients.get(random.nextInt(patients.size())));
+      prescription.setMedication(medications.get(random.nextInt(medications.size())));
+
+      while (true) {
+        User usertemp = users.get(random.nextInt(users.size()));
+        if (usertemp.getType().equals(UserType.MEDICAL_STAFF)) {
+          prescription.setPrescribedBy(usertemp);
+          break;
+        }
+      }
+
+      prescription.setDosage(dosageEnum.get(random.nextInt(dosageEnum.size())));
+      prescription.setFrequency(frequencyEnum.get(random.nextInt(frequencyEnum.size())));
+      prescription.setStartDate(faker.date().past(50, TimeUnit.DAYS));
+      prescription.setEndDate(faker.date().future(50, TimeUnit.DAYS));
+      prescription.setStatus(PrescriptionStatus.ACTIVE);
+
+      prescriptions.add(prescription);
+    }
+    for (int i = 0; i < 300; i++) {
+      Prescription prescription = new Prescription();
+      prescription.setPatient(patients.get(random.nextInt(patients.size())));
+      prescription.setMedication(medications.get(random.nextInt(medications.size())));
+
+      while (true) {
+        User usertemp = users.get(random.nextInt(users.size()));
+        if (usertemp.getType().equals(UserType.MEDICAL_STAFF)) {
+          prescription.setPrescribedBy(usertemp);
+          break;
+        }
+      }
+
+      prescription.setDosage(dosageEnum.get(random.nextInt(dosageEnum.size())));
+      prescription.setFrequency(frequencyEnum.get(random.nextInt(frequencyEnum.size())));
+      prescription.setStartDate(faker.date().past(90, TimeUnit.DAYS));
+      prescription.setEndDate(null);
+      prescription.setStatus(PrescriptionStatus.EXPIRED);
+
+      prescriptions.add(prescription);
+    }
+    prescriptionRepository.saveAll(prescriptions);
+
+    // Side-effects
+    List<SideEffect> sideEffects = new ArrayList<>();
+    for (int i = 0; i < 500; i++) {
+      SideEffect sideEffect = SideEffect.builder()
+          .name(faker.medical().diseaseName())
+          .severity(
+              SideEffectSeverity.values()[random.nextInt(SideEffectSeverity.values().length)])
+          .description(faker.lorem().sentence(20))
+          .build();
+      sideEffects.add(sideEffect);
+    }
+    sideEffectRepository.saveAll(sideEffects);
+
+    // Aggregated_side_effects
+    List<AggregatedSideEffect> aggregatedSideEffects = new ArrayList<>();
+    for (int i = 0; i < medications.size(); i++) {
+      AggregatedSideEffect aggregatedSideEffect = AggregatedSideEffect.builder()
+          .sideEffect(sideEffects.get(random.nextInt(sideEffects.size())))
+          .medication(medications.get(random.nextInt(medications.size())))
+          .totalReports(random.nextInt(0, 50))
+          .periodStart(faker.date().past(50, TimeUnit.DAYS))
+          .periodEnd(faker.date().future(30, TimeUnit.DAYS))
+          .build();
+      aggregatedSideEffects.add(aggregatedSideEffect);
+    }
+    aggregatedSideEffectRepository.saveAll(aggregatedSideEffects);
+
+    // Report_side_effects
+    List<ReportedSideEffect> reportedSideEffects = new ArrayList<>();
+    for (int i = 0; i < patients.size(); i++) {
+      ReportedSideEffect reportedSideEffect = ReportedSideEffect.builder()
+          .patient(patients.get(random.nextInt(patients.size())))
+          .sideEffect(sideEffects.get(random.nextInt(sideEffects.size())))
+          .prescription(prescriptions.get(random.nextInt(prescriptions.size())))
+          .reportDate(faker.date().past(60, TimeUnit.DAYS))
+          .severity(
+              SideEffectSeverity.values()[random.nextInt(SideEffectSeverity.values().length)])
+          .notes(faker.lorem().sentence(10))
+          .reportedBy(faker.name().fullName())
+          .outcome(faker.lorem().sentence(20))
+          .build();
+      reportedSideEffects.add(reportedSideEffect);
+    }
+    reportedSideEffectRepository.saveAll(reportedSideEffects);
+
+    // UserPatient
+    List<UserPatient> userPatients = new ArrayList<>();
+    for (int i = 0; i < patients.size(); i++) {
+      UserPatient userPatient = new UserPatient();
+      userPatient.setPatient(patients.get(random.nextInt(patients.size())));
+
+      while (true) {
+        User usertemp = users.get(random.nextInt(users.size()));
+        if (usertemp.getType().equals(UserType.PATIENT)) {
+          userPatient.setUser(usertemp);
+          break;
+        }
+      }
+
+      userPatients.add(userPatient);
+    }
+    userPatientRepository.saveAll(userPatients);
   }
 }

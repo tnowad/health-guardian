@@ -35,6 +35,14 @@
     <openfeign.version>4.1.3</openfeign.version>
     <spring-boot-starter-mail.version>3.3.5</spring-boot-starter-mail.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -167,6 +175,19 @@
       <artifactId>firebase-admin</artifactId>
       <version>8.1.0</version>
     </dependency>
+
+<!--    <dependency>-->
+<!--      <groupId>com.mifmif.common</groupId>-->
+<!--      <artifactId>generex</artifactId>-->
+<!--      <version>1.0.3</version>-->
+<!--    </dependency>-->
+    <!-- https://mvnrepository.com/artifact/com.github.mifmif/generex -->
+    <dependency>
+      <groupId>com.github.mifmif</groupId>
+      <artifactId>generex</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>

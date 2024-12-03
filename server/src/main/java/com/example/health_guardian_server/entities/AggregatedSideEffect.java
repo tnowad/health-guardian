@@ -10,15 +10,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Past;
 import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
+import lombok.*;
 
 @Entity
 @Table(name = "aggregated_side_effects")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
