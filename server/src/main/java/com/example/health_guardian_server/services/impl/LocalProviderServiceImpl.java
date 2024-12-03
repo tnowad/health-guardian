@@ -19,6 +19,7 @@ public class LocalProviderServiceImpl implements LocalProviderService {
 
   @Override
   public LocalProvider getLocalProviderByEmail(String email) {
+    var a = localProviderRepository.findByEmail(email);
     return localProviderRepository.findByEmail(email);
   }
 

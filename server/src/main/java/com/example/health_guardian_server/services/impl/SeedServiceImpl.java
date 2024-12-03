@@ -405,7 +405,7 @@ public class SeedServiceImpl implements SeedService {
     for (Account x : accounts) {
       if (x.getProfileType().equals("StaffProfile") || x.getProfileType().equals("StaffProfile")) {
         LocalProvider localProvider = LocalProvider.builder()
-            .email("admin@health-guardian.com")
+            .email(faker.internet().emailAddress())
             .passwordHash(passwordEncoder.encode("Password@123"))
             .account(x)
             .build();
