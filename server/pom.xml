@@ -176,11 +176,18 @@
       <version>8.1.0</version>
     </dependency>
 
+<!--    <dependency>-->
+<!--      <groupId>com.mifmif.common</groupId>-->
+<!--      <artifactId>generex</artifactId>-->
+<!--      <version>1.0.3</version>-->
+<!--    </dependency>-->
+    <!-- https://mvnrepository.com/artifact/com.github.mifmif/generex -->
     <dependency>
-      <groupId>com.mifmif.common</groupId>
+      <groupId>com.github.mifmif</groupId>
       <artifactId>generex</artifactId>
       <version>1.0.2</version>
     </dependency>
+
   </dependencies>
   <build>
     <plugins>
