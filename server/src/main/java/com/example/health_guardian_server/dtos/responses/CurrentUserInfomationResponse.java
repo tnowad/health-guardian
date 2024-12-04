@@ -16,6 +16,7 @@ public class CurrentUserInfomationResponse {
   String name;
   String username;
   String email;
+  String avatarUrl;
   UserType role;
   StaffInforResponse staff;
   MedicalStaffInforResponse medicalStaff;

@@ -74,7 +74,7 @@ public class MinioClientServiceImpl implements MinioClientService {
   }
 
   @Override
-  public String getObjectUrl(String objectKey) {
+  public String getObjectUrl(String objectKey, String bucketName) {
     try {
       return minioClient.getPresignedObjectUrl(
           GetPresignedObjectUrlArgs.builder()

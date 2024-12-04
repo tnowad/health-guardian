@@ -405,7 +405,7 @@ public class SeedServiceImpl implements SeedService {
     for (Account x : accounts) {
       if (x.getProfileType().equals("StaffProfile") || x.getProfileType().equals("StaffProfile")) {
         LocalProvider localProvider = LocalProvider.builder()
-            .email(faker.internet().emailAddress())
+            .email(x.getUser().getEmail())
             .passwordHash(passwordEncoder.encode("Password@123"))
             .account(x)
             .build();
@@ -414,7 +414,7 @@ public class SeedServiceImpl implements SeedService {
         ExternalProvider externalProvider = ExternalProvider.builder()
             .providerUserId(faker.idNumber().valid())
             .providerName(faker.name().fullName())
-            .providerUserEmail(faker.internet().emailAddress())
+            .providerUserEmail(x.getUser().getEmail())
             .account(x)
             .token(faker.crypto().sha256())
             .build();
