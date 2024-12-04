@@ -2,14 +2,12 @@ package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.dtos.requests.CreateHouseholdRequest;
 import com.example.health_guardian_server.dtos.requests.ListHouseholdsRequest;
-import com.example.health_guardian_server.dtos.requests.UpdateHouseholdRequest;
 import com.example.health_guardian_server.dtos.responses.HouseholdResponse;
 import com.example.health_guardian_server.entities.Household;
 import com.example.health_guardian_server.mappers.HouseholdMapper;
 import com.example.health_guardian_server.repositories.HouseholdRepository;
 import com.example.health_guardian_server.repositories.PatientRepository;
 import com.example.health_guardian_server.services.HouseholdService;
-import com.example.health_guardian_server.specifications.AppointmentSpecification;
 import com.example.health_guardian_server.specifications.HouseholdSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +32,10 @@ public class HouseholdServiceImpl implements HouseholdService {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     HouseholdSpecification specification = new HouseholdSpecification(request);
 
-    var households = householdRepository
-        .findAll(specification, pageRequest)
-        .map(householdMapper::toHouseholdResponse);
+    var households =
+        householdRepository
+            .findAll(specification, pageRequest)
+            .map(householdMapper::toHouseholdResponse);
 
     log.info("Fetched {} appointments", households.getTotalElements());
     return households;
@@ -55,29 +54,28 @@ public class HouseholdServiceImpl implements HouseholdService {
 
     log.debug("Fetching household with id: {}", householdId);
     return householdRepository
-        .findById(householdId )
+        .findById(householdId)
         .map(householdMapper::toHouseholdResponse)
         .orElseThrow(
             () -> {
               log.error("Household not found with id: {}", householdId);
-              return new ResourceNotFoundException(
-                  "Household not found with id " + householdId);
+              return new ResourceNotFoundException("Household not found with id " + householdId);
             });
-
-
   }
 
   @Override
   public HouseholdResponse updateHousehold(String householdId, CreateHouseholdRequest request) {
 
     log.debug("Updating household with id: {}", householdId);
-    Household household = householdRepository.findById(householdId  )
-        .orElseThrow(
-            () -> {
-              log.error("Household not found with id: {}", householdId);
-              return new ResourceNotFoundException(
-                  "Household not found with id " + householdId);
-            });
+    Household household =
+        householdRepository
+            .findById(householdId)
+            .orElseThrow(
+                () -> {
+                  log.error("Household not found with id: {}", householdId);
+                  return new ResourceNotFoundException(
+                      "Household not found with id " + householdId);
+                });
 
     household.setHead(patientRepository.getReferenceById(request.getHeadId()));
 
@@ -90,16 +88,17 @@ public class HouseholdServiceImpl implements HouseholdService {
   public void deleteHousehold(String householdId) {
 
     log.debug("Deleting household with id: {}", householdId);
-    Household household = householdRepository.findById(householdId) .orElseThrow(
-        () -> {
-          log.error("Household not found with id: {}", householdId);
-          return new ResourceNotFoundException(
-              "Household not found with id " + householdId);
-        });
+    Household household =
+        householdRepository
+            .findById(householdId)
+            .orElseThrow(
+                () -> {
+                  log.error("Household not found with id: {}", householdId);
+                  return new ResourceNotFoundException(
+                      "Household not found with id " + householdId);
+                });
 
     householdRepository.delete(household);
     log.info("Household deleted with id: {}", householdId);
-
-
   }
 }

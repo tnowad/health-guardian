@@ -8,8 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface HouseholdMapper {
-  @Mapping(source = "patient.id", target = "patientId")
-
+  @Mapping(source = "head.id", target = "headId")
   HouseholdResponse toHouseholdResponse(Household household);
 
   Household toHousehold(CreateHouseholdRequest createHouseholdRequest);

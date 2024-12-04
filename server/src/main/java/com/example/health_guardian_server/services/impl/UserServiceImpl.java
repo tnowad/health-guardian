@@ -28,8 +28,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
   UserRepository userRepository;
-  UserMapper userMapper;
   MinioClientService minioClientService;
+  UserMapper userMapper;
 
   @Override
   public User getUserByAccountId(String accountId) {
@@ -73,11 +73,14 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Page<UserResponse> listUsers(ListUsersRequest request) {
-    log.debug("Listing users with pagination: page = {}, size = {}", request.getPage(), request.getSize());
+    log.debug(
+        "Listing users with pagination: page = {}, size = {}",
+        request.getPage(),
+        request.getSize());
     Page<UserResponse> users =
-      userRepository
-        .findAll(request.toSpecification(), request.toPageable())
-        .map(userMapper::toUserResponse);
+        userRepository
+            .findAll(request.toSpecification(), request.toPageable())
+            .map(userMapper::toUserResponse);
     log.info("Found {} users", users.getTotalElements());
     return users;
   }
@@ -97,7 +100,8 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserResponse updateUser(String userId, UpdateUserRequest request) {
     log.debug("Updating user with userId: {}", userId);
-    User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    User user =
+        userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
     log.debug("User found: {}", user);
     user.setAvatar(request.getAvatar());
     User updatedUser = userRepository.save(user);
@@ -117,7 +121,8 @@ public class UserServiceImpl implements UserService {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     log.debug("Current authenticated username: {}", username);
 
-    User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
+    User user =
+        userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
     log.debug("User found: {}", user.getUsername());
 
     return buildResponse(user);
@@ -141,7 +146,10 @@ public class UserServiceImpl implements UserService {
     response.setRole(user.getType());
 
     if (user.getUserStaffs().size() > 0) {
-      response.setName(user.getUserStaffs().getFirst().getFirstName() + " " + user.getUserStaffs().getFirst().getLastName());
+      response.setName(
+          user.getUserStaffs().getFirst().getFirstName()
+              + " "
+              + user.getUserStaffs().getFirst().getLastName());
       StaffInforResponse staffResponse = new StaffInforResponse();
       staffResponse.setId(user.getUserStaffs().getFirst().getId());
       response.setStaff(staffResponse);
