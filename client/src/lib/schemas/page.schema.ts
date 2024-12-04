@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const pageableRequestSchema = z.object({
-  page: z.number().int(),
-  size: z.number().int(),
-  sortFields: z.array(z.string()),
-  decs: z.array(z.boolean()),
+  page: z.number().int().optional(),
+  size: z.number().int().optional(),
+  sortFields: z.array(z.string()).optional(),
+  decs: z.array(z.boolean()).optional(),
 });
 
 export const sortSchema = z.object({
@@ -22,7 +22,9 @@ export const pageableSchema = z.object({
   unpaged: z.boolean(),
 });
 
-export function createListResponseSchema<T extends z.ZodTypeAny>(schema: T) {
+export function createListResponseSchema<ItemType extends z.ZodTypeAny>(
+  schema: ItemType,
+) {
   return z.object({
     content: z.array(schema),
     pageable: pageableSchema,
