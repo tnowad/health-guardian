@@ -29,7 +29,7 @@ export type ListHospitalsErrorResponseSchema = z.infer<
 >;
 
 export async function listHospitalsApi(query: ListHospitalsQuerySchema) {
-  const response = await apiClient.get("/hospitals", { params: query });
+  const response = await apiClient.get("/hospitals",  query );
   return listHospitalsResponseSchema.parse(response.data);
 }
 

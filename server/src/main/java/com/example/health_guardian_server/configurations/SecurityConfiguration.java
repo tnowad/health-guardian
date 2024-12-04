@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -78,7 +79,13 @@ public class SecurityConfiguration {
     httpSecurity.csrf(AbstractHttpConfigurer::disable);
     httpSecurity.authorizeHttpRequests(
         request -> {
-          request.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated();
+          request
+              .requestMatchers(PUBLIC_ENDPOINTS)
+              .permitAll()
+              .requestMatchers(HttpMethod.OPTIONS)
+              .permitAll()
+              .anyRequest()
+              .authenticated();
         });
     httpSecurity.oauth2Login(
         oauth2 ->

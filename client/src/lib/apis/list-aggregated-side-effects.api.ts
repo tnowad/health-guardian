@@ -36,9 +36,7 @@ export type ListAggregatedSideEffectsErrorResponseSchema = z.infer<
 export async function listAggregatedSideEffectsApi(
   query: ListAggregatedSideEffectsQuerySchema,
 ) {
-  const response = await apiClient.get("/aggregated-side-effects", {
-    params: query,
-  });
+  const response = await apiClient.get("/aggregated-side-effects", query);
   return listAggregatedSideEffectsResponseSchema.parse(response.data);
 }
 

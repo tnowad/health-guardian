@@ -18,6 +18,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
+import { createListPatientLogsQueryOptions } from "@/lib/apis/list-patient-logs.api";
 
 interface PatientLog {
   id: string;
@@ -68,9 +71,19 @@ const initialLogs: PatientLog[] = [
 ];
 
 export default function PatientLogsScreen() {
+  const getCurrentUserInformationQuery = useSuspenseQuery(
+    createGetCurrentUserInformationQueryOptions(),
+  );
+
+  const listPatientLogsQuery = useQuery(
+    createListPatientLogsQueryOptions({
+      patientId: "d6b53a8e-d4e8-4198-b162-024b9db223e5",
+    }),
+  );
+
   const [logs, setLogs] = useState<PatientLog[]>(initialLogs);
   const [selectedActionType, setSelectedActionType] = useState<string | null>(
-    null
+    null,
   );
   const [dateRange, setDateRange] = useState<{
     from: Date | undefined;
@@ -79,6 +92,8 @@ export default function PatientLogsScreen() {
     from: undefined,
     to: undefined,
   });
+
+  console.log(listPatientLogsQuery.data);
 
   const filteredLogs = logs.filter((log) => {
     const matchesActionType =
@@ -146,18 +161,16 @@ export default function PatientLogsScreen() {
             </Popover>
           </div>
           <div className="space-y-4">
-            {filteredLogs.map((log) => (
+            {listPatientLogsQuery.data?.content.map((log) => (
               <div
                 key={log.id}
                 className="flex flex-col md:flex-row justify-between p-2 border rounded"
               >
                 <div>
-                  <span className="font-medium">{log.actionType}</span>
+                  <span className="font-medium">{log.logType}</span>
                   <p className="text-sm text-gray-600">{log.description}</p>
                 </div>
-                <div className="text-sm text-gray-500 mt-2 md:mt-0">
-                  {format(log.date, "MMMM d, yyyy 'at' h:mm a")}
-                </div>
+                <div className="text-sm text-gray-500 mt-2 md:mt-0"></div>
               </div>
             ))}
           </div>

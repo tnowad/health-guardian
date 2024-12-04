@@ -39,51 +39,56 @@ public class MailServiceImpl implements MailService {
 
   @Override
   public void sendMailToVerifyWithToken(String to, String token)
-      throws MessagingException, UnsupportedEncodingException {
+    throws MessagingException, UnsupportedEncodingException {
+    log.info("Preparing to send email to verify with token to {}", to);
     sendMail(
-        to,
-        "subject_verify_email",
-        "content_verify_email_with_token",
-        "sub_content_verify_email",
-        "footer_verify_email",
-        String.format(
-            """
-                http://localhost:%s/auth/verify-email-by-token?token=%s""",
-            port, token));
+      to,
+      "subject_verify_email",
+      "content_verify_email_with_token",
+      "sub_content_verify_email",
+      "footer_verify_email",
+      String.format(
+        """
+            http://localhost:%s/auth/verify-email-by-token?token=%s""",
+        port, token));
   }
 
   @Override
   public void sendMailToVerifyWithCode(String to, String code)
-      throws MessagingException, UnsupportedEncodingException {
+    throws MessagingException, UnsupportedEncodingException {
+    log.info("Preparing to send email to verify with code to {}", to);
     sendMail(
-        to,
-        "subject_verify_email",
-        "content_verify_email_with_code",
-        "sub_content_verify_email",
-        "footer_verify_email",
-        code);
+      to,
+      "subject_verify_email",
+      "content_verify_email_with_code",
+      "sub_content_verify_email",
+      "footer_verify_email",
+      code);
   }
 
   @Override
   public void sendMailToResetPassword(String to, String code)
-      throws MessagingException, UnsupportedEncodingException {
+    throws MessagingException, UnsupportedEncodingException {
+    log.info("Preparing to send email to reset password to {}", to);
     sendMail(
-        to,
-        "subject_reset_password",
-        "content_reset_password",
-        "sub_reset_password",
-        "footer_reset_password",
-        code);
+      to,
+      "subject_reset_password",
+      "content_reset_password",
+      "sub_reset_password",
+      "footer_reset_password",
+      code);
   }
 
   private void sendMail(
-      String toMail,
-      String subjectKey,
-      String contentKey,
-      String subContentKey,
-      String footerKey,
-      String secret)
-      throws MessagingException, UnsupportedEncodingException {
+    String toMail,
+    String subjectKey,
+    String contentKey,
+    String subContentKey,
+    String footerKey,
+    String secret)
+    throws MessagingException, UnsupportedEncodingException {
+    log.debug("Sending mail to {} with secret {}", toMail, secret);
+
     log.info("Sending confirming link to user, email={}", toMail);
 
     String subject = subjectKey;
@@ -100,15 +105,20 @@ public class MailServiceImpl implements MailService {
 
     MimeMessage message = mailSender.createMimeMessage();
     MimeMessageHelper helper = new MimeMessageHelper(
-        message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+      message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
     helper.setFrom(emailFrom, "Sports field booking");
     helper.setTo(toMail);
     helper.setSubject(subject);
+
+    log.debug("Subject set to: {}", subject);
+
     String html = templateEngine.process("common-template.html", context);
     helper.setText(html, true);
 
+    log.debug("HTML email content generated successfully.");
+
     mailSender.send(message);
 
-    log.info("Confirming link has sent to user, email={}, code={}", toMail, secret);
+    log.info("Confirming link has been sent to user, email={}, code={}", toMail, secret);
   }
 }

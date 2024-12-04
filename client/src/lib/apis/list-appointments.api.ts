@@ -11,6 +11,7 @@ import { isAxiosError } from "axios";
 
 export const listAppointmentsQuerySchema = pageableRequestSchema.extend({
   doctorId: z.string().uuid().optional(),
+  patientId: z.string().uuid().optional(),
   appointmentDate: z.string().optional(),
   status: z.string().optional(),
 });
@@ -33,7 +34,7 @@ export type ListAppointmentsErrorResponseSchema = z.infer<
 >;
 
 export async function listAppointmentsApi(query: ListAppointmentsQuerySchema) {
-  const response = await apiClient.get("/appointments", { params: query });
+  const response = await apiClient.get("/appointments", query);
   return listAppointmentsResponseSchema.parse(response.data);
 }
 
