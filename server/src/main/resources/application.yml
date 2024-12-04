@@ -78,6 +78,26 @@ spring:
       port: ${REDIS_PORT:6379}
       host: ${REDIS_HOST:localhost}
       database: 0
+  # Configure Kafka
+  kafka:
+    bootstrap-servers: localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      #      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    mail-consumer:
+      group-id: send-mail-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      #      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    #      properties:
+    #        spring.json.trusted.packages: "*"
+    file-consumer:
+      group-id: handle-file-group
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
   mail:
     from: ${FROM_MAIL}
     host: smtp.gmail.com
@@ -117,22 +137,6 @@ spring:
     project-id: health-guardian-439302
     language-code: vi
     credentials: classpath:health-guardian-439302-4ff9782bd0a5.json
-
-kafka:
-  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-  producer:
-    key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    value-serializer: org.apache.kafka.common.serialization.StringSerializer
-  mail-consumer:
-    group-id: send-mail-group
-    auto-offset-reset: earliest
-    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-  file-consumer:
-    group-id: handle-file-group
-    auto-offset-reset: latest
-    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 logging:
   level:

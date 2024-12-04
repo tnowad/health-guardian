@@ -1,5 +1,7 @@
 package com.example.health_guardian_server.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,8 +9,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -39,7 +43,12 @@ public class LocalProvider {
   @JoinColumn(name = "account_id", referencedColumnName = "id")
   private Account account;
 
-  @Email private String email;
+  @OneToMany(mappedBy = "localProvider", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonBackReference
+  List<Verification> verifications;
+
+  @Email
+  private String email;
 
   @Column(name = "password_hash")
   private String passwordHash;
