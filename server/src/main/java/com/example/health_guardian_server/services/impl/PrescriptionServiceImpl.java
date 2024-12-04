@@ -66,7 +66,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     Optional<Medication> medication = medicationRepository.findById(request.getMedicationId());
     Optional<UserMedicalStaff> userMedicalStaff =
         userMedicalStaffRepository.findById(request.getPrescribedBy());
-    Optional<User> prescribedBy = userMedicalStaff.map(UserMedicalStaff::getUser);
+    Optional<User> prescribedBy = userRepository.findById(userMedicalStaff.get().getUser().getId());
     if (patient.isPresent()
         && medication.isPresent()
         && userMedicalStaff.isPresent()
