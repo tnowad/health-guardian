@@ -11,7 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 @Data
-public class ListAppointmentRequest implements PageableRequest<Appointment> {
+public class ListAppointmentRequest implements PageableRequest<Appointment>, PageableWithIdsRequest<String> {
+  String[] ids;
 
   private Integer page = 0;
 

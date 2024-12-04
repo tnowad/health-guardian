@@ -6,8 +6,8 @@ import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 
 @Data
-public class ListHouseholdMembersRequest implements PageableRequest<HouseholdMember> {
-
+public class ListHouseholdMembersRequest implements PageableRequest<HouseholdMember>, PageableWithIdsRequest<String> {
+  String[] ids;
   private Integer page = 0;
 
   private Integer size = 10;
