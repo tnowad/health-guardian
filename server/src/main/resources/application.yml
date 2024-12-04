@@ -91,13 +91,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       #      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    #      properties:
-    #        spring.json.trusted.packages: "*"
-    file-consumer:
-      group-id: handle-file-group
-      auto-offset-reset: latest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
   mail:
     from: ${FROM_MAIL}
     host: smtp.gmail.com

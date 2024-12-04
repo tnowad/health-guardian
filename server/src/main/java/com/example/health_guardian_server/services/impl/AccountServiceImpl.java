@@ -70,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
     log.debug("Creating new account for userId: {} with localProvider: {}", user.getId(), localProvider.getId());
     var account =
       Account.builder()
-        .status(AccountStatus.ACTIVE)
+        .status(AccountStatus.INACTIVE)
         .user(user)
         .localProviders(Set.of(localProvider))
         .build();

@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VerificationRepository extends JpaRepository<Verification, String> {
-  Verification findByEmailAndType(String email, VerificationType type);
-
   List<Verification> findByLocalProviderAndVerificationType(
       LocalProvider localProvider, VerificationType type);
 }
