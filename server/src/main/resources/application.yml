@@ -9,7 +9,7 @@ jwt:
   accessSignerKey: ${ACCESS_SIGNER_KEY:defaultAccessSignerKey}
   refreshSignerKey: ${REFRESH_SIGNER_KEY:defaultRefreshSignerKey}
   valid-duration: 2592000
-  refreshable-duration: 2592000
+  refreshable-duration: 25920000
 
 brevo-mail:
   from-mail: ${FROM_MAIL:defaultFromEmail@example.com}

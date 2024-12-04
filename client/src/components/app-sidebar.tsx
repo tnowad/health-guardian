@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
@@ -12,19 +12,21 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
+import { useQuery } from "@tanstack/react-query";
 
 // This is sample data.
 const data = {
@@ -70,7 +72,7 @@ const data = {
       items: [
         {
           title: "Personal Details",
-          url: "#",
+          url: "/profile",
         },
         {
           title: "Medical Status",
@@ -328,64 +330,33 @@ const data = {
       icon: Map,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const getCurrentUserInformationQuery = useQuery(
+    createGetCurrentUserInformationQueryOptions(),
+  );
+
+  const user = {
+    name: getCurrentUserInformationQuery.data?.name || "unknown",
+    email: getCurrentUserInformationQuery.data?.email || "unknown",
+    avatar:
+      getCurrentUserInformationQuery.data?.avatarUrl || "/avatars/unknown.jpg",
+  };
+
   return (
-    // <Sidebar collapsible="icon" {...props}>
-    //   <SidebarHeader>
-    //     <TeamSwitcher teams={data.teams} />
-    //   </SidebarHeader>
-    //   <SidebarContent>
-    //     <NavMain items={data.navMain} />
-    //     <NavProjects projects={data.projects} />
-    //   </SidebarContent>
-    //   <SidebarFooter>
-    //     <NavUser user={data.user} />
-    //   </SidebarFooter>
-    //   <SidebarRail />
-    // </Sidebar>
-
-      <Sidebar collapsible="icon" {...props}>
-        <SidebarHeader>
-          <TeamSwitcher teams={data.teams} />
-        </SidebarHeader>
-        <SidebarContent>
-          <NavMain items={data.navMainPatient} />
-          {/*<NavProjects projects={data.projects} />*/}
-        </SidebarContent>
-        <SidebarFooter>
-          <NavUser user={data.user} />
-        </SidebarFooter>
-        <SidebarRail />
-      </Sidebar>
-
-  // <Sidebar collapsible="icon" {...props}>
-  //   <SidebarHeader>
-  //     <TeamSwitcher teams={data.teams} />
-  //   </SidebarHeader>
-  //   <SidebarContent>
-  //     <NavMain items={data.navMainStaff} />
-  //     {/*<NavProjects projects={data.projects} />*/}
-  //   </SidebarContent>
-  //   <SidebarFooter>
-  //     <NavUser user={data.user} />
-  //   </SidebarFooter>
-  //   <SidebarRail />
-  // </Sidebar>
-
-  // <Sidebar collapsible="icon" {...props}>
-  //   <SidebarHeader>
-  //     <TeamSwitcher teams={data.teams} />
-  //   </SidebarHeader>
-  //   <SidebarContent>
-  //     <NavMain items={data.navMainMedicalStaff} />
-  //     {/*<NavProjects projects={data.projects} />*/}
-  //   </SidebarContent>
-  //   <SidebarFooter>
-  //     <NavUser user={data.user} />
-  //   </SidebarFooter>
-  //   <SidebarRail />
-  // </Sidebar>
-  )
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader>
+        <TeamSwitcher teams={data.teams} />
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMainPatient} />
+        {/*<NavProjects projects={data.projects} />*/}
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={user} />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
 }
