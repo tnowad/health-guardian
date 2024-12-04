@@ -33,7 +33,7 @@ export type ListLocalProvidersErrorResponseSchema = z.infer<
 export async function listLocalProvidersApi(
   query: ListLocalProvidersQuerySchema,
 ) {
-  const response = await apiClient.get("/local-providers", { params: query });
+  const response = await apiClient.get("/local-providers",  query);
   return listLocalProvidersResponseSchema.parse(response.data);
 }
 

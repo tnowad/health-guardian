@@ -31,7 +31,7 @@ export type ListSideEffectsErrorResponseSchema = z.infer<
 >;
 
 export async function listSideEffectsApi(query: ListSideEffectsQuerySchema) {
-  const response = await apiClient.get("/side-effects", { params: query });
+  const response = await apiClient.get("/side-effects", query );
   return listSideEffectsResponseSchema.parse(response.data);
 }
 
