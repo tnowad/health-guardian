@@ -337,21 +337,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     createGetCurrentUserInformationQueryOptions(),
   );
 
-  return (
-    // <Sidebar collapsible="icon" {...props}>
-    //   <SidebarHeader>
-    //     <TeamSwitcher teams={data.teams} />
-    //   </SidebarHeader>
-    //   <SidebarContent>
-    //     <NavMain items={data.navMain} />
-    //     <NavProjects projects={data.projects} />
-    //   </SidebarContent>
-    //   <SidebarFooter>
-    //     <NavUser user={data.user} />
-    //   </SidebarFooter>
-    //   <SidebarRail />
-    // </Sidebar>
+  const user = {
+    name: getCurrentUserInformationQuery.data?.name || "unknown",
+    email: getCurrentUserInformationQuery.data?.email || "unknown",
+    avatar:
+      getCurrentUserInformationQuery.data?.avatarUrl || "/avatars/unknown.jpg",
+  };
 
+  return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
@@ -361,37 +354,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/*<NavProjects projects={data.projects} />*/}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-
-    // <Sidebar collapsible="icon" {...props}>
-    //   <SidebarHeader>
-    //     <TeamSwitcher teams={data.teams} />
-    //   </SidebarHeader>
-    //   <SidebarContent>
-    //     <NavMain items={data.navMainStaff} />
-    //     {/*<NavProjects projects={data.projects} />*/}
-    //   </SidebarContent>
-    //   <SidebarFooter>
-    //     <NavUser user={data.user} />
-    //   </SidebarFooter>
-    //   <SidebarRail />
-    // </Sidebar>
-
-    // <Sidebar collapsible="icon" {...props}>
-    //   <SidebarHeader>
-    //     <TeamSwitcher teams={data.teams} />
-    //   </SidebarHeader>
-    //   <SidebarContent>
-    //     <NavMain items={data.navMainMedicalStaff} />
-    //     {/*<NavProjects projects={data.projects} />*/}
-    //   </SidebarContent>
-    //   <SidebarFooter>
-    //     <NavUser user={data.user} />
-    //   </SidebarFooter>
-    //   <SidebarRail />
-    // </Sidebar>
   );
 }

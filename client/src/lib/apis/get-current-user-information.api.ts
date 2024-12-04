@@ -9,6 +9,7 @@ export const currentUserResponseSchema = z.object({
   name: z.string(),
   username: z.string(),
   email: z.string(),
+  avatarUrl: z.string().nullable().optional(),
   staff: z
     .object({
       id: z.string(),
