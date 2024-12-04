@@ -5,15 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AggregatedSideEffectResponse {
-  private String id;
-  private String sideEffectId;
-  private String medicationId;
-  private int totalReports;
-  private String periodStart;
-  private String periodEnd;
+public class GetListAggregatedSideEffectsResponse {
+  List<AggregatedSideEffectResponse> items;
+  String message;
 }
