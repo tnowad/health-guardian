@@ -31,21 +31,12 @@ public class PatientLogController {
   private final PatientLogService patientLogService;
   private final MinioClientService minioClientService;
 
-  @GetMapping("/all")
+  @GetMapping
   public ResponseEntity<Page<PatientLogResponse>> getAllPatientLogs(
       @ModelAttribute ListPatientLogRequest request) {
-
-  @GetMapping
-  public ResponseEntity<Page<PatientLogResponse>> getAllPatientLogs(@ModelAttribute ListPatientLogRequest request) {
     Page<PatientLogResponse> patientLogs = patientLogService.getAllPatientLogs(request);
 
     return new ResponseEntity<>(patientLogs, HttpStatus.OK);
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<PatientLogResponse> getPatientLogById(String id) {
-    PatientLogResponse patientLog = patientLogService.getPatientLogById(id);
-    return new ResponseEntity<>(patientLog, HttpStatus.OK);
   }
 
   @PostMapping
@@ -53,13 +44,11 @@ public class PatientLogController {
     PatientLogResponse createdPatientLog = patientLogService.createPatientLog(patientLog);
     return new ResponseEntity<>(createdPatientLog, HttpStatus.CREATED);
   }
-  @PutMapping("/update/{id}")
+
+  @PutMapping("/{id}")
   public ResponseEntity<PatientLogResponse> updatePatientLog(
       String id, UpdatePatientLogRequest updatePatientLogRequest) {
     PatientLogResponse updatedPatientLog = patientLogService.updatePatientLog(id, updatePatientLogRequest);
-  @PutMapping("/{id}")
-  public ResponseEntity<PatientLogResponse> updatePatientLog(String id, PatientLog patientLog) {
-    PatientLogResponse updatedPatientLog = patientLogService.updatePatientLog(id, patientLog);
     return new ResponseEntity<>(updatedPatientLog, HttpStatus.OK);
   }
 
