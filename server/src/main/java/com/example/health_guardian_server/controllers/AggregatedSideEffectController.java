@@ -49,7 +49,7 @@ public class AggregatedSideEffectController {
   @PutMapping("/{aggregatedSideEffectId}")
   public ResponseEntity<AggregatedSideEffectResponse> updateAggregatedSideEffect(
       @PathVariable String aggregatedSideEffectId,
-      @RequestBody UpdateAggregatedSideEffectRequest request) {
+      @RequestBody CreateAggregatedSideEffectRequest request) {
     AggregatedSideEffectResponse response = aggregatedSideEffectService
         .updateAggregatedSideEffect(aggregatedSideEffectId, request);
     return ResponseEntity.ok(response);
