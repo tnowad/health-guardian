@@ -109,34 +109,42 @@ public class AuthServiceImpl implements AuthService {
   @Override
   @Transactional
   public SignUpResponse signUp(SignUpRequest request) {
+    log.info("Sign-up attempt for email: {}", request.getEmail());
     if (localProviderService.getLocalProviderByEmail(request.getEmail()) != null) {
+      log.warn("Sign-up failed: Email already in use: {}", request.getEmail());
       throw new RuntimeException("Email already in use");
     }
 
+    log.debug("Creating local provider for email: {}", request.getEmail());
     var localProvider = localProviderService.createLocalProvider(request.getEmail(), request.getPassword());
+
+    log.debug("Creating patient record for user: {}", request.getEmail());
     var patient = patientService.createPatient(Patient.builder()
       .firstName(request.getFirstName())
       .lastName(request.getLastName())
       .gender(request.getGender().toString())
       .dateOfBirth(request.getDateOfBirth())
       .build());
-    var user = userService.createUser(
-        User.builder()
-            .email(request.getEmail())
-            .patient(patient)
-            .username(request.getUsername())
-            .type(UserType.PATIENT)
-            .build());
-    var account = accountService.createAccountWithLocalProvider(user, localProvider);
-    accountService.updateAccountStatus(account.getId(), AccountStatus.INACTIVE);
 
+    log.debug("Creating user record for email: {}", request.getEmail());
+    var user = userService.createUser(
+      User.builder()
+        .email(request.getEmail())
+        .patient(patient)
+        .username(request.getUsername())
+        .type(UserType.PATIENT)
+        .build());
+
+    log.debug("Creating account and linking to user: {}", user.getId());
+    var account = accountService.createAccountWithLocalProvider(user, localProvider);
+    localProvider.setAccount(account);
+    localProviderService.saveLocalProvider(localProvider);
+    log.debug("Assigning default roles for user: {}", user.getId());
     var roleIds = roleService.getDefaultRoleIdsForPatient();
     roleService.assignRolesToUser(user.getId(), roleIds);
-    patientService.createPatient(user.getId(), request.getFirstName(), request.getLastName());
-    var permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
-    var tokens = tokenService.generateTokens(user.getId(), permissionNames);
 
-    return SignUpResponse.builder().tokens(tokens).message("Sign up successfully").build();
+    log.info("Sign-up successful for email: {}", request.getEmail());
+    return SignUpResponse.builder().message("Sign up successfully").build();
   }
 
   @Override

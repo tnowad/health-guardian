@@ -25,7 +25,6 @@ public class AsyncEmailController {
   public void listenNotificationDelivery(String message) {
     String type = message.split(":")[0];
     String email = message.split(":")[1];
-    String token = message.split(":")[2];
     String code = message.split(":")[3];
 
     log.info("Message received: {}", message);
@@ -33,8 +32,6 @@ public class AsyncEmailController {
     try {
       switch (VerificationType.valueOf(type)) {
         case VERIFY_EMAIL_BY_CODE -> mailService.sendMailToVerifyWithCode(email, code);
-
-        case VERIFY_EMAIL_BY_TOKEN -> mailService.sendMailToVerifyWithToken(email, token);
 
         case RESET_PASSWORD -> mailService.sendMailToResetPassword(email, code);
       }

@@ -27,6 +27,11 @@ public class LocalProviderServiceImpl implements LocalProviderService {
   }
 
   @Override
+  public LocalProvider saveLocalProvider(LocalProvider localProvider) {
+    return localProviderRepository.save(localProvider);
+  }
+
+  @Override
   public boolean verifyLocalProviderPassword(String email, String password) {
     log.debug("Verifying password for LocalProvider with email: {}", email);
     LocalProvider localProvider = getLocalProviderByEmail(email);

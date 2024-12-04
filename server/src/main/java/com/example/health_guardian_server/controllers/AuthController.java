@@ -2,6 +2,7 @@ package com.example.health_guardian_server.controllers;
 
 import static org.springframework.http.HttpStatus.*;
 
+import com.example.health_guardian_server.dtos.enums.VerificationType;
 import com.example.health_guardian_server.dtos.requests.ForgotPasswordRequest;
 import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.ResetPasswordRequest;
@@ -67,7 +68,7 @@ public class AuthController {
   @ResponseStatus(OK)
   ResponseEntity<String> sendEmailVerification(
       @RequestBody @Valid SendEmailVerificationRequest request) {
-    authService.sendEmailVerification(request.email(), request.type());
+    authService.sendEmailVerification(request.email(), VerificationType.VERIFY_EMAIL_BY_CODE);
 
     return ResponseEntity.status(OK).body("resend_verification_email_success");
   }
