@@ -14,6 +14,7 @@ import { LogInIcon, RefreshCwIcon } from "lucide-react";
 import Image from "next/image";
 import LoadingImage from "@/assets/loading.gif";
 import { getQueryClient } from "../get-query-client";
+import { Chatbot } from "@/components/chatbot";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -69,7 +70,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       )}
     >
-      <MainLayout>{children}</MainLayout>;
+      <MainLayout>
+        {children}
+        <Chatbot />
+      </MainLayout>
+      ;
     </PermissionGuard>
   );
 }

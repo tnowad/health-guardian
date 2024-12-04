@@ -21,7 +21,7 @@ public class AsyncEmailController {
 
   MailService mailService;
 
-  @KafkaListener(topics = KAFKA_TOPIC_SEND_MAIL, groupId = "${spring.kafka.mail-consumer.group-id}", errorHandler = "kafkaListenerErrorHandler")
+  @KafkaListener(topics = KAFKA_TOPIC_SEND_MAIL, groupId = "${spring.kafka.mail-consumer.group-id}")
   public void listenNotificationDelivery(String message) {
     String type = message.split(":")[0];
     String email = message.split(":")[1];
