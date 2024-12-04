@@ -7,6 +7,7 @@ import com.example.health_guardian_server.dtos.responses.MedicationResponse;
 import com.example.health_guardian_server.services.MedicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,7 @@ public class MedicationController {
   public ResponseEntity<MedicationResponse> createMedication(
       @RequestBody CreateMedicationRequest request) {
     MedicationResponse response = medicationService.createMedication(request);
-    return ResponseEntity.ok(response);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @GetMapping("/{mediationId}")

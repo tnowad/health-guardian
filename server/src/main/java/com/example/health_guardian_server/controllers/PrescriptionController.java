@@ -81,7 +81,6 @@ public class PrescriptionController {
     ) {
     Prescription prescription = prescriptionService.createPrescription(request);
     PrescriptionResponse prescriptionResponse = prescriptionMapper.toPrescriptionResponse(prescription);
-    System.out.println(prescriptionResponse);
     return new ResponseEntity<>(prescriptionResponse, HttpStatus.OK);
   }
 }
