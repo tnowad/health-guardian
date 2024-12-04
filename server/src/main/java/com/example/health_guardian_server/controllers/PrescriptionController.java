@@ -20,7 +20,7 @@ public class PrescriptionController {
     this.prescriptionService = prescriptionService;
   }
 
-  @GetMapping("/all")
+  @GetMapping
   public ResponseEntity<List<Prescription>> getAllPrescriptions() {
     return new ResponseEntity<>(prescriptionService.getAllPrescriptions(), HttpStatus.OK);
   }
