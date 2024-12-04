@@ -2,6 +2,7 @@ package com.example.health_guardian_server.controllers;
 
 import com.example.health_guardian_server.dtos.requests.CreateUserMedicalStaffRequest;
 import com.example.health_guardian_server.dtos.requests.ListUserMedicalStaffRequest;
+import com.example.health_guardian_server.dtos.requests.UpdateUserMedicalStaffRequest;
 import com.example.health_guardian_server.dtos.responses.UserMedicalStaffResponse;
 import com.example.health_guardian_server.services.UserMedicalStaffService;
 import org.springframework.data.domain.Page;
@@ -37,14 +38,16 @@ public class UserMedicalStaffController {
 
   @PostMapping("/create")
 
-  public ResponseEntity<UserMedicalStaffResponse> createUserMedicalStaff(@RequestBody CreateUserMedicalStaffRequest userMedicalStaff) {
+  public ResponseEntity<UserMedicalStaffResponse> createUserMedicalStaff(
+      @RequestBody CreateUserMedicalStaffRequest userMedicalStaff) {
     UserMedicalStaffResponse createdUserMedicalStaff = userMedicalStaffService.createUserMedicalStaff(userMedicalStaff);
     return new ResponseEntity<>(createdUserMedicalStaff, HttpStatus.CREATED);
   }
 
   @PutMapping("/update/{id}")
-  public ResponseEntity<UserMedicalStaffResponse> updateUserMedicalStaff(String id, UserMedicalStaffResponse userMedicalStaff) {
-    UserMedicalStaffResponse updatedUserMedicalStaff = userMedicalStaffService.updateUserMedicalStaff(id, userMedicalStaff);
+  public ResponseEntity<UserMedicalStaffResponse> updateUserMedicalStaff(String id,
+      UpdateUserMedicalStaffRequest userMedicalStaff) {
+    var updatedUserMedicalStaff = userMedicalStaffService.updateUserMedicalStaff(id, userMedicalStaff);
     return new ResponseEntity<>(updatedUserMedicalStaff, HttpStatus.OK);
   }
 

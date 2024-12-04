@@ -189,7 +189,7 @@ export default function Page() {
               {[
                 {
                   label: "Appointment",
-                  link: "/profile/appointments",
+                  link: "/appointments",
                   icon: Calendar,
                 },
                 {

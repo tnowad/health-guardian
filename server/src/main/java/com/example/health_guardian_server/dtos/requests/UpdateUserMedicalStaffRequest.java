@@ -1,12 +1,12 @@
 package com.example.health_guardian_server.dtos.requests;
 
+import java.util.Date;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
-public class CreateUserMedicalStaffRequest {
+public class UpdateUserMedicalStaffRequest {
 
   @NotNull(message = "User is required")
   private String userId;
