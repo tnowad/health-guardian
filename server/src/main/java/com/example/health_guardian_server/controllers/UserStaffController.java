@@ -14,18 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/userstaff")
+@RequestMapping("/user-staffs")
 @RequiredArgsConstructor
 public class UserStaffController {
 
   private final UserStaffService userStaffService;
-  private final UserStaffMapper userStaffMapper;
 
-  @GetMapping("/all")
+  @GetMapping
   public ResponseEntity<Page<UserStaffResponse>> getAllUserStaffs(
       @ModelAttribute ListUserStaffRequest request) {
     Page<UserStaffResponse> userStaffs = userStaffService.getAllUserStaffs(request);
-    return new ResponseEntity<>(userStaffs, HttpStatus.OK);
+    return ResponseEntity.ok(userStaffs);
   }
 
   @GetMapping("/id/{id}")

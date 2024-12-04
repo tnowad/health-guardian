@@ -1,6 +1,7 @@
 package com.example.health_guardian_server.dtos.responses;
 
-import com.example.health_guardian_server.entities.User;
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,14 @@ import lombok.NoArgsConstructor;
 public class UserStaffResponse {
 
   private String id;
-  private User user;
+
+  String firstName;
+  String lastName;
+
+  Date dateOfBirth;
+
+  private String userId;
+
   private String role;
   private String roleType;
 }

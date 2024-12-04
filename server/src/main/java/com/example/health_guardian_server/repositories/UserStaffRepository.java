@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserStaffRepository extends JpaRepository<UserStaff, String> , JpaSpecificationExecutor<UserStaff> {
+public interface UserStaffRepository extends JpaRepository<UserStaff, String>, JpaSpecificationExecutor<UserStaff> {
   Page<UserStaff> findAll(Pageable pageable);
-    List<UserStaff> findByUserId(String userId);
+
+  List<UserStaff> findByUserId(String userId);
 
   List<UserStaff> findByRole(String role);
 
   List<UserStaff> findByRoleType(String roleType);
-
 
 }

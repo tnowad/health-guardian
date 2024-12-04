@@ -11,22 +11,32 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @RequiredArgsConstructor
 public class UserStaffSpecification implements Specification<UserStaff> {
   String search;
   String type;
   String[] ids;
+  String[] userIds;
 
   public UserStaffSpecification(ListUserStaffRequest request) {
     this.search = request.getSearch();
     this.type = request.getType();
     this.ids = request.getIds();
+    this.userIds = request.getIds();
   }
 
   @Override
   public Predicate toPredicate(Root<UserStaff> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     List<Predicate> predicates = new ArrayList<>();
+
+    // if (ids != null && ids.length > 0) {
+    // predicates.add(root.get("id").in((Object[]) ids));
+    // }
+
+    if (userIds != null && userIds.length > 0) {
+      Join<UserStaff, User> userJoin = root.join("user");
+      predicates.add(userJoin.get("id").in((Object[]) userIds));
+    }
 
     if (search != null && !search.isEmpty()) {
       predicates.add(criteriaBuilder.like(root.get("id"), "%" + search + "%"));
@@ -36,13 +46,7 @@ public class UserStaffSpecification implements Specification<UserStaff> {
       predicates.add(criteriaBuilder.equal(root.get("type"), type));
     }
 
-    if (ids != null && ids.length > 0) {
-      Join<UserStaff, User> join = root.join("users");
-      predicates.add(join.get("id").in((Object[]) ids));
-    }
-
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
   }
-
 
 }

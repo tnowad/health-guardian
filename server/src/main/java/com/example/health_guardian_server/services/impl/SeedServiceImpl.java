@@ -353,6 +353,16 @@ public class SeedServiceImpl implements SeedService {
             .build();
         userStaffs.add(userStaff);
       } else if (x.getType().equals(UserType.MEDICAL_STAFF)) {
+
+        UserStaff userStaff = UserStaff.builder()
+            .user(x)
+            .firstName(faker.name().firstName())
+            .lastName(faker.name().lastName())
+            .dateOfBirth(faker.date().past(80, TimeUnit.DAYS))
+            .role(faker.lorem().sentence(10))
+            .roleType(faker.job().position())
+            .build();
+        userStaffs.add(userStaff);
         UserMedicalStaff userMedicalStaff = UserMedicalStaff.builder()
             .user(x)
             .hospital(hospitals.get(random.nextInt(hospitals.size())))
@@ -552,7 +562,7 @@ public class SeedServiceImpl implements SeedService {
     for (int i = 0; i < 300; i++) {
       Prescription prescription = new Prescription();
       prescription.setPatient(patients.get(random.nextInt(patients.size())));
-//      prescription.setMedication(medications.get(random.nextInt(medications.size())));
+      // prescription.setMedication(medications.get(random.nextInt(medications.size())));
 
       while (true) {
         User usertemp = users.get(random.nextInt(users.size()));
@@ -573,7 +583,7 @@ public class SeedServiceImpl implements SeedService {
     for (int i = 0; i < 300; i++) {
       Prescription prescription = new Prescription();
       prescription.setPatient(patients.get(random.nextInt(patients.size())));
-//      prescription.setMedication(medications.get(random.nextInt(medications.size())));
+      // prescription.setMedication(medications.get(random.nextInt(medications.size())));
 
       while (true) {
         User usertemp = users.get(random.nextInt(users.size()));
@@ -594,7 +604,7 @@ public class SeedServiceImpl implements SeedService {
     for (int i = 0; i < 300; i++) {
       Prescription prescription = new Prescription();
       prescription.setPatient(patients.get(random.nextInt(patients.size())));
-//      prescription.setMedication(medications.get(random.nextInt(medications.size())));
+      // prescription.setMedication(medications.get(random.nextInt(medications.size())));
 
       while (true) {
         User usertemp = users.get(random.nextInt(users.size()));
