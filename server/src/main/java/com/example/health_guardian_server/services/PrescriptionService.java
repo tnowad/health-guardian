@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 public interface PrescriptionService {
-  // Define methods
   Page<PrescriptionResponse> getAllPrescriptions(ListPrescriptionRequest request);
 
   Prescription getPrescriptionById(String id);

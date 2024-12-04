@@ -1,12 +1,10 @@
 package com.example.health_guardian_server.dtos.responses;
 
-import com.example.health_guardian_server.entities.Guardian;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Builder
 @Data
@@ -18,7 +16,7 @@ public class PatientResponse {
   private String lastName;
   private Date dob;
   private String gender;
-  private Guardian guardian;
+  private String guardianId;
   private String status;
   private Date createdAt;
   private Date updatedAt;

@@ -19,15 +19,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j // Add the Slf4j annotation to enable logging
+@Slf4j
 public class PrescriptionServiceImpl implements PrescriptionService {
   private final PrescriptionRepository prescriptionRepository;
+
   private final PatientRepository patientRepository;
+
   private final MedicationRepository medicationRepository;
 
   private final UserMedicalStaffRepository userMedicalStaffRepository;
 
   private final UserRepository userRepository;
+
   private final PrescriptionMapper prescriptionMapper;
 
   @Override
