@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.controllers;
 
+import com.example.health_guardian_server.dtos.requests.CreateGuardianRequest;
 import com.example.health_guardian_server.dtos.requests.ListGuardiansRequest;
 import com.example.health_guardian_server.dtos.responses.GuardianResponse;
 import com.example.health_guardian_server.services.GuardianService;
@@ -32,15 +33,15 @@ public class GuardianController {
 
   @PostMapping
   public ResponseEntity<GuardianResponse> createGuardian(
-      @RequestBody GuardianResponse guardianResponse) {
-    GuardianResponse createdGuardian = guardianService.createGuardian(guardianResponse);
+      @RequestBody CreateGuardianRequest createGuardianRequest) {
+    GuardianResponse createdGuardian = guardianService.createGuardian(createGuardianRequest);
     return new ResponseEntity<>(createdGuardian, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<GuardianResponse> updateGuardian(
-      String id, GuardianResponse guardianResponse) {
-    GuardianResponse updatedGuardian = guardianService.updateGuardian(id, guardianResponse);
+      String id, CreateGuardianRequest createGuardianRequest) {
+    GuardianResponse updatedGuardian = guardianService.updateGuardian(id, createGuardianRequest);
     return new ResponseEntity<>(updatedGuardian, HttpStatus.OK);
   }
 
