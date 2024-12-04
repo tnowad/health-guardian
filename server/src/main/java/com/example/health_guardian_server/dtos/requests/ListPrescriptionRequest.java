@@ -15,9 +15,9 @@ public class ListPrescriptionRequest implements PageableRequest<Prescription> {
 
   private Integer size = 10;
 
-  private String[] sortFields = new String[] { "startDate" };
+  private String[] sortFields = new String[] {"startDate"};
 
-  private Boolean[] desc = new Boolean[] { false };
+  private Boolean[] desc = new Boolean[] {false};
 
   private String patientId;
 
@@ -49,5 +49,11 @@ public class ListPrescriptionRequest implements PageableRequest<Prescription> {
           page, size, isDescending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending());
     }
     return PageRequest.of(page, size);
+  }
+
+  @Override
+  public String[] getIds() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getIds'");
   }
 }
