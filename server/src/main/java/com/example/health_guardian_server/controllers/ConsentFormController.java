@@ -47,7 +47,7 @@ public class ConsentFormController {
 
   @PutMapping("/{consentFormId}")
   public ResponseEntity<ConsentFormResponse> updateConsentForm(
-      @PathVariable String consentFormId, @RequestBody UpdateConsentFormRequest request) {
+      @PathVariable String consentFormId, @RequestBody CreateConsentFormRequest request) {
     ConsentFormResponse response = consentFormService.updateConsentForm(consentFormId, request);
     return ResponseEntity.ok(response);
   }
