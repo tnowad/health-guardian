@@ -21,4 +21,12 @@ public interface AuthService {
   void verifyEmail(LocalProvider LocalProvider, String code, String token);
 
   void sendEmailVerification(String email, Object verificationType);
+
+  void signOut(String accessToken, String refreshToken) throws Exception;
+
+  void sendEmailForgotPassword(String email);
+
+  void resetPassword(String token, String password, String confirmationPassword);
+
+  String forgotPassword(LocalProvider localProvider, String code);
 }

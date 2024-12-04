@@ -2,13 +2,20 @@ package com.example.health_guardian_server.controllers;
 
 import static org.springframework.http.HttpStatus.*;
 
+import com.example.health_guardian_server.dtos.requests.ForgotPasswordRequest;
 import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
+import com.example.health_guardian_server.dtos.requests.ResetPasswordRequest;
+import com.example.health_guardian_server.dtos.requests.SendEmailForgotPasswordRequest;
 import com.example.health_guardian_server.dtos.requests.SendEmailVerificationRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
+import com.example.health_guardian_server.dtos.requests.SignOutRequest;
 import com.example.health_guardian_server.dtos.requests.SignUpRequest;
 import com.example.health_guardian_server.dtos.requests.VerifyEmailByCodeRequest;
+import com.example.health_guardian_server.dtos.responses.ForgotPasswordResponse;
 import com.example.health_guardian_server.dtos.responses.GetCurrentUserPermissionsResponse;
 import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
+import com.example.health_guardian_server.dtos.responses.ResetPasswordResponse;
+import com.example.health_guardian_server.dtos.responses.SendEmailForgotPasswordResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.dtos.responses.SignUpResponse;
 import com.example.health_guardian_server.entities.LocalProvider;
@@ -49,11 +56,6 @@ public class AuthController {
     return ResponseEntity.ok(response);
   }
 
-  @PostMapping("/sign-out")
-  public ResponseEntity<?> signOut() {
-    return ResponseEntity.ok().build();
-  }
-
   @PostMapping("/refresh")
   public ResponseEntity<RefreshTokenResponse> refresh(@RequestBody RefreshTokenRequest request) {
     var response = authService.refresh(request);
@@ -90,6 +92,51 @@ public class AuthController {
     authService.verifyEmail(null, null, token);
 
     return ResponseEntity.status(OK).body("verify_email_success");
+  }
+
+  @Operation(summary = "Sign out", description = "Sign out user")
+  @PostMapping("/sign-out")
+  @ResponseStatus(OK)
+  void signOut(@RequestBody @Valid SignOutRequest request) {
+    try {
+      authService.signOut(request.accessToken(), request.refreshToken());
+    } catch (Exception e) {
+      throw new RuntimeException("Token invalid");
+    }
+  }
+
+  @Operation(summary = "Send email forgot password", description = "Send email forgot password")
+  @PostMapping("/send-forgot-password")
+  @ResponseStatus(OK)
+  ResponseEntity<SendEmailForgotPasswordResponse> sendEmailForgotPassword(
+      @RequestBody @Valid SendEmailForgotPasswordRequest request) {
+    authService.sendEmailForgotPassword(request.email());
+
+    return ResponseEntity.status(OK)
+        .body(new SendEmailForgotPasswordResponse("send_forgot_password_email_success", 60));
+  }
+
+  @Operation(summary = "Verify forgot password code", description = "Verify forgot password code")
+  @PostMapping("/forgot")
+  @ResponseStatus(OK)
+  ResponseEntity<ForgotPasswordResponse> forgotPassword(
+      @RequestBody @Valid ForgotPasswordRequest request) {
+    LocalProvider localProvider = localProviderService.getLocalProviderByEmail(request.email());
+    String forgotPasswordToken = authService.forgotPassword(localProvider, request.code());
+
+    return ResponseEntity.status(OK)
+        .body(
+            new ForgotPasswordResponse("verify_forgot_password_code_success", forgotPasswordToken));
+  }
+
+  @Operation(summary = "Reset password", description = "Reset password")
+  @PostMapping("/reset")
+  @ResponseStatus(OK)
+  ResponseEntity<ResetPasswordResponse> resetPassword(
+      @RequestBody @Valid ResetPasswordRequest request) {
+    authService.resetPassword(request.token(), request.password(), request.passwordConfirmation());
+
+    return ResponseEntity.status(OK).body(new ResetPasswordResponse("reset_password_success"));
   }
 
   @GetMapping("/current-user/permissions")

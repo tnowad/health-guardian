@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.services.impl;
 
+import com.example.health_guardian_server.dtos.requests.CreateAppointmentRequest;
 import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
 import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
 import com.example.health_guardian_server.entities.Appointment;
@@ -31,10 +32,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     AppointmentSpecification specification = new AppointmentSpecification(request);
 
-    var appointments =
-      appointmentRepository
+    var appointments = appointmentRepository
         .findAll(specification, pageRequest)
-        .map(appointmentMapper::toAppointmentResponse);
+        .map(appointmentMapper::toResponse);
 
     log.info("Fetched {} appointments", appointments.getTotalElements());
     return appointments;
@@ -44,38 +44,43 @@ public class AppointmentServiceImpl implements AppointmentService {
   public AppointmentResponse getAppointmentById(String appointmentId) {
     log.debug("Fetching appointment with id: {}", appointmentId);
     return appointmentRepository
-      .findById(appointmentId)
-      .map(appointmentMapper::toAppointmentResponse)
-      .orElseThrow(() -> {
-        log.error("Appointment not found with id: {}", appointmentId);
-        return new ResourceNotFoundException("Appointment not found with id " + appointmentId);
-      });
+        .findById(appointmentId)
+        .map(appointmentMapper::toAppointmentResponse)
+        .orElseThrow(
+            () -> {
+              log.error("Appointment not found with id: {}", appointmentId);
+              return new ResourceNotFoundException(
+                  "Appointment not found with id " + appointmentId);
+            });
   }
 
   @Override
-  public AppointmentResponse createAppointment(Appointment appointment) {
-    log.debug("Creating appointment: {}", appointment);
-    Appointment createdAppointment = appointmentRepository.save(appointment);
+  public AppointmentResponse createAppointment(CreateAppointmentRequest createAppointmentRequest) {
+    log.debug("Creating appointment: {}", createAppointmentRequest);
+    Appointment createdAppointment = appointmentRepository
+        .save(appointmentMapper.toAppointment(createAppointmentRequest));
     log.info("Appointment created with id: {}", createdAppointment.getId());
     return appointmentMapper.toAppointmentResponse(createdAppointment);
   }
 
   @Override
-  public AppointmentResponse updateAppointment(String appointmentId, Appointment appointment) {
+  public AppointmentResponse updateAppointment(
+      String appointmentId, CreateAppointmentRequest appointment) {
     log.debug("Updating appointment with id: {}", appointmentId);
-    Appointment existingAppointment =
-      appointmentRepository
+    Appointment existingAppointment = appointmentRepository
         .findById(appointmentId)
-        .orElseThrow(() -> {
-          log.error("Appointment not found with id: {}", appointmentId);
-          return new ResourceNotFoundException("Appointment not found with id " + appointmentId);
-        });
+        .orElseThrow(
+            () -> {
+              log.error("Appointment not found with id: {}", appointmentId);
+              return new ResourceNotFoundException(
+                  "Appointment not found with id " + appointmentId);
+            });
 
-    existingAppointment.setAppointmentDate(appointment.getAppointmentDate());
-    existingAppointment.setDoctor(appointment.getDoctor());
-    existingAppointment.setPatient(appointment.getPatient());
-    existingAppointment.setReasonForVisit(appointment.getReasonForVisit());
-
+    // existingAppointment.setAppointmentDate(appointment.getAppointmentDate());
+    // existingAppointment.setDoctor(appointment.getDoctor());
+    // existingAppointment.setPatient(appointment.getPatient());
+    // existingAppointment.setReasonForVisit(appointment.getReasonForVisit());
+    //
     Appointment updatedAppointment = appointmentRepository.save(existingAppointment);
     log.info("Appointment updated with id: {}", updatedAppointment.getId());
     return appointmentMapper.toAppointmentResponse(updatedAppointment);
@@ -84,13 +89,14 @@ public class AppointmentServiceImpl implements AppointmentService {
   @Override
   public void deleteAppointment(String appointmentId) {
     log.debug("Deleting appointment with id: {}", appointmentId);
-    Appointment existingAppointment =
-      appointmentRepository
+    Appointment existingAppointment = appointmentRepository
         .findById(appointmentId)
-        .orElseThrow(() -> {
-          log.error("Appointment not found with id: {}", appointmentId);
-          return new ResourceNotFoundException("Appointment not found with id " + appointmentId);
-        });
+        .orElseThrow(
+            () -> {
+              log.error("Appointment not found with id: {}", appointmentId);
+              return new ResourceNotFoundException(
+                  "Appointment not found with id " + appointmentId);
+            });
 
     appointmentRepository.delete(existingAppointment);
     log.info("Appointment deleted with id: {}", appointmentId);
@@ -99,8 +105,7 @@ public class AppointmentServiceImpl implements AppointmentService {
   private void sendNotification(String title, String messageBody) {
     log.debug("Sending notification with title: '{}' and message: '{}'", title, messageBody);
     try {
-      Message message =
-        Message.builder()
+      Message message = Message.builder()
           .setNotification(Notification.builder().setTitle(title).setBody(messageBody).build())
           .setTopic("appointments")
           .build();
