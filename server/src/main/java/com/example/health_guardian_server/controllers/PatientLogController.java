@@ -24,42 +24,46 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/patient-log")
+@RequestMapping("/patient-logs")
 @RequiredArgsConstructor
 @Slf4j
 public class PatientLogController {
   private final PatientLogService patientLogService;
   private final MinioClientService minioClientService;
 
-  // Define methods
   @GetMapping("/all")
   public ResponseEntity<Page<PatientLogResponse>> getAllPatientLogs(
       @ModelAttribute ListPatientLogRequest request) {
+
+  @GetMapping
+  public ResponseEntity<Page<PatientLogResponse>> getAllPatientLogs(@ModelAttribute ListPatientLogRequest request) {
     Page<PatientLogResponse> patientLogs = patientLogService.getAllPatientLogs(request);
 
     return new ResponseEntity<>(patientLogs, HttpStatus.OK);
   }
 
-  @GetMapping("/id/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<PatientLogResponse> getPatientLogById(String id) {
     PatientLogResponse patientLog = patientLogService.getPatientLogById(id);
     return new ResponseEntity<>(patientLog, HttpStatus.OK);
   }
 
-  @PostMapping("/create")
+  @PostMapping
   public ResponseEntity<PatientLogResponse> createPatientLog(@RequestBody PatientLog patientLog) {
     PatientLogResponse createdPatientLog = patientLogService.createPatientLog(patientLog);
     return new ResponseEntity<>(createdPatientLog, HttpStatus.CREATED);
   }
-
   @PutMapping("/update/{id}")
   public ResponseEntity<PatientLogResponse> updatePatientLog(
       String id, UpdatePatientLogRequest updatePatientLogRequest) {
     PatientLogResponse updatedPatientLog = patientLogService.updatePatientLog(id, updatePatientLogRequest);
+  @PutMapping("/{id}")
+  public ResponseEntity<PatientLogResponse> updatePatientLog(String id, PatientLog patientLog) {
+    PatientLogResponse updatedPatientLog = patientLogService.updatePatientLog(id, patientLog);
     return new ResponseEntity<>(updatedPatientLog, HttpStatus.OK);
   }
 
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/{id}")
   public ResponseEntity<Void> deletePatientLog(String id) {
     patientLogService.deletePatientLog(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

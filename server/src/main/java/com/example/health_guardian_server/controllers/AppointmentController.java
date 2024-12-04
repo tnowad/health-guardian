@@ -39,8 +39,7 @@ public class AppointmentController {
     this.userService = userService;
     this.accountService = accountService;
   }
-
-  @PostMapping("/create")
+  @PostMapping
   public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody Appointment appointment) {
     AppointmentResponse createdAppointment = appointmentService.createAppointment(appointment);
     return new ResponseEntity<>(createdAppointment, HttpStatus.CREATED);
@@ -51,20 +50,19 @@ public class AppointmentController {
     AppointmentResponse appointment = appointmentService.getAppointmentById(id);
     return new ResponseEntity<>(appointment, HttpStatus.OK);
   }
-
-  @GetMapping("/all")
+  @GetMapping
   public ResponseEntity<Page<AppointmentResponse>> getAllAppointments(@ModelAttribute ListAppointmentRequest request) {
     Page<AppointmentResponse> appointments = appointmentService.getAllAppointments(request);
     return new ResponseEntity<>(appointments, HttpStatus.OK);
   }
 
-  @PutMapping("/update/{id}")
+  @PutMapping("/{appointmentId}")
   public ResponseEntity<AppointmentResponse> updateAppointment( @PathVariable String id,@RequestBody Appointment appointment) {
     AppointmentResponse updatedAppointment = appointmentService.updateAppointment(id, appointment);
     return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
   }
 
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/{appointmentId}")
   public ResponseEntity<Void> deleteAppointment(@PathVariable String id) {
     appointmentService.deleteAppointment(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
