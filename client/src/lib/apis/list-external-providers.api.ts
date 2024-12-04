@@ -34,9 +34,7 @@ export type ListExternalProvidersErrorResponseSchema = z.infer<
 export async function listExternalProvidersApi(
   query: ListExternalProvidersQuerySchema,
 ) {
-  const response = await apiClient.get("/external-providers", {
-    params: query,
-  });
+  const response = await apiClient.get("/external-providers",query);
   return listExternalProvidersResponseSchema.parse(response.data);
 }
 

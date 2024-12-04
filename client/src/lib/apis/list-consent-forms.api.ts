@@ -32,7 +32,7 @@ export type ListConsentFormsErrorResponseSchema = z.infer<
 >;
 
 export async function listConsentFormsApi(query: ListConsentFormsQuerySchema) {
-  const response = await apiClient.get("/consent-forms", { params: query });
+  const response = await apiClient.get("/consent-forms", query);
   return listConsentFormsResponseSchema.parse(response.data);
 }
 

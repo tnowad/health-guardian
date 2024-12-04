@@ -32,7 +32,7 @@ export type ListMedicationsErrorResponseSchema = z.infer<
 >;
 
 export async function listMedicationsApi(query: ListMedicationsQuerySchema) {
-  const response = await apiClient.get("/medications", { params: query });
+  const response = await apiClient.get("/medications", query );
   return listMedicationsResponseSchema.parse(response.data);
 }
 
