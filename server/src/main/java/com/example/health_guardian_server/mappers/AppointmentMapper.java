@@ -1,14 +1,19 @@
 package com.example.health_guardian_server.mappers;
 
+import com.example.health_guardian_server.dtos.requests.CreateAppointmentRequest;
 import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
 import com.example.health_guardian_server.entities.Appointment;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AppointmentMapper {
   // Define methods
+  @Mapping(source = "patient.id", target = "patientId")
+  @Mapping(source = "doctor.id", target = "doctorId")
+  AppointmentResponse toResponse(Appointment appointment);
 
   AppointmentResponse toAppointmentResponse(Appointment appointment);
 
-  Appointment toAppointment(AppointmentMapper appointmentResponse);
+  Appointment toAppointment(CreateAppointmentRequest createAppointmentRequest);
 }
