@@ -1,15 +1,23 @@
 package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.dtos.requests.CreatePrescriptionRequest;
+import com.example.health_guardian_server.dtos.requests.ListPrescriptionRequest;
+import com.example.health_guardian_server.dtos.responses.PrescriptionResponse;
 import com.example.health_guardian_server.entities.*;
+import com.example.health_guardian_server.entities.Prescription;
+import com.example.health_guardian_server.entities.PrescriptionStatus;
+import com.example.health_guardian_server.mappers.PrescriptionMapper;
 import com.example.health_guardian_server.repositories.*;
+import com.example.health_guardian_server.repositories.PrescriptionRepository;
 import com.example.health_guardian_server.services.PrescriptionService;
+import com.example.health_guardian_server.specifications.PrescriptionSpecification;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +25,8 @@ import org.springframework.stereotype.Service;
 @Slf4j // Add the Slf4j annotation to enable logging
 public class PrescriptionServiceImpl implements PrescriptionService {
   private final PrescriptionRepository prescriptionRepository;
+
+  private final PrescriptionMapper prescriptionMapper;
 
   private final PatientRepository patientRepository;
 
@@ -27,10 +37,15 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   private final UserRepository userRepository;
 
   @Override
-  public List<Prescription> getAllPrescriptions() {
+  public Page<PrescriptionResponse> getAllPrescriptions(ListPrescriptionRequest request) {
     log.debug("Fetching all prescriptions");
-    List<Prescription> prescriptions = prescriptionRepository.findAll();
-    log.info("Fetched {} prescriptions", prescriptions.size());
+    PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+    PrescriptionSpecification specification = new PrescriptionSpecification(request);
+    var prescriptions = prescriptionRepository
+        .findAll(specification, pageRequest)
+        .map(prescriptionMapper::toResponse);
+
+    log.info("Fetched {} prescriptions", prescriptions);
     return prescriptions;
   }
 
@@ -54,17 +69,20 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     Optional<UserMedicalStaff> userMedicalStaff = userMedicalStaffRepository.findById(request.getPrescribedBy());
     Optional<User> prescribedBy = userMedicalStaff.map(UserMedicalStaff::getUser);
 
-    if (patient.isPresent() && medication.isPresent() && userMedicalStaff.isPresent() && prescribedBy.isPresent()) {
+    if (patient.isPresent()
+        && medication.isPresent()
+        && userMedicalStaff.isPresent()
+        && prescribedBy.isPresent()) {
       Prescription prescription = Prescription.builder()
-        .patient(patient.get())
-        .medication(medication.get())
-        .prescribedBy(prescribedBy.get())
-        .dosage(request.getDosage())
-        .frequency(request.getFrequency())
-        .startDate(request.getStartDate())
-        .endDate(request.getEndDate())
-        .status(request.getStatus())
-        .build();
+          .patient(patient.get())
+          .medication(medication.get())
+          .prescribedBy(prescribedBy.get())
+          .dosage(request.getDosage())
+          .frequency(request.getFrequency())
+          .startDate(request.getStartDate())
+          .endDate(request.getEndDate())
+          .status(request.getStatus())
+          .build();
       Prescription savedPrescription = prescriptionRepository.save(prescription);
       log.info("Created prescription with id: {}", savedPrescription.getId());
       return savedPrescription;
@@ -108,18 +126,22 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   @Override
   public List<Prescription> getPrescriptionsByStatus(String status) {
     log.debug("Fetching prescriptions with status: {}", status);
-    List<Prescription> prescriptions =
-      prescriptionRepository.findByStatus(PrescriptionStatus.valueOf(status));
+    List<Prescription> prescriptions = prescriptionRepository.findByStatus(PrescriptionStatus.valueOf(status));
     log.info("Fetched {} prescriptions with status: {}", prescriptions.size(), status);
     return prescriptions;
   }
 
   @Override
   public List<Prescription> getPrescriptionsByPatientIdAndMedicationId(
-    String patientId, String medicationId) {
-    log.debug("Fetching prescriptions for patient id: {} and medication id: {}", patientId, medicationId);
+      String patientId, String medicationId) {
+    log.debug(
+        "Fetching prescriptions for patient id: {} and medication id: {}", patientId, medicationId);
     List<Prescription> prescriptions = prescriptionRepository.findByPatientIdAndMedicationId(patientId, medicationId);
-    log.info("Fetched {} prescriptions for patient id: {} and medication id: {}", prescriptions.size(), patientId, medicationId);
+    log.info(
+        "Fetched {} prescriptions for patient id: {} and medication id: {}",
+        prescriptions.size(),
+        patientId,
+        medicationId);
     return prescriptions;
   }
 
@@ -127,16 +149,24 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   public List<Prescription> getPrescriptionsByPatientIdAndEndDate(String patientId, Date endDate) {
     log.debug("Fetching prescriptions for patient id: {} and end date: {}", patientId, endDate);
     List<Prescription> prescriptions = prescriptionRepository.findByPatientIdAndEndDate(patientId, endDate);
-    log.info("Fetched {} prescriptions for patient id: {} and end date: {}", prescriptions.size(), patientId, endDate);
+    log.info(
+        "Fetched {} prescriptions for patient id: {} and end date: {}",
+        prescriptions.size(),
+        patientId,
+        endDate);
     return prescriptions;
   }
 
   @Override
   public List<Prescription> getPrescriptionsByPatientIdAndStatus(String patientId, String status) {
     log.debug("Fetching prescriptions for patient id: {} and status: {}", patientId, status);
-    List<Prescription> prescriptions =
-      prescriptionRepository.findByPatientIdAndStatus(patientId, PrescriptionStatus.valueOf(status));
-    log.info("Fetched {} prescriptions for patient id: {} and status: {}", prescriptions.size(), patientId, status);
+    List<Prescription> prescriptions = prescriptionRepository.findByPatientIdAndStatus(
+        patientId, PrescriptionStatus.valueOf(status));
+    log.info(
+        "Fetched {} prescriptions for patient id: {} and status: {}",
+        prescriptions.size(),
+        patientId,
+        status);
     return prescriptions;
   }
 }
