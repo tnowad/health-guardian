@@ -1,17 +1,35 @@
 package com.example.health_guardian_server.services.impl;
 
+import com.example.health_guardian_server.dtos.requests.CreatePrescriptionRequest;
+import com.example.health_guardian_server.entities.Medication;
+import com.example.health_guardian_server.entities.Patient;
 import com.example.health_guardian_server.entities.Prescription;
 import com.example.health_guardian_server.entities.PrescriptionStatus;
+import com.example.health_guardian_server.repositories.MedicationRepository;
+import com.example.health_guardian_server.repositories.PatientRepository;
 import com.example.health_guardian_server.repositories.PrescriptionRepository;
+import com.example.health_guardian_server.repositories.UserMedicalStaffRepository;
 import com.example.health_guardian_server.services.PrescriptionService;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class PrescriptionServiceImpl implements PrescriptionService {
   private final PrescriptionRepository prescriptionRepository;
+  private final PatientRepository patientRepository;
 
+  private final MedicationRepository medicationRepository;
+
+  private final UserMedicalStaffRepository userMedicalStaffRepository;
+
+  private final UserRepository userRepository;
   // Implement methods
 
   public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository) {
@@ -29,8 +47,31 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   }
 
   @Override
-  public Prescription createPrescription(Prescription prescription) {
-    return prescriptionRepository.save(prescription);
+  public Prescription createPrescription(CreatePrescriptionRequest request) {
+    log.debug("Creating prescription for patient with id: {}", request.getPatientId());
+    Optional<Patient> patient = patientRepository.findById(request.getPatientId());
+    Optional<Medication> medication = medicationRepository.findById(request.getMedicationId());
+    Optional<UserMedicalStaff> userMedicalStaff = userMedicalStaffRepository.findById(request.getPrescribedBy());
+    Optional<User> prescribedBy = userMedicalStaff.map(UserMedicalStaff::getUser);
+
+    if (patient.isPresent() && medication.isPresent() && userMedicalStaff.isPresent() && prescribedBy.isPresent()) {
+      Prescription prescription = Prescription.builder()
+        .patient(patient.get())
+        .medication(medication.get())
+        .prescribedBy(prescribedBy.get())
+        .dosage(request.getDosage())
+        .frequency(request.getFrequency())
+        .startDate(request.getStartDate())
+        .endDate(request.getEndDate())
+        .status(request.getStatus())
+        .build();
+      Prescription savedPrescription = prescriptionRepository.save(prescription);
+      log.info("Created prescription with id: {}", savedPrescription.getId());
+      return savedPrescription;
+    } else {
+      log.warn("Failed to create prescription: required entities not found");
+      return null;
+    }
   }
 
   @Override

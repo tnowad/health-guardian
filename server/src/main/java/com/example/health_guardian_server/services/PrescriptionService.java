@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.services;
 
+import com.example.health_guardian_server.dtos.requests.CreatePrescriptionRequest;
 import com.example.health_guardian_server.entities.Prescription;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,7 @@ public interface PrescriptionService {
 
   Prescription getPrescriptionById(String id);
 
-  Prescription createPrescription(Prescription prescription);
+  Prescription createPrescription(CreatePrescriptionRequest request);
 
   Prescription updatePrescription(Prescription prescription);
 
