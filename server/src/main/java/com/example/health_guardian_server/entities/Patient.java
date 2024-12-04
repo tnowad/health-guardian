@@ -45,6 +45,8 @@ public class Patient {
 
   @NotBlank private String gender;
 
+  @NotBlank private Date dateOfBirth;
+
   @ManyToOne
   @JoinColumn(name = "guardian_id", referencedColumnName = "id")
   private Guardian guardian;

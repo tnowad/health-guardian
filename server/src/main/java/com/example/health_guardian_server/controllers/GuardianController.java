@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/guardians")
 public class GuardianController {
-  private final GuardianService guardianService ;
+  private final GuardianService guardianService;
 
-  // Define methods
   @GetMapping
   public ResponseEntity<Page<GuardianResponse>> getAllGuardians(
       @ModelAttribute ListGuardiansRequest request) {

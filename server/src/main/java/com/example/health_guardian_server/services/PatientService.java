@@ -19,4 +19,6 @@ public interface PatientService {
   void deletePatient(String id);
 
   PatientResponse createPatient(CreatePatientRequest patient);
+
+  Patient createPatient(Patient patient);
 }

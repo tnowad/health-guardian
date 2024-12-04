@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.services;
 
+import com.example.health_guardian_server.dtos.enums.VerificationType;
 import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
 import com.example.health_guardian_server.dtos.requests.SignUpRequest;
@@ -20,7 +21,7 @@ public interface AuthService {
 
   void verifyEmail(LocalProvider LocalProvider, String code, String token);
 
-  void sendEmailVerification(String email, Object verificationType);
+  void sendEmailVerification(String email, VerificationType verificationType);
 
   void signOut(String accessToken, String refreshToken) throws Exception;
 
