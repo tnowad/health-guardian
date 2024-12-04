@@ -38,9 +38,11 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import * as z from "zod";
 import { signUpBodySchema, useSignUpMutation } from "@/lib/apis/sign-up.api";
+import { useRouter } from "next/navigation";
 
 export default function PatientSignUpPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const signUpForm = useForm<z.infer<typeof signUpBodySchema>>({
     resolver: zodResolver(signUpBodySchema),
     defaultValues: {
@@ -61,6 +63,7 @@ export default function PatientSignUpPage() {
           title: "Sign Up Success",
           description: data.message,
         });
+        router.push("/email-verification?email=" + values.email);
       },
       onError: () => {
         toast({
