@@ -15,7 +15,7 @@ public interface HouseholdMemberService {
   HouseholdMemberResponse getHouseholdMember(String householdMemberId);
 
   HouseholdMemberResponse updateHouseholdMember(
-      String householdMemberId, UpdateHouseholdMemberRequest request);
+      String householdMemberId, CreateHouseholdMemberRequest request);
 
   void deleteHouseholdMember(String householdMemberId);
 }
