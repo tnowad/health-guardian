@@ -404,6 +404,9 @@ public class SeedServiceImpl implements SeedService {
     List<ExternalProvider> externalProviders = new ArrayList<>();
     for (Account x : accounts) {
       if (x.getProfileType().equals("StaffProfile") || x.getProfileType().equals("StaffProfile")) {
+        if (localProviderRepository.findByEmail(x.getUser().getEmail()) != null) {
+          continue;
+        }
         LocalProvider localProvider = LocalProvider.builder()
             .email(x.getUser().getEmail())
             .passwordHash(passwordEncoder.encode("Password@123"))
