@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/guardian")
+@RequestMapping("/guardians")
 public class GuardianController {
   GuardianService guardianService;
 
   // Define methods
-  @GetMapping("/all")
+  @GetMapping
   public ResponseEntity<Page<GuardianResponse>> getAllGuardians(
       @ModelAttribute ListGuardiansRequest request) {
     Page<GuardianResponse> guardians = guardianService.getAllGuardians(request);
@@ -30,21 +30,21 @@ public class GuardianController {
     return new ResponseEntity<>(guardian, HttpStatus.OK);
   }
 
-  @PostMapping("/create")
+  @PostMapping
   public ResponseEntity<GuardianResponse> createGuardian(
       @RequestBody GuardianResponse guardianResponse) {
     GuardianResponse createdGuardian = guardianService.createGuardian(guardianResponse);
     return new ResponseEntity<>(createdGuardian, HttpStatus.CREATED);
   }
 
-  @PutMapping("/update/{id}")
+  @PutMapping("/{id}")
   public ResponseEntity<GuardianResponse> updateGuardian(
       String id, GuardianResponse guardianResponse) {
     GuardianResponse updatedGuardian = guardianService.updateGuardian(id, guardianResponse);
     return new ResponseEntity<>(updatedGuardian, HttpStatus.OK);
   }
 
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteGuardian(String id) {
     guardianService.deleteGuardian(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

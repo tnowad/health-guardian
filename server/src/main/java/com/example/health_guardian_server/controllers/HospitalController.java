@@ -18,31 +18,31 @@ public class HospitalController {
   private final HospitalService hospitalService;
   // Define methods
 
-  @GetMapping("/all")
+  @GetMapping
   public ResponseEntity<Page<HospitalResponse>> getAllHospitals(@ModelAttribute ListHospitalRequest request) {
     Page<HospitalResponse> hospitals = hospitalService.getAllHospitals(request);
     return new ResponseEntity<>(hospitals, HttpStatus.OK);
   }
 
-  @GetMapping("/id/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<HospitalResponse> getHospitalById(String id) {
     HospitalResponse hospital = hospitalService.getHospitalById(id);
     return new ResponseEntity<>(hospital, HttpStatus.OK);
   }
 
-  @PostMapping("/create")
+  @PostMapping
   public ResponseEntity<HospitalResponse> createHospital(@RequestBody CreateHospitalRequest hospital) {
     HospitalResponse createdHospital = hospitalService.createHospital(hospital);
     return new ResponseEntity<>(createdHospital, HttpStatus.CREATED);
   }
 
-  @PutMapping("/update/{id}")
+  @PutMapping("/{id}")
   public ResponseEntity<HospitalResponse> updateHospital(String id, @RequestBody HospitalResponse hospital) {
     HospitalResponse updatedHospital = hospitalService.updateHospital(id, hospital);
     return new ResponseEntity<>(updatedHospital, HttpStatus.OK);
   }
 
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteHospital(String id) {
     hospitalService.deleteHospital(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

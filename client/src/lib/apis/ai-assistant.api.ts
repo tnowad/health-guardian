@@ -11,6 +11,7 @@ import {
 export type QuestionRequest = z.infer<typeof questionRequestSchema>;
 export type QuestionResponse = z.infer<typeof questionResponseSchema>;
 
+
 export async function askQuestionApi(
     body: QuestionRequest,
 ): Promise<QuestionResponse> {
