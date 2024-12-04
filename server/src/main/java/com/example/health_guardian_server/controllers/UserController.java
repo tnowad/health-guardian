@@ -14,9 +14,11 @@ import com.example.health_guardian_server.mappers.UserMapper;
 import com.example.health_guardian_server.services.MinioClientService;
 import com.example.health_guardian_server.services.UserService;
 import java.io.File;
+import java.nio.file.Files;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -88,6 +91,8 @@ public class UserController {
     try {
       File file = convertMultipartFileToFile(avatar, fileName);
       minioClientService.storeObject(file, fileName, contentType, "user-avatars");
+      Files.delete(file.toPath());
+      log.info("File uploaded successfully: {}", file.toPath());
     } catch (Exception e) {
       throw new FileException(CAN_NOT_STORE_FILE, HttpStatus.UNPROCESSABLE_ENTITY);
     }
