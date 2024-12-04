@@ -1,11 +1,8 @@
 package com.example.health_guardian_server.services;
 
 import com.example.health_guardian_server.dtos.requests.CreatePrescriptionRequest;
-<<<<<<< HEAD
-=======
 import com.example.health_guardian_server.dtos.requests.ListPrescriptionRequest;
 import com.example.health_guardian_server.dtos.responses.PrescriptionResponse;
->>>>>>> 4f2aead2f764f6b0bb1a84d37e6c09d4c5e7d058
 import com.example.health_guardian_server.entities.Prescription;
 import java.util.Date;
 import java.util.List;

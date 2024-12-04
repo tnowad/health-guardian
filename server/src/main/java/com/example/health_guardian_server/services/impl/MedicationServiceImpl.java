@@ -4,6 +4,7 @@ import com.example.health_guardian_server.dtos.requests.CreateMedicationRequest;
 import com.example.health_guardian_server.dtos.requests.ListMedicationRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateMedicationRequest;
 import com.example.health_guardian_server.dtos.responses.MedicationResponse;
+import com.example.health_guardian_server.entities.Medication;
 import com.example.health_guardian_server.mappers.MedicationMapper;
 import com.example.health_guardian_server.repositories.MedicationRepository;
 import com.example.health_guardian_server.services.MedicationService;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -82,15 +85,17 @@ public class MedicationServiceImpl implements MedicationService {
   }
 
   @Override
-  public void deleteMedication(String medicationId) {
+  public Medication deleteMedication(String medicationId) {
     log.info("Deleting medication with id: {}", medicationId);
-
-    if (!medicationRepository.existsById(medicationId)) {
+    Optional<Medication> medication = medicationRepository.findById(medicationId);
+    if (!medication.isPresent()) {
       log.error("Medication not found for id: {}", medicationId);
       throw new ResourceNotFoundException("Medication not found for id: " + medicationId);
     }
 
     medicationRepository.deleteById(medicationId);
     log.debug("Medication with id: {} deleted successfully", medicationId);
+
+    return medication.get();
   }
 }

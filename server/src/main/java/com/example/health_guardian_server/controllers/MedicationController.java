@@ -4,9 +4,14 @@ import com.example.health_guardian_server.dtos.requests.CreateMedicationRequest;
 import com.example.health_guardian_server.dtos.requests.ListMedicationRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateMedicationRequest;
 import com.example.health_guardian_server.dtos.responses.MedicationResponse;
+import com.example.health_guardian_server.dtos.responses.SimpleResponse;
+import com.example.health_guardian_server.entities.Medication;
+import com.example.health_guardian_server.mappers.MedicationMapper;
 import com.example.health_guardian_server.services.MedicationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +29,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MedicationController {
   private final MedicationService medicationService;
 
+  @Autowired
+  private final MedicationMapper medicationMapper;
+
   @GetMapping
   public ResponseEntity<Page<MedicationResponse>> listMedications(
       @ModelAttribute ListMedicationRequest request) {
@@ -35,7 +43,7 @@ public class MedicationController {
   public ResponseEntity<MedicationResponse> createMedication(
       @RequestBody CreateMedicationRequest request) {
     MedicationResponse response = medicationService.createMedication(request);
-    return ResponseEntity.ok(response);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @GetMapping("/{mediationId}")
@@ -52,8 +60,9 @@ public class MedicationController {
   }
 
   @DeleteMapping("/{medicationId}")
-  public ResponseEntity<Void> deleteMedication(@PathVariable String medicationId) {
-    medicationService.deleteMedication(medicationId);
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<SimpleResponse> deleteMedication(@PathVariable String medicationId) {
+    Medication medication = medicationService.deleteMedication(medicationId);
+    SimpleResponse simpleResponse = MedicationMapper.toMedicationSimpleResponse(medication);
+    return new ResponseEntity<>(simpleResponse, HttpStatus.OK);
   }
 }

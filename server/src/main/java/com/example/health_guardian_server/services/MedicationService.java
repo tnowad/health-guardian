@@ -4,6 +4,7 @@ import com.example.health_guardian_server.dtos.requests.CreateMedicationRequest;
 import com.example.health_guardian_server.dtos.requests.ListMedicationRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateMedicationRequest;
 import com.example.health_guardian_server.dtos.responses.MedicationResponse;
+import com.example.health_guardian_server.entities.Medication;
 import org.springframework.data.domain.Page;
 
 public interface MedicationService {
@@ -15,5 +16,5 @@ public interface MedicationService {
 
   MedicationResponse updateMedication(String medicationId, UpdateMedicationRequest request);
 
-  void deleteMedication(String medicationId);
+  Medication deleteMedication(String medicationId);
 }
