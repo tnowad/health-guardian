@@ -33,89 +33,115 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User getUserByAccountId(String accountId) {
-    return userRepository.findByAccountId(accountId);
+    log.debug("Fetching user with accountId: {}", accountId);
+    User user = userRepository.findByAccountId(accountId);
+    if (user == null) {
+      log.warn("User with accountId: {} not found", accountId);
+    } else {
+      log.info("User with accountId: {} found", accountId);
+    }
+    return user;
   }
 
   @Override
   public User createUser(User user) {
-    return userRepository.save(user);
+    log.debug("Creating new user with username: {}", user.getUsername());
+    User savedUser = userRepository.save(user);
+    log.info("User with username: {} created successfully", savedUser.getUsername());
+    return savedUser;
   }
 
   @Override
   public User getUserById(String userId) {
-    return userRepository.findById(userId).get();
+    log.debug("Fetching user with userId: {}", userId);
+    User user = userRepository.findById(userId).orElse(null);
+    if (user == null) {
+      log.warn("User with userId: {} not found", userId);
+    } else {
+      log.info("User with userId: {} found", userId);
+    }
+    return user;
   }
 
   @Override
   public User saveUser(User user) {
-    return userRepository.save(user);
+    log.debug("Saving user with userId: {}", user.getId());
+    User savedUser = userRepository.save(user);
+    log.info("User with userId: {} saved successfully", savedUser.getId());
+    return savedUser;
   }
 
   @Override
   public Page<UserResponse> listUsers(ListUsersRequest request) {
-    var users =
-        userRepository
-            .findAll(request.toSpecification(), request.toPageable())
-            .map(userMapper::toUserResponse);
+    log.debug("Listing users with pagination: page = {}, size = {}", request.getPage(), request.getSize());
+    Page<UserResponse> users =
+      userRepository
+        .findAll(request.toSpecification(), request.toPageable())
+        .map(userMapper::toUserResponse);
+    log.info("Found {} users", users.getTotalElements());
     return users;
   }
 
   @Override
   public UserResponse createUser(CreateUserRequest request) {
-    // TODO Auto-generated method stub
+    log.debug("Creating user with request: {}", request);
     throw new UnsupportedOperationException("Unimplemented method 'createUser'");
   }
 
   @Override
   public UserResponse getUser(String userId) {
-    // TODO Auto-generated method stub
+    log.debug("Fetching user with userId: {}", userId);
     throw new UnsupportedOperationException("Unimplemented method 'getUser'");
   }
 
   @Override
   public UserResponse updateUser(String userId, UpdateUserRequest request) {
-    User user = userRepository.findById(userId).get();
+    log.debug("Updating user with userId: {}", userId);
+    User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    log.debug("User found: {}", user);
     user.setAvatar(request.getAvatar());
-    return userMapper.toUserResponse(userRepository.save(user));
+    User updatedUser = userRepository.save(user);
+    log.info("User with userId: {} updated successfully", updatedUser.getId());
+    return userMapper.toUserResponse(updatedUser);
   }
 
   @Override
   public void deleteUser(String userId) {
+    log.debug("Deleting user with userId: {}", userId);
     throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
   }
 
   @Override
   public CurrentUserInfomationResponse getCurrentUserInformation() {
+    log.debug("Fetching current user information");
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    log.debug("Current authenticated username: {}", username);
 
-    User user =
-        userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
+    log.debug("User found: {}", user.getUsername());
 
     return buildResponse(user);
   }
 
   private CurrentUserInfomationResponse buildResponse(User user) {
+    log.debug("Building current user information response");
     CurrentUserInfomationResponse response = new CurrentUserInfomationResponse();
-
     response.setUserId(user.getId());
     response.setUsername(user.getUsername());
     response.setEmail(user.getEmail());
     response.setName(user.getUsername());
-    var url =
-        "https://genk.mediacdn.vn/2018/10/19/photo-1-15399266837281100315834-15399271585711710441111.png";
+    String url = "https://default-avatar-url.com";
     try {
       url = minioClientService.getObjectUrl(user.getAvatar(), "user-avatars");
+      log.debug("Avatar URL retrieved: {}", url);
     } catch (Exception e) {
-      log.error("Error when get avatar url", e);
+      log.error("Error when retrieving avatar URL for user: {}", user.getUsername(), e);
     }
     response.setAvatarUrl(url);
     response.setRole(user.getType());
 
     if (user.getUserStaffs().size() > 0) {
-      response.setName(
-          user.getUserStaffs().getFirst().getFirstName()
-              + " "
-              + user.getUserStaffs().getFirst().getLastName());
+      response.setName(user.getUserStaffs().getFirst().getFirstName() + " " + user.getUserStaffs().getFirst().getLastName());
       StaffInforResponse staffResponse = new StaffInforResponse();
       staffResponse.setId(user.getUserStaffs().getFirst().getId());
       response.setStaff(staffResponse);
@@ -123,10 +149,9 @@ public class UserServiceImpl implements UserService {
 
     if (user.getUserMedicalStaffs().size() > 0) {
       MedicalStaffInforResponse medicalStaffResponse = new MedicalStaffInforResponse();
-      var a = user.getUserMedicalStaffs();
-      medicalStaffResponse.setId(user.getUserMedicalStaffs().getFirst().getId());
-      medicalStaffResponse.setSpecialization(
-          user.getUserMedicalStaffs().getFirst().getSpecialization());
+      var medicalStaff = user.getUserMedicalStaffs().getFirst();
+      medicalStaffResponse.setId(medicalStaff.getId());
+      medicalStaffResponse.setSpecialization(medicalStaff.getSpecialization());
       response.setMedicalStaff(medicalStaffResponse);
     }
 
@@ -137,6 +162,7 @@ public class UserServiceImpl implements UserService {
       response.setPatient(patientResponse);
     }
 
+    log.debug("User information response built successfully: {}", response);
     return response;
   }
 }
