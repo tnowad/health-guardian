@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.services.impl;
 
+import com.example.health_guardian_server.dtos.requests.CreateGuardianRequest;
 import com.example.health_guardian_server.dtos.requests.ListGuardiansRequest;
 import com.example.health_guardian_server.dtos.responses.GuardianResponse;
 import com.example.health_guardian_server.entities.Guardian;
@@ -50,15 +51,16 @@ public class GuardianServiceImpl implements GuardianService {
   }
 
   @Override
-  public GuardianResponse createGuardian(GuardianResponse guardianResponse) {
-    log.debug("Creating new guardian: {}", guardianResponse);
-    Guardian createdGuardian = guardianRepository.save(guardianMapper.toGuardian(guardianResponse));
+  public GuardianResponse createGuardian(CreateGuardianRequest createGuardian) {
+    log.debug("Creating guardian with details: {}", createGuardian);
+    Guardian guardian = guardianMapper.toGuardian(createGuardian);
+    Guardian createdGuardian = guardianRepository.save(guardian);
     log.info("Guardian created with id: {}", createdGuardian.getId());
     return guardianMapper.toGuardianResponse(createdGuardian);
   }
 
   @Override
-  public GuardianResponse updateGuardian(String id, GuardianResponse guardianResponse) {
+  public GuardianResponse updateGuardian(String id, CreateGuardianRequest createGuardianRequest) {
     log.debug("Updating guardian with id: {}", id);
     Guardian existingGuardian =
       guardianRepository
@@ -69,10 +71,10 @@ public class GuardianServiceImpl implements GuardianService {
         });
 
     log.debug("Updating details for guardian with id: {}", id);
-    existingGuardian.setEmail(guardianResponse.getEmail());
-    existingGuardian.setName(guardianResponse.getName());
-    existingGuardian.setPhone(guardianResponse.getPhone());
-    existingGuardian.setRelationshipToPatient(guardianResponse.getRelationshipToPatient());
+    existingGuardian.setEmail(createGuardianRequest.getEmail());
+    existingGuardian.setName(createGuardianRequest.getName());
+    existingGuardian.setPhone(createGuardianRequest.getPhone());
+    existingGuardian.setRelationshipToPatient(createGuardianRequest.getRelationshipToPatient());
 
     Guardian updatedGuardian = guardianRepository.save(existingGuardian);
     log.info("Guardian updated with id: {}", updatedGuardian.getId());
