@@ -4,37 +4,102 @@ import com.example.health_guardian_server.dtos.requests.CreateHouseholdRequest;
 import com.example.health_guardian_server.dtos.requests.ListHouseholdsRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateHouseholdRequest;
 import com.example.health_guardian_server.dtos.responses.HouseholdResponse;
+import com.example.health_guardian_server.entities.Household;
+import com.example.health_guardian_server.mappers.HouseholdMapper;
+import com.example.health_guardian_server.repositories.HouseholdRepository;
+import com.example.health_guardian_server.repositories.PatientRepository;
 import com.example.health_guardian_server.services.HouseholdService;
+import com.example.health_guardian_server.specifications.AppointmentSpecification;
+import com.example.health_guardian_server.specifications.HouseholdSpecification;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class HouseholdServiceImpl implements HouseholdService {
+
+  private final HouseholdRepository householdRepository;
+  private final HouseholdMapper householdMapper;
+  private final PatientRepository patientRepository;
 
   @Override
   public Page<HouseholdResponse> listHouseholds(ListHouseholdsRequest request) {
 
-    throw new UnsupportedOperationException("Unimplemented method 'listHouseholds'");
+    log.debug("Fetching all appointments with request: {}", request);
+    PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+    HouseholdSpecification specification = new HouseholdSpecification(request);
+
+    var households = householdRepository
+        .findAll(specification, pageRequest)
+        .map(householdMapper::toHouseholdResponse);
+
+    log.info("Fetched {} appointments", households.getTotalElements());
+    return households;
   }
 
   @Override
   public HouseholdResponse createHousehold(CreateHouseholdRequest request) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'createHousehold'");
+
+    log.debug("Creating household: {}", request);
+    Household createdHousehold = householdRepository.save(householdMapper.toHousehold(request));
+    return householdMapper.toHouseholdResponse(createdHousehold);
   }
 
   @Override
   public HouseholdResponse getHousehold(String householdId) {
-    throw new UnsupportedOperationException("Unimplemented method 'getHousehold'");
+
+    log.debug("Fetching household with id: {}", householdId);
+    return householdRepository
+        .findById(householdId )
+        .map(householdMapper::toHouseholdResponse)
+        .orElseThrow(
+            () -> {
+              log.error("Household not found with id: {}", householdId);
+              return new ResourceNotFoundException(
+                  "Household not found with id " + householdId);
+            });
+
+
   }
 
   @Override
-  public HouseholdResponse updateHousehold(String householdId, UpdateHouseholdRequest request) {
-    throw new UnsupportedOperationException("Unimplemented method 'updateHousehold'");
+  public HouseholdResponse updateHousehold(String householdId, CreateHouseholdRequest request) {
+
+    log.debug("Updating household with id: {}", householdId);
+    Household household = householdRepository.findById(householdId  )
+        .orElseThrow(
+            () -> {
+              log.error("Household not found with id: {}", householdId);
+              return new ResourceNotFoundException(
+                  "Household not found with id " + householdId);
+            });
+
+    household.setHead(patientRepository.getReferenceById(request.getHeadId()));
+
+    Household updatedHousehold = householdRepository.save(household);
+    log.info("Household updated with id: {}", updatedHousehold.getId());
+    return householdMapper.toHouseholdResponse(updatedHousehold);
   }
 
   @Override
   public void deleteHousehold(String householdId) {
-    throw new UnsupportedOperationException("Unimplemented method 'deleteHousehold'");
+
+    log.debug("Deleting household with id: {}", householdId);
+    Household household = householdRepository.findById(householdId) .orElseThrow(
+        () -> {
+          log.error("Household not found with id: {}", householdId);
+          return new ResourceNotFoundException(
+              "Household not found with id " + householdId);
+        });
+
+    householdRepository.delete(household);
+    log.info("Household deleted with id: {}", householdId);
+
+
   }
 }
