@@ -16,5 +16,5 @@ public interface ConsentFormService {
 
   void deleteConsentForm(String consentFormId);
 
-  ConsentFormResponse updateConsentForm(String consentFormId, UpdateConsentFormRequest request);
+  ConsentFormResponse updateConsentForm(String consentFormId, CreateConsentFormRequest request);
 }

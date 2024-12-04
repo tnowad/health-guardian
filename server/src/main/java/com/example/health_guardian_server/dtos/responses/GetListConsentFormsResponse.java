@@ -5,14 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConsentFormResponse {
-  private String id;
-  private String patientId;
-  private String formName;
-  private String consentDate;
-  private String status;
+public class GetListConsentFormsResponse {
+  List<ConsentFormResponse> items;
+  String message;
 }
