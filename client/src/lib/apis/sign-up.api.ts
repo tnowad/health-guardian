@@ -13,6 +13,7 @@ export const signUpBodySchema = z
       required_error: "Please select a gender.",
     }),
     email: z.string().email("Invalid email address."),
+    username: z.string().min(2, "Username must be at least 2 characters."),
     password: z.string().min(8, "Password must be at least 8 characters."),
     confirmPassword: z.string(),
   })

@@ -49,6 +49,7 @@ export default function PatientSignUpPage() {
       firstName: "",
       lastName: "",
       gender: undefined,
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -173,6 +174,20 @@ export default function PatientSignUpPage() {
                       <SelectItem value="OTHER">Other</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={signUpForm.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="johndoe" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
