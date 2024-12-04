@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { apiClient } from "../client";
 import { unauthorizedResponseSchema } from "../schemas/error.schema";
+import { queryOptions } from "@tanstack/react-query";
 
 export const currentUserResponseSchema = z.object({
   userId: z.string(),
@@ -8,21 +9,25 @@ export const currentUserResponseSchema = z.object({
   name: z.string(),
   username: z.string(),
   email: z.string(),
+  avatarUrl: z.string().nullable().optional(),
   staff: z
     .object({
       id: z.string(),
     })
+    .nullable()
     .optional(),
   medicalStaff: z
     .object({
       id: z.string(),
       specialization: z.string(),
     })
+    .nullable()
     .optional(),
   patient: z
     .object({
       id: z.string(),
     })
+    .nullable()
     .optional(),
 });
 export type CurrentUserResponseSchema = z.infer<
@@ -39,4 +44,11 @@ export type CurrentUserErrorResponseSchema = z.infer<
 export async function getCurrentUserInformationApi() {
   const response = await apiClient.get("/users/current-user/information");
   return currentUserResponseSchema.parse(response.data);
+}
+
+export function createGetCurrentUserInformationQueryOptions() {
+  return queryOptions({
+    queryKey: ["users", "current-user", "information"],
+    queryFn: () => getCurrentUserInformationApi(),
+  });
 }

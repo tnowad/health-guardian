@@ -6,15 +6,15 @@ import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 
 @Data
-public class ListUsersRequest implements PageableRequest<User> {
+public class ListUsersRequest implements PageableRequest<User>, PageableWithIdsRequest<String> {
 
   private Integer page = 0;
 
   private Integer size = 10;
 
-  private String[] sortFields = new String[] {"id"};
+  private String[] sortFields = new String[] { "id" };
 
-  private Boolean[] desc = new Boolean[] {false};
+  private Boolean[] desc = new Boolean[] { false };
 
   private String search = "";
 

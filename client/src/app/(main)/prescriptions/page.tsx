@@ -34,6 +34,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { createListPrescriptionsQueryOptions } from "@/lib/apis/list-prescriptions.api";
+import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 
 interface Prescription {
   id: string;
@@ -89,6 +92,16 @@ const medications = [
 ];
 
 export default function PrescriptionsScreen() {
+  const getCurrentUserInformationQuery = useSuspenseQuery(
+    createGetCurrentUserInformationQueryOptions(),
+  );
+
+  const listPrescriptionsQuery = useQuery(
+    createListPrescriptionsQueryOptions({
+      patientId: "d6b53a8e-d4e8-4198-b162-024b9db223e5",
+    }),
+  );
+
   const [prescriptions, setPrescriptions] =
     useState<Prescription[]>(initialPrescriptions);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
@@ -102,7 +115,7 @@ export default function PrescriptionsScreen() {
       endDate: new Date(),
       instructions: "",
       status: "active",
-    }
+    },
   );
 
   const toggleRow = (id: string) => {
@@ -317,7 +330,7 @@ export default function PrescriptionsScreen() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {prescriptions.map((prescription) => (
+            {listPrescriptionsQuery.data?.content.map((prescription) => (
               <div key={prescription.id} className="border rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">

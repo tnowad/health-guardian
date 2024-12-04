@@ -38,9 +38,7 @@ export type ListUserMedicalStaffsErrorResponseSchema = z.infer<
 export async function listUserMedicalStaffsApi(
   query: ListUserMedicalStaffsQuerySchema,
 ) {
-  const response = await apiClient.get("/user-medical-staffs", {
-    params: query,
-  });
+  const response = await apiClient.get("/user-medical-staffs", query);
   return listUserMedicalStaffsResponseSchema.parse(response.data);
 }
 

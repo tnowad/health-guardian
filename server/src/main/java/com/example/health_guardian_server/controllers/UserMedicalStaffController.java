@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user-medical-staff")
+@RequestMapping("/user-medical-staffs")
 public class UserMedicalStaffController {
   // Define methods
   private final UserMedicalStaffService userMedicalStaffService;
@@ -21,8 +21,9 @@ public class UserMedicalStaffController {
 
   // Define methods
 
-  @GetMapping("/all")
-  public ResponseEntity<Page<UserMedicalStaffResponse>> getAllUserMedicalStaffs(@ModelAttribute ListUserMedicalStaffRequest request) {
+  @GetMapping
+  public ResponseEntity<Page<UserMedicalStaffResponse>> getAllUserMedicalStaffs(
+      @ModelAttribute ListUserMedicalStaffRequest request) {
     Page<UserMedicalStaffResponse> userMedicalStaffs = userMedicalStaffService.getAllUserMedicalStaffs(request);
 
     return new ResponseEntity<>(userMedicalStaffs, HttpStatus.OK);

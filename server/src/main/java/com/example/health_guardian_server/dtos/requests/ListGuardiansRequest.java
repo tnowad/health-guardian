@@ -9,15 +9,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 @Data
-public class ListGuardiansRequest implements PageableRequest<Guardian> {
+public class ListGuardiansRequest implements PageableRequest<Guardian>, PageableWithIdsRequest<String> {
+  String[] ids;
 
   private Integer page = 0;
 
   private Integer size = 10;
 
-  private String[] sortFields = new String[] {"id"};
+  private String[] sortFields = new String[] { "id" };
 
-  private Boolean[] desc = new Boolean[] {false};
+  private Boolean[] desc = new Boolean[] { false };
 
   private String search = "";
 

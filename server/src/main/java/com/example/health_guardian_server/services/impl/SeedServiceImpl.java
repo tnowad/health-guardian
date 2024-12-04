@@ -404,6 +404,9 @@ public class SeedServiceImpl implements SeedService {
     List<ExternalProvider> externalProviders = new ArrayList<>();
     for (Account x : accounts) {
       if (x.getProfileType().equals("StaffProfile") || x.getProfileType().equals("StaffProfile")) {
+        if (localProviderRepository.findByEmail(x.getUser().getEmail()) != null) {
+          continue;
+        }
         LocalProvider localProvider = LocalProvider.builder()
             .email(x.getUser().getEmail())
             .passwordHash(passwordEncoder.encode("Password@123"))
@@ -549,7 +552,7 @@ public class SeedServiceImpl implements SeedService {
     for (int i = 0; i < 300; i++) {
       Prescription prescription = new Prescription();
       prescription.setPatient(patients.get(random.nextInt(patients.size())));
-      prescription.setMedication(medications.get(random.nextInt(medications.size())));
+//      prescription.setMedication(medications.get(random.nextInt(medications.size())));
 
       while (true) {
         User usertemp = users.get(random.nextInt(users.size()));
@@ -570,7 +573,7 @@ public class SeedServiceImpl implements SeedService {
     for (int i = 0; i < 300; i++) {
       Prescription prescription = new Prescription();
       prescription.setPatient(patients.get(random.nextInt(patients.size())));
-      prescription.setMedication(medications.get(random.nextInt(medications.size())));
+//      prescription.setMedication(medications.get(random.nextInt(medications.size())));
 
       while (true) {
         User usertemp = users.get(random.nextInt(users.size()));
@@ -591,7 +594,7 @@ public class SeedServiceImpl implements SeedService {
     for (int i = 0; i < 300; i++) {
       Prescription prescription = new Prescription();
       prescription.setPatient(patients.get(random.nextInt(patients.size())));
-      prescription.setMedication(medications.get(random.nextInt(medications.size())));
+//      prescription.setMedication(medications.get(random.nextInt(medications.size())));
 
       while (true) {
         User usertemp = users.get(random.nextInt(users.size()));

@@ -46,9 +46,7 @@ export async function listReportedSideEffectsApi(
   query: ListReportedSideEffectsQuerySchema,
 ) {
   const response = await apiClient.get(
-    `/patients/${params.patientId}/reported-side-effects`,
-    { params: query },
-  );
+    `/patients/${params.patientId}/reported-side-effects`, query ,);
   return listReportedSideEffectsResponseSchema.parse(response.data);
 }
 

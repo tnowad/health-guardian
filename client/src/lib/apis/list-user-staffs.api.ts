@@ -31,7 +31,7 @@ export type ListUserStaffsErrorResponseSchema = z.infer<
 >;
 
 export async function listUserStaffsApi(query: ListUserStaffsQuerySchema) {
-  const response = await apiClient.get("/user-staffs", { params: query });
+  const response = await apiClient.get("/user-staffs", query );
   return listUserStaffsResponseSchema.parse(response.data);
 }
 

@@ -7,7 +7,8 @@ import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 
 @Data
-public class ListConsentFormsRequest implements PageableRequest<ConsentForm> {
+public class ListConsentFormsRequest implements PageableRequest<ConsentForm>, PageableWithIdsRequest<String> {
+  String[] ids;
 
   private Integer page = 0;
 

@@ -1,17 +1,16 @@
 package com.example.health_guardian_server.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Past;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import lombok.*;
 
 @Entity
@@ -31,6 +30,7 @@ public class Prescription {
 
   @ManyToOne
   @JoinColumn(name = "patient_id", referencedColumnName = "id")
+  @JsonIgnore
   private Patient patient;
 
   @ManyToOne
