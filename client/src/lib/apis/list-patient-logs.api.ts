@@ -31,7 +31,7 @@ export type ListPatientLogsErrorResponseSchema = z.infer<
 >;
 
 export async function listPatientLogsApi(query: ListPatientLogsQuerySchema) {
-  const response = await apiClient.get("/patient-logs",query );
+  const response = await apiClient.get("/patient-logs", query);
   return listPatientLogsResponseSchema.parse(response.data);
 }
 
@@ -39,12 +39,7 @@ export function createListPatientLogsQueryOptions(
   query: ListPatientLogsQuerySchema,
 ) {
   const queryKey = ["patient-logs", query] as const;
-  return queryOptions<
-    ListPatientLogsResponseSchema,
-    ListPatientLogsErrorResponseSchema,
-    ListPatientLogsQuerySchema,
-    typeof queryKey
-  >({
+  return queryOptions<ListPatientLogsResponseSchema>({
     queryKey,
     queryFn: () => listPatientLogsApi(listPatientLogsQuerySchema.parse(query)),
     throwOnError: isAxiosError,
