@@ -9,8 +9,10 @@ import com.example.health_guardian_server.entities.Medication;
 import com.example.health_guardian_server.mappers.MedicationMapper;
 import com.example.health_guardian_server.services.MedicationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/medications")
 @RequiredArgsConstructor
+@Slf4j
 public class MedicationController {
   private final MedicationService medicationService;
 
@@ -35,8 +38,8 @@ public class MedicationController {
   @GetMapping
   public ResponseEntity<Page<MedicationResponse>> listMedications(
       @ModelAttribute ListMedicationRequest request) {
-    Page<MedicationResponse> response = medicationService.listMedications(request);
-    return ResponseEntity.ok(response);
+    Page<MedicationResponse> medications = medicationService.listMedications(request);
+    return new ResponseEntity<>(medications, HttpStatus.OK);
   }
 
   @PostMapping
@@ -46,7 +49,7 @@ public class MedicationController {
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  @GetMapping("/{mediationId}")
+  @GetMapping("/{medicationId}")
   public ResponseEntity<MedicationResponse> getMedication(@PathVariable String medicationId) {
     MedicationResponse response = medicationService.getMedication(medicationId);
     return ResponseEntity.ok(response);
@@ -56,7 +59,7 @@ public class MedicationController {
   public ResponseEntity<MedicationResponse> updateMedication(
       @PathVariable String medicationId, @RequestBody UpdateMedicationRequest request) {
     MedicationResponse response = medicationService.updateMedication(medicationId, request);
-    return ResponseEntity.ok(response);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @DeleteMapping("/{medicationId}")

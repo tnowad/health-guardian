@@ -77,7 +77,7 @@ public class AggregatedSideEffectServiceImpl implements AggregatedSideEffectServ
 
   @Override
   public AggregatedSideEffectResponse updateAggregatedSideEffect(
-    String aggregatedSideEffectId, CreateAggregatedSideEffectRequest request) {
+    String aggregatedSideEffectId, UpdateAggregatedSideEffectRequest request) {
     log.debug("Updating aggregated side effect with id: {} using request: {}", aggregatedSideEffectId, request);
 
     var aggregatedSideEffect = aggregatedSideEffectRepository

@@ -19,5 +19,5 @@ public interface AggregatedSideEffectService {
   void deleteAggregatedSideEffect(String aggregatedSideEffectId);
 
   AggregatedSideEffectResponse updateAggregatedSideEffect(
-      String aggregatedSideEffectId, CreateAggregatedSideEffectRequest request);
+      String aggregatedSideEffectId, UpdateAggregatedSideEffectRequest request);
 }

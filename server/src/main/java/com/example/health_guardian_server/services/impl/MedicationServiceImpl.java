@@ -8,10 +8,12 @@ import com.example.health_guardian_server.entities.Medication;
 import com.example.health_guardian_server.mappers.MedicationMapper;
 import com.example.health_guardian_server.repositories.MedicationRepository;
 import com.example.health_guardian_server.services.MedicationService;
+import com.example.health_guardian_server.specifications.MedicationSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,9 +29,10 @@ public class MedicationServiceImpl implements MedicationService {
   public Page<MedicationResponse> listMedications(ListMedicationRequest request) {
     log.info("Listing medications with request parameters: {}", request);
 
-    Page<MedicationResponse> medications = medicationRepository
-      .findAll(request.toSpecification(), request.toPageable())
-      .map(medicationMapper::toMedicationResponse);
+    PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+    MedicationSpecification specification = new MedicationSpecification(request);
+
+    var medications = medicationRepository.findAll(specification, pageRequest).map(medicationMapper::toMedicationResponse);
 
     log.debug("Found {} medications", medications.getTotalElements());
     return medications;
@@ -66,8 +69,7 @@ public class MedicationServiceImpl implements MedicationService {
   @Override
   public MedicationResponse updateMedication(String medicationId, UpdateMedicationRequest request) {
     log.info("Updating medication with id: {} and request details: {}", medicationId, request);
-
-    var medication = medicationRepository
+    Medication medication = medicationRepository
       .findById(medicationId)
       .orElseThrow(
         () -> {
@@ -75,7 +77,7 @@ public class MedicationServiceImpl implements MedicationService {
           return new ResourceNotFoundException("Medication not found for id: " + medicationId);
         });
 
-    var updatedMedication = medicationMapper.toMedication(request);
+    Medication updatedMedication = medicationMapper.toMedication(request);
     updatedMedication.setId(medication.getId());
 
     MedicationResponse response = medicationMapper.toMedicationResponse(medicationRepository.save(updatedMedication));
