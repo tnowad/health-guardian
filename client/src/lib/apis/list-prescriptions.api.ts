@@ -13,6 +13,7 @@ export const listPrescriptionsQuerySchema = pageableRequestSchema.extend({
   ids: z.array(z.string().uuid()).optional(),
   patientId: z.string().uuid().optional(),
   medicationId: z.string().uuid().optional(),
+  prescribedById: z.string().uuid().optional(),
   status: z.enum(["active", "inactive"]).optional(),
 });
 export type ListPrescriptionsQuerySchema = z.infer<

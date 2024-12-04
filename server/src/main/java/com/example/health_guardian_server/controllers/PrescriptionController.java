@@ -1,14 +1,18 @@
 package com.example.health_guardian_server.controllers;
 
+import com.example.health_guardian_server.dtos.requests.CreatePrescriptionRequest;
 import com.example.health_guardian_server.dtos.requests.ListPrescriptionRequest;
 import com.example.health_guardian_server.dtos.responses.PrescriptionResponse;
 import com.example.health_guardian_server.entities.Prescription;
+import com.example.health_guardian_server.mappers.PrescriptionMapper;
 import com.example.health_guardian_server.services.PrescriptionService;
 import java.util.Date;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,13 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/prescriptions")
 public class PrescriptionController {
   private final PrescriptionService prescriptionService;
 
-  public PrescriptionController(PrescriptionService prescriptionService) {
-    this.prescriptionService = prescriptionService;
-  }
+  private final PrescriptionMapper prescriptionMapper;
 
   @GetMapping
   public ResponseEntity<Page<PrescriptionResponse>> getAllPrescriptions(
@@ -76,5 +79,14 @@ public class PrescriptionController {
       @PathVariable String patientId, @PathVariable String status) {
     return new ResponseEntity<>(
         prescriptionService.getPrescriptionsByPatientIdAndStatus(patientId, status), HttpStatus.OK);
+  }
+
+  @PostMapping("")
+  public ResponseEntity<PrescriptionResponse> createPrescription(
+      @RequestBody CreatePrescriptionRequest request) {
+    Prescription prescription = prescriptionService.createPrescription(request);
+    PrescriptionResponse prescriptionResponse = prescriptionMapper.toPrescriptionResponse(prescription);
+    System.out.println(prescriptionResponse);
+    return new ResponseEntity<>(prescriptionResponse, HttpStatus.OK);
   }
 }
