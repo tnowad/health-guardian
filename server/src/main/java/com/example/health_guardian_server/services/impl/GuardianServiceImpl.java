@@ -8,6 +8,7 @@ import com.example.health_guardian_server.repositories.GuardianRepository;
 import com.example.health_guardian_server.services.GuardianService;
 import com.example.health_guardian_server.specifications.GuardianSpecification;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,57 +16,73 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GuardianServiceImpl implements GuardianService {
 
-  GuardianRepository guardianRepository;
-  GuardianMapper guardianMapper;
+  private final GuardianRepository guardianRepository;
+  private final GuardianMapper guardianMapper;
 
   @Override
   public Page<GuardianResponse> getAllGuardians(ListGuardiansRequest request) {
+    log.debug("Fetching all guardians with request: {}", request);
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     GuardianSpecification specification = new GuardianSpecification(request);
 
     var guardians =
-        guardianRepository
-            .findAll(specification, pageRequest)
-            .map(guardianMapper::toGuardianResponse);
+      guardianRepository
+        .findAll(specification, pageRequest)
+        .map(guardianMapper::toGuardianResponse);
 
+    log.info("Retrieved {} guardians", guardians.getTotalElements());
     return guardians;
   }
 
   @Override
   public GuardianResponse getGuardianById(String id) {
+    log.debug("Fetching guardian with id: {}", id);
     return guardianRepository
-        .findById(id)
-        .map(guardianMapper::toGuardianResponse)
-        .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + id));
+      .findById(id)
+      .map(guardianMapper::toGuardianResponse)
+      .orElseThrow(() -> {
+        log.error("Guardian not found with id: {}", id);
+        return new ResourceNotFoundException("Guardian not found with id " + id);
+      });
   }
 
   @Override
   public GuardianResponse createGuardian(GuardianResponse guardianResponse) {
+    log.debug("Creating new guardian: {}", guardianResponse);
     Guardian createdGuardian = guardianRepository.save(guardianMapper.toGuardian(guardianResponse));
+    log.info("Guardian created with id: {}", createdGuardian.getId());
     return guardianMapper.toGuardianResponse(createdGuardian);
   }
 
   @Override
   public GuardianResponse updateGuardian(String id, GuardianResponse guardianResponse) {
+    log.debug("Updating guardian with id: {}", id);
     Guardian existingGuardian =
-        guardianRepository
-            .findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + id));
+      guardianRepository
+        .findById(id)
+        .orElseThrow(() -> {
+          log.error("Guardian not found with id: {}", id);
+          return new ResourceNotFoundException("Guardian not found with id " + id);
+        });
 
+    log.debug("Updating details for guardian with id: {}", id);
     existingGuardian.setEmail(guardianResponse.getEmail());
     existingGuardian.setName(guardianResponse.getName());
     existingGuardian.setPhone(guardianResponse.getPhone());
     existingGuardian.setRelationshipToPatient(guardianResponse.getRelationshipToPatient());
 
     Guardian updatedGuardian = guardianRepository.save(existingGuardian);
-
+    log.info("Guardian updated with id: {}", updatedGuardian.getId());
     return guardianMapper.toGuardianResponse(updatedGuardian);
   }
 
   @Override
   public void deleteGuardian(String id) {
+    log.debug("Deleting guardian with id: {}", id);
     guardianRepository.deleteById(id);
+    log.info("Guardian deleted with id: {}", id);
   }
 }

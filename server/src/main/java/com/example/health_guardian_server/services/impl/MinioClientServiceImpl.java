@@ -50,89 +50,98 @@ public class MinioClientServiceImpl implements MinioClientService {
   String tempBucketName;
 
   public MinioClientServiceImpl(
-      @Value("${minio.endpoint}") String endpoint,
-      @Value("${minio.access-key}") String accessKey,
-      @Value("${minio.secret-key}") String secretKey,
-      @Autowired KafkaTemplate<String, HandleFileEvent> fileStorageTemplate) {
+    @Value("${minio.endpoint}") String endpoint,
+    @Value("${minio.access-key}") String accessKey,
+    @Value("${minio.secret-key}") String secretKey,
+    @Autowired KafkaTemplate<String, HandleFileEvent> fileStorageTemplate) {
     this.minioClient =
-        MinioClient.builder().endpoint(endpoint).credentials(accessKey, secretKey).build();
+      MinioClient.builder().endpoint(endpoint).credentials(accessKey, secretKey).build();
+    log.info("MinioClientService initialized with endpoint: {}", endpoint);
   }
 
   @Override
   public void storeObject(File file, String fileName, String contentType, String bucketName) {
+    log.info("Storing file '{}' in bucket '{}'", fileName, bucketName);
     try {
       ensureBucketExists(bucketName);
       minioClient.putObject(
-          PutObjectArgs.builder().bucket(bucketName).object(fileName).stream(
-                  Files.newInputStream(file.toPath()), file.length(), -1)
-              .contentType(contentType)
-              .build());
-
+        PutObjectArgs.builder().bucket(bucketName).object(fileName).stream(
+            Files.newInputStream(file.toPath()), file.length(), -1)
+          .contentType(contentType)
+          .build());
+      log.debug("File '{}' stored successfully in bucket '{}'", fileName, bucketName);
     } catch (Exception e) {
+      log.error("Error storing file '{}' in bucket '{}'", fileName, bucketName, e);
       throw new FileException(CAN_NOT_STORE_FILE, BAD_REQUEST);
     }
   }
 
   @Override
   public String getObjectUrl(String objectKey, String bucketName) {
+    log.info("Getting URL for object '{}' in bucket '{}'", objectKey, bucketName);
     try {
-      return minioClient.getPresignedObjectUrl(
-          GetPresignedObjectUrlArgs.builder()
-              .method(Method.GET)
-              .bucket(bucketName)
-              .object(objectKey)
-              .expiry(1, DAYS) // 1 week
-              .build());
-
+      String url = minioClient.getPresignedObjectUrl(
+        GetPresignedObjectUrlArgs.builder()
+          .method(Method.GET)
+          .bucket(bucketName)
+          .object(objectKey)
+          .expiry(1, DAYS) // 1 week
+          .build());
+      log.debug("URL for object '{}' is: {}", objectKey, url);
+      return url;
     } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
-      log.error("Error getting object URL", e);
+      log.error("Error getting URL for object '{}' in bucket '{}'", objectKey, bucketName, e);
       throw new FileException(COULD_NOT_READ_FILE, BAD_REQUEST);
     }
   }
 
   @Override
   public void deleteObject(String objectKey, String bucketName) {
-    GetObjectResponse response;
+    log.info("Deleting object '{}' from bucket '{}'", objectKey, bucketName);
     try {
-      response =
-          minioClient.getObject(
-              GetObjectArgs.builder().bucket(bucketName).object(objectKey).build());
-    } catch (Exception e) {
-      throw new FileException(COULD_NOT_READ_FILE, BAD_REQUEST);
-    }
+      GetObjectResponse response =
+        minioClient.getObject(
+          GetObjectArgs.builder().bucket(bucketName).object(objectKey).build());
 
-    if (response == null) throw new FileException(FILE_NOT_FOUND, BAD_REQUEST);
+      if (response == null) {
+        log.warn("File '{}' not found in bucket '{}'", objectKey, bucketName);
+        throw new FileException(FILE_NOT_FOUND, BAD_REQUEST);
+      }
 
-    try {
       minioClient.removeObject(
-          RemoveObjectArgs.builder().bucket(bucketName).object(objectKey).build());
-
+        RemoveObjectArgs.builder().bucket(bucketName).object(objectKey).build());
+      log.debug("Object '{}' deleted successfully from bucket '{}'", objectKey, bucketName);
     } catch (Exception e) {
+      log.error("Error deleting object '{}' from bucket '{}'", objectKey, bucketName, e);
       throw new FileException(CAN_NOT_DELETE_FILE, BAD_REQUEST);
     }
   }
 
   private void ensureBucketExists(String bucketName) {
-    boolean found;
+    log.info("Ensuring that bucket '{}' exists", bucketName);
     try {
-      found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+      boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
       if (!found) {
         minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
         log.info("Bucket '{}' created.", bucketName);
       }
     } catch (Exception e) {
+      log.error("Error checking if bucket '{}' exists", bucketName, e);
       throw new FileException(CAN_NOT_CHECK_BUCKET, BAD_REQUEST);
     }
   }
 
   @Override
   public long countObjectsInBucket(String bucketName) {
+    log.info("Counting objects in bucket '{}'", bucketName);
     try {
       Iterable<Result<Item>> results =
-          minioClient.listObjects(ListObjectsArgs.builder().bucket(bucketName).build());
-      return StreamSupport.stream(results.spliterator(), false).count();
+        minioClient.listObjects(ListObjectsArgs.builder().bucket(bucketName).build());
+      long count = StreamSupport.stream(results.spliterator(), false).count();
+      log.debug("Found {} objects in bucket '{}'", count, bucketName);
+      return count;
     } catch (Exception e) {
-      log.error("Error counting objects in bucket", e);
+      log.error("Error counting objects in bucket '{}'", bucketName, e);
       throw new FileException(CAN_NOT_CHECK_BUCKET, BAD_REQUEST);
     }
   }

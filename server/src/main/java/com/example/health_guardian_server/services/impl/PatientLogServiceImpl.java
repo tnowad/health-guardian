@@ -68,15 +68,15 @@ public class PatientLogServiceImpl implements PatientLogService {
   @Override
   public PatientLogResponse updatePatientLog(String id, UpdatePatientLogRequest patientLog) {
     PatientLog existingPatientLog = patientLogRepository
-        .findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("PatientLog not found with id " + id));
+      .findById(id)
+      .orElseThrow(() -> new ResourceNotFoundException("PatientLog not found with id " + id));
 
     if (existingPatientLog.getFileNames() != null) {
       existingPatientLog.setFileNames(
-          Stream.concat(
-              existingPatientLog.getFileNames().stream(), patientLog.getFileNames().stream())
-              .distinct()
-              .collect(Collectors.toList()));
+        Stream.concat(
+            existingPatientLog.getFileNames().stream(), patientLog.getFileNames().stream())
+          .distinct()
+          .collect(Collectors.toList()));
     } else {
       existingPatientLog.setFileNames(patientLog.getFileNames());
     }
