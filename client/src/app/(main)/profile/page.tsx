@@ -34,8 +34,14 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 
 export default function Page() {
+  const getCurrentUserInformationQuery = useQuery(
+    createGetCurrentUserInformationQueryOptions(),
+  );
+
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-full lg:col-span-6 grid gap-4">
@@ -47,7 +53,7 @@ export default function Page() {
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <span className="ml-2 text-xl font-bold text-foreground">
-                Nguyen Minh Tuan
+                {getCurrentUserInformationQuery.data?.name}
               </span>
             </CardDescription>
           </CardHeader>
@@ -57,7 +63,7 @@ export default function Page() {
               {[
                 {
                   type: "email",
-                  value: "tnowad@gmail.com",
+                  value: getCurrentUserInformationQuery.data?.email,
                 },
                 {
                   type: "phone",
@@ -65,8 +71,7 @@ export default function Page() {
                 },
                 {
                   type: "address",
-                  value:
-                    "Pham Hung, Binh Hung, Binh Chanh, Ho Chi Minh City, Vietnam",
+                  value: "123 Main St, HCMC, Vietnam",
                 },
               ]
                 .map((item) => ({

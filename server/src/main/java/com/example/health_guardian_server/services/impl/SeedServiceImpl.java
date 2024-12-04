@@ -123,6 +123,7 @@ public class SeedServiceImpl implements SeedService {
     doctorRolePermissions.put(
         "doctor",
         Arrays.asList(
+            PermissionName.VIEW_MAIN_DASHBOARD.name(),
             PermissionName.PATIENT_VIEW_OWN.name(),
             PermissionName.PATIENT_UPDATE_OWN.name(),
             PermissionName.APPOINTMENT_VIEW_OWN.name(),
@@ -133,6 +134,7 @@ public class SeedServiceImpl implements SeedService {
     nurseRolePermissions.put(
         "nurse",
         Arrays.asList(
+            PermissionName.VIEW_MAIN_DASHBOARD.name(),
             PermissionName.PATIENT_VIEW_OWN.name(),
             PermissionName.NOTIFICATION_VIEW_OWN.name(),
             PermissionName.REPORT_VIEW_OWN.name()));
@@ -203,6 +205,57 @@ public class SeedServiceImpl implements SeedService {
         .account(adminAccount)
         .build();
     localProviderRepository.save(adminLocalProvider);
+
+    User patientUser = User.builder()
+        .roles(
+            adminRolePermissions.keySet().stream()
+                .map(
+                    roleName -> roles.stream()
+                        .filter(role -> role.getName().equals(roleName))
+                        .findFirst()
+                        .get())
+                .collect(Collectors.toSet()))
+        .username("patient")
+        .email("patient@health-guardian.com")
+        .type(UserType.PATIENT)
+        .build();
+    userRepository.save(patientUser);
+
+    Account patientAccount = Account.builder().user(patientUser).status(AccountStatus.ACTIVE).build();
+    accountRepository.save(patientAccount);
+    userRepository.save(patientUser);
+
+    LocalProvider patientLocalProvider = LocalProvider.builder()
+        .email("patient@health-guardian.com")
+        .passwordHash(passwordEncoder.encode("Password@123"))
+        .account(patientAccount)
+        .build();
+    localProviderRepository.save(patientLocalProvider);
+
+    Guardian guardian = Guardian.builder()
+        .name("Jane Doe")
+        .relationshipToPatient("Mother")
+        .phone("0123456789")
+        .email("mother@health-guardian.com")
+        .build();
+
+    Patient patient = Patient.builder()
+        .firstName("John")
+        .lastName("Doe")
+        .dob(faker.date().birthday())
+        .guardian(guardian)
+        .gender("MALE")
+        .status(MedicalStatus.HEALTHY)
+        .createdAt(new Date())
+        .updatedAt(new Date())
+        .build();
+
+    guardianRepository.save(guardian);
+    patientRepository.save(patient);
+    patientUser.setPatient(patient);
+    userRepository.save(patientUser);
+
+    log.info("Database initialized");
   }
 
   @Override
@@ -353,7 +406,6 @@ public class SeedServiceImpl implements SeedService {
             .build();
         userStaffs.add(userStaff);
       } else if (x.getType().equals(UserType.MEDICAL_STAFF)) {
-
         UserStaff userStaff = UserStaff.builder()
             .user(x)
             .firstName(faker.name().firstName())

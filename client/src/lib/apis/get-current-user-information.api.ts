@@ -42,8 +42,10 @@ export type CurrentUserErrorResponseSchema = z.infer<
 >;
 
 export async function getCurrentUserInformationApi() {
-  const response = await apiClient.get("/users/current-user/information");
-  return currentUserResponseSchema.parse(response.data);
+  const response = await apiClient.get<CurrentUserResponseSchema>(
+    "/users/current-user/information",
+  );
+  return response.data;
 }
 
 export function createGetCurrentUserInformationQueryOptions() {
