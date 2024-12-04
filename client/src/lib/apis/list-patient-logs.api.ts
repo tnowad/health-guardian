@@ -32,7 +32,7 @@ export type ListPatientLogsErrorResponseSchema = z.infer<
 
 export async function listPatientLogsApi(query: ListPatientLogsQuerySchema) {
   const response = await apiClient.get("/patient-logs", query);
-  return response.data;
+  return listPatientLogsResponseSchema.parse(response.data);
 }
 
 export function createListPatientLogsQueryOptions(
