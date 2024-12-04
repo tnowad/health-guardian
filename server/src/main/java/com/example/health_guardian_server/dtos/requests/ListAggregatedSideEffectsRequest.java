@@ -7,7 +7,9 @@ import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 
 @Data
-public class ListAggregatedSideEffectsRequest implements PageableRequest<AggregatedSideEffect> {
+public class ListAggregatedSideEffectsRequest
+    implements PageableRequest<AggregatedSideEffect>, PageableWithIdsRequest<String> {
+  String[] ids;
 
   private Integer page = 0;
 

@@ -6,7 +6,8 @@ import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 
 @Data
-public class ListMedicationRequest implements PageableRequest<Medication> {
+public class ListMedicationRequest implements PageableRequest<Medication>, PageableWithIdsRequest<String> {
+  String[] ids;
   private String name;
   private String activeIngredient;
   private String dosageForm;
