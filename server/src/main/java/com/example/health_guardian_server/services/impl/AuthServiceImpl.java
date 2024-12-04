@@ -1,5 +1,9 @@
 package com.example.health_guardian_server.services.impl;
 
+import static com.example.health_guardian_server.dtos.enums.VerificationType.*;
+import static com.example.health_guardian_server.utils.Constants.*;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import com.example.health_guardian_server.dtos.enums.VerificationType;
 import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
 import com.example.health_guardian_server.dtos.requests.SignUpRequest;
@@ -7,10 +11,8 @@ import com.example.health_guardian_server.dtos.responses.GetCurrentUserPermissio
 import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.dtos.responses.SignUpResponse;
-import com.example.health_guardian_server.entities.AccountStatus;
-import com.example.health_guardian_server.entities.LocalProvider;
-import com.example.health_guardian_server.entities.User;
-import com.example.health_guardian_server.entities.UserType;
+import com.example.health_guardian_server.entities.*;
+import com.example.health_guardian_server.repositories.VerificationRepository;
 import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AuthService;
 import com.example.health_guardian_server.services.BaseRedisService;
@@ -21,12 +23,19 @@ import com.example.health_guardian_server.services.RoleService;
 import com.example.health_guardian_server.services.TokenService;
 import com.example.health_guardian_server.services.UserService;
 import jakarta.transaction.Transactional;
+
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,6 +52,9 @@ public class AuthServiceImpl implements AuthService {
   UserService userService;
   PatientService patientService;
   BaseRedisService<String, String, Object> baseRedisService;
+  VerificationRepository verificationRepository;
+  KafkaTemplate<String, String> kafkaTemplate;
+  int VERIFICATION_VALID_DURATION = 15;
 
   @Override
   public SignInResponse signIn(SignInRequest request) {
@@ -97,28 +109,42 @@ public class AuthServiceImpl implements AuthService {
   @Override
   @Transactional
   public SignUpResponse signUp(SignUpRequest request) {
+    log.info("Sign-up attempt for email: {}", request.getEmail());
     if (localProviderService.getLocalProviderByEmail(request.getEmail()) != null) {
+      log.warn("Sign-up failed: Email already in use: {}", request.getEmail());
       throw new RuntimeException("Email already in use");
     }
 
+    log.debug("Creating local provider for email: {}", request.getEmail());
     var localProvider = localProviderService.createLocalProvider(request.getEmail(), request.getPassword());
 
-    var user = userService.createUser(
-        User.builder()
-            .email(request.getEmail())
-            .username(request.getUsername())
-            .type(UserType.PATIENT)
-            .build());
-    var account = accountService.createAccountWithLocalProvider(user, localProvider);
-    accountService.updateAccountStatus(account.getId(), AccountStatus.ACTIVE);
+    log.debug("Creating patient record for user: {}", request.getEmail());
+    var patient = patientService.createPatient(Patient.builder()
+      .firstName(request.getFirstName())
+      .lastName(request.getLastName())
+      .gender(request.getGender().toString())
+      .dateOfBirth(request.getDateOfBirth())
+      .build());
 
+    log.debug("Creating user record for email: {}", request.getEmail());
+    var user = userService.createUser(
+      User.builder()
+        .email(request.getEmail())
+        .patient(patient)
+        .username(request.getUsername())
+        .type(UserType.PATIENT)
+        .build());
+
+    log.debug("Creating account and linking to user: {}", user.getId());
+    var account = accountService.createAccountWithLocalProvider(user, localProvider);
+    localProvider.setAccount(account);
+    localProviderService.saveLocalProvider(localProvider);
+    log.debug("Assigning default roles for user: {}", user.getId());
     var roleIds = roleService.getDefaultRoleIdsForPatient();
     roleService.assignRolesToUser(user.getId(), roleIds);
-    patientService.createPatient(user.getId(), request.getFirstName(), request.getLastName());
-    var permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
-    var tokens = tokenService.generateTokens(user.getId(), permissionNames);
 
-    return SignUpResponse.builder().tokens(tokens).message("Sign up successfully").build();
+    log.info("Sign-up successful for email: {}", request.getEmail());
+    return SignUpResponse.builder().message("Sign up successfully").build();
   }
 
   @Override
@@ -127,8 +153,57 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public void sendEmailVerification(String email, Object verificationType) {
-    throw new UnsupportedOperationException("Unimplemented method 'sendEmailVerification'");
+  public void sendEmailVerification(String email, VerificationType verificationType) {
+    LocalProvider localProvider = localProviderService.getLocalProviderByEmail(email);
+
+    List<Verification> verifications = verificationRepository.findByLocalProviderAndVerificationType(localProvider,
+        verificationType);
+
+    if (verificationType.equals(VERIFY_EMAIL_BY_CODE)
+        || verificationType.equals(VERIFY_EMAIL_BY_TOKEN)) {
+      if (localProvider.getAccount().getStatus().equals(AccountStatus.ACTIVE))
+        throw new RuntimeException("User already verified");
+      else {
+        if (!verifications.isEmpty())
+          verificationRepository.deleteAll(verifications);
+        sendEmail(email, verificationType);
+      }
+
+    } else {
+      if (verifications.isEmpty())
+        throw new RuntimeException("Can't send mail");
+      else {
+        verificationRepository.deleteAll(verifications);
+        sendEmail(email, verificationType);
+      }
+    }
+  }
+
+  @Transactional
+  protected void sendEmail(String email, VerificationType verificationType) {
+    LocalProvider localProvider = localProviderService.getLocalProviderByEmail(email);
+
+    Verification verification = verificationRepository.save(Verification.builder()
+        .code(generateVerificationCode(6))
+        .expiryTime(Date.from(Instant.now().plus(VERIFICATION_VALID_DURATION, MINUTES)))
+        .verificationType(verificationType)
+        .localProvider(localProvider)
+        .build());
+
+    kafkaTemplate.send(KAFKA_TOPIC_SEND_MAIL,
+        verificationType + ":" + email + ":" + verification.getToken() + ":" + verification.getCode());
+  }
+
+  public static String generateVerificationCode(int length) {
+    StringBuilder code = new StringBuilder();
+    SecureRandom random = new SecureRandom();
+
+    for (int i = 0; i < length; i++) {
+      int randomIndex = random.nextInt(CHARACTERS.length());
+      code.append(CHARACTERS.charAt(randomIndex));
+    }
+
+    return code.toString();
   }
 
   @Override

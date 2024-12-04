@@ -16,7 +16,11 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import {
   createListUserMedicalStaffsInfinityQueryOptions,
   createListUserMedicalStaffsQueryOptions,
@@ -53,6 +57,9 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { useToast } from "@/hooks/use-toast";
+import { createListUserStaffsQueryOptions } from "@/lib/apis/list-user-staffs.api";
+import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 
 interface AppointmentBookingModalProps {
   isOpen: boolean;
@@ -63,6 +70,11 @@ export default function AppointmentBookingModal({
   isOpen,
   onClose,
 }: AppointmentBookingModalProps) {
+  const { toast } = useToast();
+  const getCurrentUserInformationQuery = useSuspenseQuery(
+    createGetCurrentUserInformationQueryOptions(),
+  );
+
   const listUserMedicalStaffsInfinityQuery = useInfiniteQuery(
     createListUserMedicalStaffsInfinityQueryOptions({}),
   );
@@ -71,7 +83,7 @@ export default function AppointmentBookingModal({
   const createAppointmentForm = useForm<CreateAppointmentBodySchema>({
     resolver: zodResolver(createAppointmentBodySchema),
     defaultValues: {
-      patientId: "",
+      patientId: getCurrentUserInformationQuery.data?.patient.id ?? "",
       status: "SCHEDULED",
       doctorId: "",
       reasonForVisit: "",
@@ -82,7 +94,7 @@ export default function AppointmentBookingModal({
   const [doctorSearchQuery, setDoctorSearchQuery] = useState("");
 
   const lastUserMedicalStaffsCommandItemObserver =
-    useRef<IntersectionObserver>(null);
+    useRef<IntersectionObserver | null>(null);
   const lastUserMedicalStaffsCommandItemElementRef = useCallback(
     (node: HTMLDivElement) => {
       if (listUserMedicalStaffsInfinityQuery.isLoading) return;
@@ -110,18 +122,33 @@ export default function AppointmentBookingModal({
       ) ?? []
     );
   }, [listUserMedicalStaffsInfinityQuery.data]);
+  const listUserStaffsQuery = useQuery(
+    createListUserStaffsQueryOptions({
+      ids: doctors.map((doctor) => doctor.userId),
+    }),
+  );
 
-  const [doctor, setDoctor] = useState("");
-  const [date, setDate] = useState("");
-  const [reason, setReason] = useState("");
+  const userStaffs = useMemo(() => {
+    return listUserStaffsQuery.data?.content ?? [];
+  }, [listUserStaffsQuery.data]);
 
   const handleSubmit = createAppointmentForm.handleSubmit((data) =>
-    createAppointmentMutation.mutate(data),
+    createAppointmentMutation.mutate(data, {
+      onSuccess() {
+        toast({
+          title: "Appointment created",
+          description: "Appointment has been successfully created.",
+        });
+      },
+    }),
   );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onWheel={(event) => event.stopPropagation()}
+      >
         <DialogHeader>
           <DialogTitle>Book Appointment</DialogTitle>
         </DialogHeader>
@@ -137,8 +164,7 @@ export default function AppointmentBookingModal({
                   control={createAppointmentForm.control}
                   name="doctorId"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Doctor</FormLabel>
+                    <FormItem className="flex flex-col col-span-3">
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -152,11 +178,10 @@ export default function AppointmentBookingModal({
                             >
                               {field.value ? (
                                 <span className="space-x-1">
-                                  {
-                                    doctors.find(
-                                      (doctor) => doctor.id === field.value,
-                                    )?.userId
-                                  }
+                                  {userStaffs.find(
+                                    (userStaff) =>
+                                      userStaff.userId === field.value,
+                                  )?.firstName || "Loading..."}
                                 </span>
                               ) : (
                                 "Select doctor"
@@ -166,7 +191,10 @@ export default function AppointmentBookingModal({
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="p-0">
-                          <Command shouldFilter={false}>
+                          <Command
+                            shouldFilter={false}
+                            onWheel={(event) => event.stopPropagation()}
+                          >
                             <CommandInput
                               placeholder="Search doctors..."
                               value={doctorSearchQuery}
@@ -187,7 +215,10 @@ export default function AppointmentBookingModal({
                                       );
                                     }}
                                   >
-                                    {doctor.userId}
+                                    {userStaffs.find(
+                                      (userStaff) =>
+                                        userStaff.userId === doctor.userId,
+                                    )?.firstName || "Loading..."}
                                   </CommandItem>
                                 ))}
                                 {listUserMedicalStaffsInfinityQuery.hasNextPage && (
@@ -216,25 +247,37 @@ export default function AppointmentBookingModal({
                 <label htmlFor="date" className="text-right">
                   Date
                 </label>
-                <Input
-                  id="date"
-                  type="datetime-local"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="col-span-3"
-                  required
+
+                <FormField
+                  control={createAppointmentForm.control}
+                  name="appointmentDate"
+                  render={({ field }) => (
+                    <FormItem className="col-span-3">
+                      <Input
+                        id="date"
+                        type="datetime-local"
+                        {...field}
+                        required
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <label htmlFor="reason" className="text-right">
                   Reason
                 </label>
-                <Textarea
-                  id="reason"
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
-                  className="col-span-3"
-                  required
+
+                <FormField
+                  control={createAppointmentForm.control}
+                  name="reasonForVisit"
+                  render={({ field }) => (
+                    <FormItem className="col-span-3">
+                      <Textarea id="reason" {...field} required />
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
             </div>

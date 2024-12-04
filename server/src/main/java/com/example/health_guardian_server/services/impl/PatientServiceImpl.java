@@ -49,6 +49,11 @@ public class PatientServiceImpl implements PatientService {
   }
 
   @Override
+  public Patient createPatient(Patient patient) {
+    return patientRepository.save(patient);
+  }
+
+  @Override
   public Page<PatientResponse> getAllPatients(ListPatientRequest request) {
     log.debug("Fetching patients with pagination: page = {}, size = {}", request.getPage(), request.getSize());
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());

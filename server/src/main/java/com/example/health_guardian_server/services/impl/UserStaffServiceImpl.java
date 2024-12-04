@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j  // This enables logging
+@Slf4j // This enables logging
 public class UserStaffServiceImpl implements UserStaffService {
 
   private final UserStaffRepository userStaffRepository;
@@ -30,18 +30,11 @@ public class UserStaffServiceImpl implements UserStaffService {
   public Page<UserStaffResponse> getAllUserStaffs(ListUserStaffRequest request) {
     log.debug("Fetching all user staff with page: {} and size: {}", request.getPage(), request.getSize());
 
-    Page<UserStaff> userStaffs =
-      userStaffRepository.findAll(PageRequest.of(request.getPage(), request.getSize()));
+    var userStaffs = userStaffRepository.findAll(request.toSpecification(), request.toPageable());
 
     log.info("Successfully fetched {} user staff records.", userStaffs.getTotalElements());
 
-    return userStaffs.map(
-      userStaff ->
-        new UserStaffResponse(
-          userStaff.getId(),
-          userStaff.getUser(),
-          userStaff.getRole(),
-          userStaff.getRoleType()));
+    return userStaffs.map(userStaffMapper::toUserStaffResponse);
   }
 
   @Override
@@ -57,8 +50,7 @@ public class UserStaffServiceImpl implements UserStaffService {
 
     log.info("Successfully fetched user staff with id: {}", id);
 
-    return new UserStaffResponse(
-      userStaff.getId(), userStaff.getUser(), userStaff.getRole(), userStaff.getRoleType());
+    return userStaffMapper.toUserStaffResponse(userStaff);
   }
 
   @Override
@@ -79,11 +71,7 @@ public class UserStaffServiceImpl implements UserStaffService {
     UserStaff savedUserStaff = userStaffRepository.save(userStaff);
     log.info("Successfully created user staff with id: {}", savedUserStaff.getId());
 
-    return new UserStaffResponse(
-      savedUserStaff.getId(),
-      savedUserStaff.getUser(),
-      savedUserStaff.getRole(),
-      savedUserStaff.getRoleType());
+    return userStaffMapper.toUserStaffResponse(savedUserStaff);
   }
 
   @Override
@@ -103,11 +91,7 @@ public class UserStaffServiceImpl implements UserStaffService {
     UserStaff updatedUserStaff = userStaffRepository.save(existingUserStaff);
     log.info("Successfully updated user staff with id: {}", updatedUserStaff.getId());
 
-    return new UserStaffResponse(
-      updatedUserStaff.getId(),
-      updatedUserStaff.getUser(),
-      updatedUserStaff.getRole(),
-      updatedUserStaff.getRoleType());
+    return userStaffMapper.toUserStaffResponse(updatedUserStaff);
   }
 
   @Override
@@ -126,8 +110,7 @@ public class UserStaffServiceImpl implements UserStaffService {
   public UserStaffResponse updateUserStaff(String id, UpdateUserStaffRequest request) {
     log.debug("Updating user staff with id: {} using request: {}", id, request);
 
-    UserStaff userStaff =
-      userStaffRepository
+    UserStaff userStaff = userStaffRepository
         .findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("UserStaff not found with id " + id));
 

@@ -1,24 +1,8 @@
 package com.example.health_guardian_server.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "accounts")
@@ -27,14 +11,17 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@EqualsAndHashCode
+@ToString(onlyExplicitlyIncluded = true) // Include only specific fields
+@EqualsAndHashCode(onlyExplicitlyIncluded = true) // Include only specific fields
 public class Account {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
+  @ToString.Include
+  @EqualsAndHashCode.Include
   private String id;
 
+  @ToString.Include
   private String profileType;
 
   @Column(name = "user_id", insertable = false, updatable = false)
@@ -45,11 +32,16 @@ public class Account {
   private User user;
 
   @Enumerated(EnumType.STRING)
+  @ToString.Include
   private AccountStatus status;
 
-  @OneToMany(mappedBy = "account")
+  @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ToString.Exclude // Exclude collections to avoid stack overflow
+  @EqualsAndHashCode.Exclude
   private Set<LocalProvider> localProviders;
 
-  @OneToMany(mappedBy = "account")
+  @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private Set<ExternalProvider> externalProviders;
 }

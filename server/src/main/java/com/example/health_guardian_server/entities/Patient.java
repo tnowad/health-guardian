@@ -1,14 +1,6 @@
 package com.example.health_guardian_server.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import java.util.Date;
@@ -44,6 +36,8 @@ public class Patient {
   @Past private Date dob;
 
   @NotBlank private String gender;
+
+  @Column private Date dateOfBirth;
 
   @ManyToOne
   @JoinColumn(name = "guardian_id", referencedColumnName = "id")

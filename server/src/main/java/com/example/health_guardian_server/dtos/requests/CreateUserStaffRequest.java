@@ -1,5 +1,6 @@
 package com.example.health_guardian_server.dtos.requests;
 
+import java.util.Date;
 
 import com.example.health_guardian_server.entities.User;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +17,9 @@ public class CreateUserStaffRequest {
   @NotNull(message = "Role Type is required")
   private String roleType;
 
+  private String firstName;
 
+  private String lastName;
 
+  Date dateOfBirth;
 }

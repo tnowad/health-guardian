@@ -10,6 +10,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 
 export const listUserStaffsQuerySchema = pageableRequestSchema.extend({
+  ids: z.array(z.string()).optional(),
   role: z.string().optional(),
   roleType: z.string().optional(),
 });
@@ -31,20 +32,18 @@ export type ListUserStaffsErrorResponseSchema = z.infer<
 >;
 
 export async function listUserStaffsApi(query: ListUserStaffsQuerySchema) {
-  const response = await apiClient.get("/user-staffs", query );
-  return listUserStaffsResponseSchema.parse(response.data);
+  const response = await apiClient.get<ListUserStaffsResponseSchema>(
+    "/user-staffs",
+    query,
+  );
+  return response.data;
 }
 
 export function createListUserStaffsQueryOptions(
   query: ListUserStaffsQuerySchema,
 ) {
   const queryKey = ["user-staffs", query] as const;
-  return queryOptions<
-    ListUserStaffsResponseSchema,
-    ListUserStaffsErrorResponseSchema,
-    ListUserStaffsQuerySchema,
-    typeof queryKey
-  >({
+  return queryOptions<ListUserStaffsResponseSchema>({
     queryKey,
     queryFn: () => listUserStaffsApi(listUserStaffsQuerySchema.parse(query)),
     throwOnError: isAxiosError,

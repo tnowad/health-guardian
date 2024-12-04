@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SignUpResponse {
   String message;
-  TokensResponse tokens;
 }
