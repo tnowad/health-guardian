@@ -19,6 +19,10 @@ public class AppointmentSpecification implements Specification<Appointment> {
 
     List<Predicate> predicates = new ArrayList<>();
 
+    if (request.getIds() != null && request.getIds().length > 0) {
+      predicates.add(root.get("id").in((Object[]) request.getIds()));
+    }
+
     // Filter by patient ID
     if (request.getPatientId() != null && !request.getPatientId().isEmpty()) {
       predicates.add(criteriaBuilder.equal(root.get("patient").get("id"), request.getPatientId()));
