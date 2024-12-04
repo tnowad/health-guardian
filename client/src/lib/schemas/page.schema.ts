@@ -22,6 +22,20 @@ export const pageableSchema = z.object({
   unpaged: z.boolean(),
 });
 
+export const pageableResponseSchema = z.object({
+  content: z.array(z.any()),
+  pageable: pageableSchema,
+  totalPages: z.number().int(),
+  totalElements: z.number().int(),
+  last: z.boolean(),
+  size: z.number().int(),
+  number: z.number().int(),
+  sort: sortSchema,
+  numberOfElements: z.number().int(),
+  first: z.boolean(),
+  empty: z.boolean(),
+});
+
 export function createListResponseSchema<ItemType extends z.ZodTypeAny>(
   schema: ItemType,
 ) {
