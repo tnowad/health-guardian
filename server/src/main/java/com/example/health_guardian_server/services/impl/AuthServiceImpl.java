@@ -13,6 +13,7 @@ import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.entities.UserType;
 import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AuthService;
+import com.example.health_guardian_server.services.BaseRedisService;
 import com.example.health_guardian_server.services.LocalProviderService;
 import com.example.health_guardian_server.services.PatientService;
 import com.example.health_guardian_server.services.PermissionService;
@@ -25,9 +26,11 @@ import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class AuthServiceImpl implements AuthService {
@@ -39,6 +42,7 @@ public class AuthServiceImpl implements AuthService {
   TokenService tokenService;
   UserService userService;
   PatientService patientService;
+  BaseRedisService<String, String, Object> baseRedisService;
 
   @Override
   public SignInResponse signIn(SignInRequest request) {
@@ -97,16 +101,14 @@ public class AuthServiceImpl implements AuthService {
       throw new RuntimeException("Email already in use");
     }
 
-    var localProvider =
-        localProviderService.createLocalProvider(request.getEmail(), request.getPassword());
+    var localProvider = localProviderService.createLocalProvider(request.getEmail(), request.getPassword());
 
-    var user =
-        userService.createUser(
-            User.builder()
-                .email(request.getEmail())
-                .username(request.getUsername())
-                .type(UserType.PATIENT)
-                .build());
+    var user = userService.createUser(
+        User.builder()
+            .email(request.getEmail())
+            .username(request.getUsername())
+            .type(UserType.PATIENT)
+            .build());
     var account = accountService.createAccountWithLocalProvider(user, localProvider);
     accountService.updateAccountStatus(account.getId(), AccountStatus.ACTIVE);
 
@@ -127,5 +129,54 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public void sendEmailVerification(String email, Object verificationType) {
     throw new UnsupportedOperationException("Unimplemented method 'sendEmailVerification'");
+  }
+
+  @Override
+  public void signOut(String accessToken, String refreshToken) throws Exception {
+    // try {
+    // SignedJWT signAccessToken = verifyToken(accessToken, false);
+    // byte AccessTokenExpiryTime =
+    // signAccessToken.getJWTClaimsSet().getExpirationTime();
+    //
+    // if (AccessTokenExpiryTime.after(new Date())) {
+    // baseRedisService.set(signAccessToken.getJWTClaimsSet().getJWTID(),
+    // "revoked");
+    // baseRedisService.setTimeToLive(
+    // signAccessToken.getJWTClaimsSet().getJWTID(),
+    // AccessTokenExpiryTime.getTime() - System.currentTimeMillis());
+    // }
+    //
+    // SignedJWT signRefreshToken = verifyToken(refreshToken, true);
+    // Date RefreshTokenExpiryTime =
+    // signRefreshToken.getJWTClaimsSet().getExpirationTime();
+    //
+    // if (RefreshTokenExpiryTime.after(new Date())) {
+    // baseRedisService.set(signRefreshToken.getJWTClaimsSet().getJWTID(),
+    // "revoked");
+    // baseRedisService.setTimeToLive(
+    // signRefreshToken.getJWTClaimsSet().getJWTID(),
+    // RefreshTokenExpiryTime.getTime() - System.currentTimeMillis());
+    // }
+    //
+    // } catch (Exception exception) {
+    // log.error("Cannot sign out", exception);
+    // }
+    throw new UnsupportedOperationException("Unimplemented method 'sendEmailForgotPassword'");
+  }
+
+  @Override
+  public void sendEmailForgotPassword(String email) {
+    throw new UnsupportedOperationException("Unimplemented method 'sendEmailForgotPassword'");
+  }
+
+  @Override
+  public void resetPassword(String token, String password, String confirmationPassword) {
+    throw new UnsupportedOperationException("Unimplemented method 'resetPassword'");
+  }
+
+  @Override
+  public String forgotPassword(LocalProvider localProvider, String code) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'forgotPassword'");
   }
 }
