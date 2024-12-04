@@ -1,28 +1,40 @@
 package com.example.health_guardian_server.services.impl;
 
-import com.example.health_guardian_server.entities.Prescription;
-import com.example.health_guardian_server.entities.PrescriptionStatus;
-import com.example.health_guardian_server.repositories.PrescriptionRepository;
-import com.example.health_guardian_server.services.PrescriptionService;
 import java.util.Date;
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import com.example.health_guardian_server.dtos.requests.ListPrescriptionRequest;
+import com.example.health_guardian_server.entities.Prescription;
+import com.example.health_guardian_server.entities.PrescriptionStatus;
+import com.example.health_guardian_server.mappers.PrescriptionMapper;
+import com.example.health_guardian_server.repositories.PrescriptionRepository;
+import com.example.health_guardian_server.services.PrescriptionService;
+import com.example.health_guardian_server.specifications.PrescriptionSpecification;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j // Add the Slf4j annotation to enable logging
 public class PrescriptionServiceImpl implements PrescriptionService {
   private final PrescriptionRepository prescriptionRepository;
-
+  private final PrescriptionMapper prescriptionMapper;
   // Implement methods
 
   @Override
-  public List<Prescription> getAllPrescriptions() {
+  public Page<Prescription> getAllPrescriptions(ListPrescriptionRequest request) {
     log.debug("Fetching all prescriptions");
-    List<Prescription> prescriptions = prescriptionRepository.findAll();
-    log.info("Fetched {} prescriptions", prescriptions.size());
+    PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+    PrescriptionSpecification specification = new PrescriptionSpecification(request);
+    var prescriptions = prescriptionRepository.findAll(specification, pageRequest)
+    .map(prescriptionMapper::toResponse);)
+
+    log.info("Fetched {} prescriptions", prescriptions);
     return prescriptions;
   }
 
@@ -80,18 +92,18 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   @Override
   public List<Prescription> getPrescriptionsByStatus(String status) {
     log.debug("Fetching prescriptions with status: {}", status);
-    List<Prescription> prescriptions =
-      prescriptionRepository.findByStatus(PrescriptionStatus.valueOf(status));
+    List<Prescription> prescriptions = prescriptionRepository.findByStatus(PrescriptionStatus.valueOf(status));
     log.info("Fetched {} prescriptions with status: {}", prescriptions.size(), status);
     return prescriptions;
   }
 
   @Override
   public List<Prescription> getPrescriptionsByPatientIdAndMedicationId(
-    String patientId, String medicationId) {
+      String patientId, String medicationId) {
     log.debug("Fetching prescriptions for patient id: {} and medication id: {}", patientId, medicationId);
     List<Prescription> prescriptions = prescriptionRepository.findByPatientIdAndMedicationId(patientId, medicationId);
-    log.info("Fetched {} prescriptions for patient id: {} and medication id: {}", prescriptions.size(), patientId, medicationId);
+    log.info("Fetched {} prescriptions for patient id: {} and medication id: {}", prescriptions.size(), patientId,
+        medicationId);
     return prescriptions;
   }
 
@@ -106,8 +118,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   @Override
   public List<Prescription> getPrescriptionsByPatientIdAndStatus(String patientId, String status) {
     log.debug("Fetching prescriptions for patient id: {} and status: {}", patientId, status);
-    List<Prescription> prescriptions =
-      prescriptionRepository.findByPatientIdAndStatus(patientId, PrescriptionStatus.valueOf(status));
+    List<Prescription> prescriptions = prescriptionRepository.findByPatientIdAndStatus(patientId,
+        PrescriptionStatus.valueOf(status));
     log.info("Fetched {} prescriptions for patient id: {} and status: {}", prescriptions.size(), patientId, status);
     return prescriptions;
   }

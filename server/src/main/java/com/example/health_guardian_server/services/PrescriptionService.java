@@ -1,12 +1,14 @@
 package com.example.health_guardian_server.services;
 
+import com.example.health_guardian_server.dtos.requests.ListPrescriptionRequest;
 import com.example.health_guardian_server.entities.Prescription;
 import java.util.Date;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface PrescriptionService {
   // Define methods
-  List<Prescription> getAllPrescriptions();
+  Page<Prescription> getAllPrescriptions(ListPrescriptionRequest request);
 
   Prescription getPrescriptionById(String id);
 
