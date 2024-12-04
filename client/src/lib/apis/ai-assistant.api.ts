@@ -15,7 +15,7 @@ export async function askQuestionApi(
     body: QuestionRequest,
 ): Promise<QuestionResponse> {
     const response = await apiClient.post<QuestionResponse>(
-        "/ai-assistant",
+        "/ai-assistant/ask",
         body,
     );
     return questionResponseSchema.parse(response.data);
