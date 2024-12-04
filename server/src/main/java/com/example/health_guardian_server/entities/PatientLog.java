@@ -9,7 +9,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Date;
-
+import java.util.List;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -31,6 +31,8 @@ public class PatientLog {
   @ManyToOne
   @JoinColumn(name = "patient_id", referencedColumnName = "id")
   private Patient patient;
+
+  private List<String> fileNames;
 
   private String logType;
 

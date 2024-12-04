@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public interface MinioClientService {
   void storeObject(File file, String fileName, String contentType, String bucketName);
 
-  String getObjectUrl(String objectKey);
+  String getObjectUrl(String objectKey, String bucketName);
 
   void deleteObject(String objectKey, String bucketName);
 

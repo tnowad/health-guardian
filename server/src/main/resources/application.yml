@@ -36,6 +36,13 @@ springdoc:
     path: /swagger-ui.html
   show-actuator: true
 
+minio:
+  endpoint: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket-name: sports-field-booking-bucket
+  temp-bucket-name: sports-field-booking-temp-bucket
+
 openapi:
   service:
     api-docs: rest-api-service-dev

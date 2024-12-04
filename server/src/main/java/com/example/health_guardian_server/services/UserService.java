@@ -6,13 +6,12 @@ import com.example.health_guardian_server.dtos.requests.UpdateUserRequest;
 import com.example.health_guardian_server.dtos.responses.CurrentUserInfomationResponse;
 import com.example.health_guardian_server.dtos.responses.UserResponse;
 import com.example.health_guardian_server.entities.User;
-import com.example.health_guardian_server.entities.UserType;
 import org.springframework.data.domain.Page;
 
 public interface UserService {
   User getUserByAccountId(String accountId);
 
-  User createUser(UserType patient);
+  User createUser(User user);
 
   User getUserById(String userId);
 

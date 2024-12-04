@@ -14,6 +14,11 @@ public class SignUpRequest {
   @Schema(description = "User's email address", example = "user@example.com")
   private String email;
 
+  @Email
+  @NotBlank
+  @Schema(description = "User's email address", example = "user@example.com")
+  private String username;
+
   @NotBlank
   @Size(min = 1, max = 50)
   @Schema(description = "User's first name", example = "John")

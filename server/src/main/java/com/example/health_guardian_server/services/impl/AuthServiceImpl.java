@@ -9,6 +9,7 @@ import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.dtos.responses.SignUpResponse;
 import com.example.health_guardian_server.entities.AccountStatus;
 import com.example.health_guardian_server.entities.LocalProvider;
+import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.entities.UserType;
 import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AuthService;
@@ -98,7 +99,14 @@ public class AuthServiceImpl implements AuthService {
 
     var localProvider =
         localProviderService.createLocalProvider(request.getEmail(), request.getPassword());
-    var user = userService.createUser(UserType.PATIENT);
+
+    var user =
+        userService.createUser(
+            User.builder()
+                .email(request.getEmail())
+                .username(request.getUsername())
+                .type(UserType.PATIENT)
+                .build());
     var account = accountService.createAccountWithLocalProvider(user, localProvider);
     accountService.updateAccountStatus(account.getId(), AccountStatus.ACTIVE);
 

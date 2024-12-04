@@ -1,16 +1,26 @@
 package com.example.health_guardian_server.controllers;
 
+import static com.example.health_guardian_server.exceptions.file.FileErrorCode.CAN_NOT_STORE_FILE;
+import static com.example.health_guardian_server.utils.Utils.convertMultipartFileToFile;
+import static com.example.health_guardian_server.utils.Utils.generateFileName;
+
 import com.example.health_guardian_server.dtos.requests.CreateUserRequest;
 import com.example.health_guardian_server.dtos.requests.ListUsersRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateUserRequest;
 import com.example.health_guardian_server.dtos.responses.CurrentUserInfomationResponse;
 import com.example.health_guardian_server.dtos.responses.UserResponse;
+import com.example.health_guardian_server.exceptions.file.FileException;
+import com.example.health_guardian_server.mappers.UserMapper;
+import com.example.health_guardian_server.services.MinioClientService;
 import com.example.health_guardian_server.services.UserService;
+import java.io.File;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,7 +29,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/users")
@@ -27,6 +39,8 @@ import org.springframework.web.bind.annotation.RestController;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {
   UserService userService;
+  MinioClientService minioClientService;
+  UserMapper userMapper;
 
   @GetMapping
   public ResponseEntity<Page<UserResponse>> listUsers(@ModelAttribute ListUsersRequest request) {
@@ -63,5 +77,21 @@ public class UserController {
   public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
     userService.deleteUser(userId);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/upload-avatar")
+  public ResponseEntity<UserResponse> uploadAvatar(@RequestPart("avatar") MultipartFile avatar) {
+    String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+    String contentType = avatar.getContentType();
+    long size = avatar.getSize();
+    String fileName = generateFileName(contentType.split("/")[0], contentType.split("/")[1]);
+    try {
+      File file = convertMultipartFileToFile(avatar, fileName);
+      minioClientService.storeObject(file, fileName, contentType, "user-avatars");
+    } catch (Exception e) {
+      throw new FileException(CAN_NOT_STORE_FILE, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return ResponseEntity.ok(
+        userService.updateUser(userId, UpdateUserRequest.builder().avatar(fileName).build()));
   }
 }
