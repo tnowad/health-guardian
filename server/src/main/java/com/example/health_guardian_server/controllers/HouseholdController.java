@@ -47,7 +47,7 @@ public class HouseholdController {
 
   @PutMapping("/{householdId}")
   public ResponseEntity<HouseholdResponse> updateHousehold(
-      @PathVariable String householdId, @RequestBody UpdateHouseholdRequest request) {
+      @PathVariable String householdId, @RequestBody CreateHouseholdRequest request) {
     HouseholdResponse response = householdService.updateHousehold(householdId, request);
     return ResponseEntity.ok(response);
   }
