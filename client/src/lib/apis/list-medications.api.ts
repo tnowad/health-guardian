@@ -32,20 +32,18 @@ export type ListMedicationsErrorResponseSchema = z.infer<
 >;
 
 export async function listMedicationsApi(query: ListMedicationsQuerySchema) {
-  const response = await apiClient.get("/medications", query );
-  return listMedicationsResponseSchema.parse(response.data);
+  const response = await apiClient.get<ListMedicationsResponseSchema>(
+    "/medications",
+    query,
+  );
+  return response.data;
 }
 
 export function createListMedicationsQueryOptions(
   query: ListMedicationsQuerySchema,
 ) {
   const queryKey = ["medications", query] as const;
-  return queryOptions<
-    ListMedicationsResponseSchema,
-    ListMedicationsErrorResponseSchema,
-    ListMedicationsQuerySchema,
-    typeof queryKey
-  >({
+  return queryOptions<ListMedicationsResponseSchema>({
     queryKey,
     queryFn: () => listMedicationsApi(listMedicationsQuerySchema.parse(query)),
     throwOnError: isAxiosError,

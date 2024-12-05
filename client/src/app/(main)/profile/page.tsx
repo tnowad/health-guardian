@@ -204,7 +204,7 @@ export default function Page() {
                 },
                 {
                   label: "Prescriptions",
-                  link: "/profile/prescriptions",
+                  link: "/prescriptions",
                   icon: Pill,
                 },
                 {

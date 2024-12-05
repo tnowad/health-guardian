@@ -7,13 +7,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import {} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -35,7 +29,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  createAppointmentApi,
   createAppointmentBodySchema,
   CreateAppointmentBodySchema,
   useCreateAppointmentMutation,
@@ -178,9 +171,11 @@ export default function AppointmentBookingModal({
                             >
                               {field.value ? (
                                 <span className="space-x-1">
-                                  {userStaffs.find(
-                                    (userStaff) =>
-                                      userStaff.userId === field.value,
+                                  {userStaffs.find((userStaff) =>
+                                    doctors.find(
+                                      (doctor) =>
+                                        userStaff.userId == doctor.userId,
+                                    ),
                                   )?.firstName || "Loading..."}
                                 </span>
                               ) : (

@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { createListAppointmentsQueryOptions } from "@/lib/apis/list-appointments.api";
+import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 
 interface Appointment {
   id: string;
@@ -34,6 +37,16 @@ const mockPastAppointments: Appointment[] = [
 ];
 
 export default function PastAppointments() {
+  const getCurrentUserInformationQuery = useSuspenseQuery(
+    createGetCurrentUserInformationQueryOptions(),
+  );
+
+  const listAppointmentQuery = useQuery(
+    createListAppointmentsQueryOptions({
+      patientId: getCurrentUserInformationQuery.data.patient?.id,
+    }),
+  );
+
   const [expandedAppointment, setExpandedAppointment] = useState<string | null>(
     null,
   );
@@ -49,12 +62,12 @@ export default function PastAppointments() {
       </CardHeader>
       <CardContent>
         <ul className="space-y-4">
-          {mockPastAppointments.map((appointment) => (
+          {listAppointmentQuery.data?.content.map((appointment) => (
             <li key={appointment.id} className="p-4 bg-gray-100 rounded-lg">
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-semibold">{appointment.date}</p>
-                  <p>{appointment.doctor}</p>
+                  <p>{appointment.doctorId}</p>
                   <p className="text-sm text-gray-600">{appointment.reason}</p>
                   <p className="text-sm font-medium">{appointment.status}</p>
                 </div>

@@ -96,7 +96,7 @@ export default function PrescriptionsScreen() {
   const getCurrentUserInformationQuery = useSuspenseQuery(
     createGetCurrentUserInformationQueryOptions(),
   );
-  const getMedicationsQuery = useQuery(createListMedicationsQueryOptions());
+  const getMedicationsQuery = useQuery(createListMedicationsQueryOptions({}));
 
   const listPrescriptionsQuery = useQuery(
     createListPrescriptionsQueryOptions({
@@ -200,9 +200,9 @@ export default function PrescriptionsScreen() {
                     <SelectValue placeholder="Select medication" />
                   </SelectTrigger>
                   <SelectContent>
-                    {medications.map((med) => (
-                      <SelectItem key={med} value={med}>
-                        {med}
+                    {getMedicationsQuery.data?.content.map((med) => (
+                      <SelectItem key={med.id} value={med.id}>
+                        {med.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
