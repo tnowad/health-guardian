@@ -2,10 +2,15 @@ package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.dtos.requests.CreateAppointmentRequest;
 import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
+import com.example.health_guardian_server.dtos.requests.UpdateAppointmentRequest;
 import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
 import com.example.health_guardian_server.entities.Appointment;
+import com.example.health_guardian_server.entities.Patient;
+import com.example.health_guardian_server.entities.UserMedicalStaff;
 import com.example.health_guardian_server.mappers.AppointmentMapper;
 import com.example.health_guardian_server.repositories.AppointmentRepository;
+import com.example.health_guardian_server.repositories.PatientRepository;
+import com.example.health_guardian_server.repositories.UserMedicalStaffRepository;
 import com.example.health_guardian_server.services.AppointmentService;
 import com.example.health_guardian_server.specifications.AppointmentSpecification;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -18,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,6 +32,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
   private final AppointmentRepository appointmentRepository;
   private final AppointmentMapper appointmentMapper;
+  private final PatientRepository patientRepository;
+  private final UserMedicalStaffRepository userMedicalStaffRepository;
 
   @Override
   public Page<AppointmentResponse> getAllAppointments(ListAppointmentRequest request) {
@@ -45,7 +54,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     log.debug("Fetching appointment with id: {}", appointmentId);
     return appointmentRepository
         .findById(appointmentId)
-        .map(appointmentMapper::toAppointmentResponse)
+        .map(appointmentMapper::toResponse)
         .orElseThrow(
             () -> {
               log.error("Appointment not found with id: {}", appointmentId);
@@ -57,15 +66,22 @@ public class AppointmentServiceImpl implements AppointmentService {
   @Override
   public AppointmentResponse createAppointment(CreateAppointmentRequest createAppointmentRequest) {
     log.debug("Creating appointment: {}", createAppointmentRequest);
-    Appointment createdAppointment = appointmentRepository
-        .save(appointmentMapper.toAppointment(createAppointmentRequest));
+    Appointment createdAppointment = appointmentMapper.toAppointment(createAppointmentRequest);
+
+    Optional<Patient> patient = patientRepository.findById(createAppointmentRequest.getPatientId());
+    Optional<UserMedicalStaff> userMedicalStaff = userMedicalStaffRepository.findById(createAppointmentRequest.getDoctorId());
+
+    createdAppointment.setPatient(patient.get());
+    createdAppointment.setDoctor(userMedicalStaff.get());
+
+    Appointment appointment = appointmentRepository.save(createdAppointment);
     log.info("Appointment created with id: {}", createdAppointment.getId());
-    return appointmentMapper.toAppointmentResponse(createdAppointment);
+    return appointmentMapper.toResponse(createdAppointment);
   }
 
   @Override
   public AppointmentResponse updateAppointment(
-      String appointmentId, CreateAppointmentRequest appointment) {
+      String appointmentId, UpdateAppointmentRequest request) {
     log.debug("Updating appointment with id: {}", appointmentId);
     Appointment existingAppointment = appointmentRepository
         .findById(appointmentId)
@@ -75,16 +91,22 @@ public class AppointmentServiceImpl implements AppointmentService {
               return new ResourceNotFoundException(
                   "Appointment not found with id " + appointmentId);
             });
-    existingAppointment.setAppointmentDate(appointment.getAppointmentDate());
-    existingAppointment.setReasonForVisit(appointment.getReasonForVisit());
-    existingAppointment.setStatus(appointment.getStatus());
+
+    Optional<Patient> patient = patientRepository.findById(request.getPatientId());
+    Optional<UserMedicalStaff> userMedicalStaff = userMedicalStaffRepository.findById(request.getDoctorId());
+
+    existingAppointment.setPatient(patient.get());
+    existingAppointment.setDoctor(userMedicalStaff.get());
+    existingAppointment.setAppointmentDate(request.getAppointmentDate());
+    existingAppointment.setReasonForVisit(request.getReasonForVisit());
+    existingAppointment.setStatus(request.getStatus());
     Appointment updatedAppointment = appointmentRepository.save(existingAppointment);
     log.info("Appointment updated with id: {}", updatedAppointment.getId());
-    return appointmentMapper.toAppointmentResponse(updatedAppointment);
+    return appointmentMapper.toResponse(updatedAppointment);
   }
 
   @Override
-  public void deleteAppointment(String appointmentId) {
+  public Appointment deleteAppointment(String appointmentId) {
     log.debug("Deleting appointment with id: {}", appointmentId);
     Appointment existingAppointment = appointmentRepository
         .findById(appointmentId)
@@ -97,6 +119,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     appointmentRepository.delete(existingAppointment);
     log.info("Appointment deleted with id: {}", appointmentId);
+    return existingAppointment;
   }
 
   private void sendNotification(String title, String messageBody) {

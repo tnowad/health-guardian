@@ -18,11 +18,11 @@ export type CreatePatientLogResponseSchema = z.infer<
 >;
 
 export async function createPatientLogApi(
-  body: CreatePatientLogBodySchema,
+  body: CreatePatientLogBodySchema
 ): Promise<CreatePatientLogResponseSchema> {
   const response = await apiClient.post<CreatePatientLogResponseSchema>(
     `/patient-logs`,
-    body,
+    body
   );
   return createPatientLogResponseSchema.parse(response.data);
 }
@@ -32,7 +32,7 @@ export function useCreatePatientLogMutation() {
   const mutationKey = ["create-patient-log"] as const;
 
   return useMutation<
-      CreatePatientLogResponseSchema,
+    CreatePatientLogResponseSchema,
     unknown,
     CreatePatientLogBodySchema
   >({

@@ -15,7 +15,7 @@ export type GetAppointmentDetailResponseSchema = z.infer<
 // Error schema: Định nghĩa lỗi
 export const getAppointmentDetailErrorResponseSchema = z.discriminatedUnion(
   "type",
-  [unauthorizedResponseSchema],
+  [unauthorizedResponseSchema]
 );
 
 // TypeScript type cho lỗi
@@ -25,10 +25,10 @@ export type GetAppointmentDetailErrorResponseSchema = z.infer<
 
 // Hàm gọi API lấy chi tiết lịch hẹn
 export async function getAppointmentDetailApi(
-  id: string,
+  id: string
 ): Promise<GetAppointmentDetailResponseSchema> {
   const response = await apiClient.get<GetAppointmentDetailResponseSchema>(
-    `/appointments/${id}`,
+    `/appointments/${id}`
   );
   return getAppointmentDetailResponseSchema.parse(response.data);
 }

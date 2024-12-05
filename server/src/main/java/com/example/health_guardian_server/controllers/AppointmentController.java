@@ -2,7 +2,11 @@ package com.example.health_guardian_server.controllers;
 
 import com.example.health_guardian_server.dtos.requests.CreateAppointmentRequest;
 import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
+import com.example.health_guardian_server.dtos.requests.UpdateAppointmentRequest;
 import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
+import com.example.health_guardian_server.dtos.responses.SimpleResponse;
+import com.example.health_guardian_server.entities.Appointment;
+import com.example.health_guardian_server.mappers.AppointmentMapper;
 import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AppointmentService;
 import com.example.health_guardian_server.services.NotificationService;
@@ -45,15 +49,16 @@ public class AppointmentController {
 
   @PutMapping("/{appointmentId}")
   public ResponseEntity<AppointmentResponse> updateAppointment(
-      @PathVariable String id, @RequestBody CreateAppointmentRequest appointment) {
-    AppointmentResponse updatedAppointment = appointmentService.updateAppointment(id, appointment);
+      @PathVariable String appointmentId, @RequestBody UpdateAppointmentRequest request) {
+    AppointmentResponse updatedAppointment = appointmentService.updateAppointment(appointmentId, request);
     return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
   }
 
   @DeleteMapping("/{appointmentId}")
-  public ResponseEntity<Void> deleteAppointment(@PathVariable String id) {
-    appointmentService.deleteAppointment(id);
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  public ResponseEntity<SimpleResponse> deleteAppointment(@PathVariable String appointmentId) {
+    Appointment appointment = appointmentService.deleteAppointment(appointmentId);
+    SimpleResponse simpleResponse = AppointmentMapper.toAppointmentSimpleResponse(appointment);
+    return new ResponseEntity<>(simpleResponse, HttpStatus.OK);
   }
 
   // @PostMapping("/send")

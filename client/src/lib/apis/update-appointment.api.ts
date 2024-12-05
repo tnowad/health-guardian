@@ -22,7 +22,7 @@ export type UpdateAppointmentResponseSchema = z.infer<
 
 export const updateAppointmentErrorResponseSchema = z.discriminatedUnion(
   "type",
-  [unauthorizedResponseSchema],
+  [unauthorizedResponseSchema]
 );
 
 export type UpdateAppointmentErrorResponseSchema = z.infer<
@@ -30,11 +30,11 @@ export type UpdateAppointmentErrorResponseSchema = z.infer<
 >;
 
 export async function updateAppointmentApi(
-  body: UpdateAppointmentBodySchema,
+  body: UpdateAppointmentBodySchema
 ): Promise<UpdateAppointmentResponseSchema> {
   const response = await apiClient.put<UpdateAppointmentResponseSchema>(
     `/appointments/${body.id}`,
-    body,
+    body
   );
   return updateAppointmentResponseSchema.parse(response.data);
 }
