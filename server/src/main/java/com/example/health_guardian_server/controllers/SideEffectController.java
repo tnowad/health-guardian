@@ -4,9 +4,13 @@ import com.example.health_guardian_server.dtos.requests.CreateSideEffectRequest;
 import com.example.health_guardian_server.dtos.requests.ListSideEffectRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateSideEffectRequest;
 import com.example.health_guardian_server.dtos.responses.SideEffectResponse;
+import com.example.health_guardian_server.dtos.responses.SimpleResponse;
+import com.example.health_guardian_server.entities.SideEffect;
+import com.example.health_guardian_server.mappers.SideEffectMapper;
 import com.example.health_guardian_server.services.SideEffectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,8 +56,9 @@ public class SideEffectController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteSideEffect(@PathVariable String id) {
-    sideEffectService.deleteSideEffect(id);
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<SimpleResponse> deleteSideEffect(@PathVariable String id) {
+    SideEffect sideEffect = sideEffectService.deleteSideEffect(id);
+    SimpleResponse simpleResponse = SideEffectMapper.toSideEffectSimpleResponse(sideEffect);
+    return new ResponseEntity<>(simpleResponse, HttpStatus.OK);
   }
 }

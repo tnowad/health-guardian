@@ -14,6 +14,8 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j // Enable logging for the class
@@ -76,9 +78,15 @@ public class SideEffectServiceImpl implements SideEffectService {
   }
 
   @Override
-  public void deleteSideEffect(String id) {
+  public SideEffect deleteSideEffect(String id) {
     log.debug("Deleting side effect with id: {}", id);
-    sideEffectRepository.deleteById(id);
-    log.info("Side effect with id: {} deleted", id);
+    Optional<SideEffect> sideEffect = sideEffectRepository.findById(id);
+    if(sideEffect.isPresent()) {
+      sideEffectRepository.deleteById(id);
+      log.info("Side effect with id: {} deleted", id);
+      return sideEffect.get();
+    }
+    log.info("Side effect with id: {} deleted unsuccessfully", id);
+    return null;
   }
 }

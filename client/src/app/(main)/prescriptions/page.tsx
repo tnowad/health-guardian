@@ -94,14 +94,14 @@ const medications = [
 
 export default function PrescriptionsScreen() {
   const getCurrentUserInformationQuery = useSuspenseQuery(
-    createGetCurrentUserInformationQueryOptions(),
+    createGetCurrentUserInformationQueryOptions()
   );
   const getMedicationsQuery = useQuery(createListMedicationsQueryOptions({}));
 
   const listPrescriptionsQuery = useQuery(
     createListPrescriptionsQueryOptions({
       patientId: getCurrentUserInformationQuery.data.patient?.id,
-    }),
+    })
   );
 
   const [prescriptions, setPrescriptions] =
@@ -117,7 +117,7 @@ export default function PrescriptionsScreen() {
       endDate: new Date(),
       instructions: "",
       status: "active",
-    },
+    }
   );
 
   const toggleRow = (id: string) => {

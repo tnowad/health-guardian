@@ -20,11 +20,11 @@ export type CreateSideEffectResponseSchema = z.infer<
 >;
 
 export async function createSideEffectApi(
-  body: CreateSideEffectBodySchema,
+  body: CreateSideEffectBodySchema
 ): Promise<CreateSideEffectResponseSchema> {
   const response = await apiClient.post<CreateSideEffectResponseSchema>(
     `/side-effects`,
-    body,
+    body
   );
   return createSideEffectResponseSchema.parse(response.data);
 }
