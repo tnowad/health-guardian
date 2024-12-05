@@ -19,6 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { createListHouseholdMembersQueryOptions } from "@/lib/apis/list-household-members.api";
+import { createListHouseholdsQueryOptions } from "@/lib/apis/list-households.api";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 
 interface HouseholdMember {
   id: string;
@@ -27,6 +31,25 @@ interface HouseholdMember {
 }
 
 export default function HouseholdScreen() {
+  const getCurrentUserInformationQuery = useSuspenseQuery(
+    createGetCurrentUserInformationQueryOptions(),
+  );
+
+  const listHouseholdsQuery = useQuery(
+    createListHouseholdsQueryOptions({
+      headId: getCurrentUserInformationQuery.data?.patient?.id,
+    }),
+  );
+
+  const listHouseholdMembersQuery = useQuery(
+    createListHouseholdMembersQueryOptions(
+      {
+        householdId: listHouseholdsQuery.data?.items[0]?.id,
+      },
+      {},
+    ),
+  );
+
   const [members, setMembers] = useState<HouseholdMember[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newMemberName, setNewMemberName] = useState("");

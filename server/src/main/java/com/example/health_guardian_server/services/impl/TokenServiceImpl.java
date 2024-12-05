@@ -10,12 +10,16 @@ import com.example.health_guardian_server.services.TokenService;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +27,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class TokenServiceImpl implements TokenService {
-
+  RedisTemplate<String, String> redisTemplate;
   RoleService roleService;
   PermissionService permissionService;
 
@@ -47,44 +51,113 @@ public class TokenServiceImpl implements TokenService {
 
   @Override
   public String generateAccessToken(String userId, Set<String> permissionNames) {
+    String cacheKey = "accessToken:" + userId;
+    ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
+
+    if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey))) {
+      String cachedToken = valueOps.get(cacheKey);
+      log.debug("Returning cached access token for user {}: {}", userId, cachedToken);
+      return cachedToken;
+    }
+
     Date now = new Date();
     Date expirationTime = new Date(now.getTime() + accessTokenValidityDuration);
 
-    log.info("Generating access token for user: {}", userId);
-    log.debug(
-        "Access token details: expirationTime={}, permissions={}", expirationTime, permissionNames);
+    String accessToken = JWT.create()
+        .withIssuer(ISSUER)
+        .withSubject(userId)
+        .withIssuedAt(now)
+        .withExpiresAt(expirationTime)
+        .withClaim("permissions", List.copyOf(permissionNames))
+        .sign(Algorithm.HMAC256(accessSignerKey));
 
-    String accessToken =
-        JWT.create()
-            .withIssuer(ISSUER)
-            .withSubject(userId)
-            .withIssuedAt(now)
-            .withExpiresAt(expirationTime)
-            .withClaim("permissions", List.copyOf(permissionNames))
-            .sign(Algorithm.HMAC256(accessSignerKey));
+    valueOps.set(cacheKey, accessToken, accessTokenValidityDuration, TimeUnit.MILLISECONDS);
+    log.debug("Generated and cached access token for user {}: {}", userId, accessToken);
 
-    log.debug("Generated access token: {}", accessToken);
     return accessToken;
   }
 
   @Override
   public String generateRefreshToken(String userId) {
+    String cacheKey = "refreshToken:" + userId;
+    ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
+
+    if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey))) {
+      String cachedToken = valueOps.get(cacheKey);
+      log.debug("Returning cached refresh token for user {}: {}", userId, cachedToken);
+      return cachedToken;
+    }
+
     Date now = new Date();
     Date expirationTime = new Date(now.getTime() + refreshTokenValidityDuration);
 
-    log.info("Generating refresh token for user: {}", userId);
-    log.debug("Refresh token details: expirationTime={}", expirationTime);
+    String refreshToken = JWT.create()
+        .withIssuer(ISSUER)
+        .withSubject(userId)
+        .withIssuedAt(now)
+        .withExpiresAt(expirationTime)
+        .sign(Algorithm.HMAC256(refreshSignerKey));
 
-    String refreshToken =
-        JWT.create()
-            .withIssuer(ISSUER)
-            .withSubject(userId)
-            .withIssuedAt(now)
-            .withExpiresAt(expirationTime)
-            .sign(Algorithm.HMAC256(refreshSignerKey));
+    valueOps.set(cacheKey, refreshToken, refreshTokenValidityDuration, TimeUnit.MILLISECONDS);
+    log.debug("Generated and cached refresh token for user {}: {}", userId, refreshToken);
 
-    log.debug("Generated refresh token: {}", refreshToken);
     return refreshToken;
+  }
+
+  @Override
+  public TokensResponse refreshTokens(String refreshToken) {
+    try {
+      DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(refreshSignerKey))
+          .withIssuer(ISSUER)
+          .build()
+          .verify(refreshToken);
+
+      String userId = decodedJWT.getSubject();
+
+      Set<String> roleIds = roleService.getRoleIdsByUserId(userId);
+      Set<String> permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
+
+      String newAccessToken = generateAccessToken(userId, permissionNames);
+      String newRefreshToken = refreshToken;
+
+      if (decodedJWT.getExpiresAt().getTime() - System.currentTimeMillis() < refreshTokenValidityDuration * 0.1) {
+        newRefreshToken = generateRefreshToken(userId);
+      }
+
+      return new TokensResponse(newAccessToken, newRefreshToken);
+
+    } catch (Exception e) {
+      log.error("Token refresh failed", e);
+      throw new RuntimeException("Invalid refresh token");
+    }
+  }
+
+  @Override
+  public Set<String> extractPermissionNames(String accessToken) {
+    try {
+      DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(accessSignerKey))
+          .withIssuer(ISSUER)
+          .build()
+          .verify(accessToken);
+
+      return Set.copyOf(decodedJWT.getClaim("permissions").asList(String.class));
+    } catch (Exception e) {
+      log.error("Failed to extract permissions from access token", e);
+      throw new RuntimeException("Invalid access token");
+    }
+  }
+
+  @Override
+  public DecodedJWT decodeAccessToken(String accessToken) {
+    try {
+      return JWT.require(Algorithm.HMAC256(accessSignerKey))
+          .withIssuer(ISSUER)
+          .build()
+          .verify(accessToken);
+    } catch (Exception e) {
+      log.error("Failed to decode access token", e);
+      throw new RuntimeException("Invalid access token");
+    }
   }
 
   @Override
@@ -97,97 +170,5 @@ public class TokenServiceImpl implements TokenService {
 
     log.info("Tokens generated successfully for user: {}", userId);
     return new TokensResponse(accessToken, refreshToken);
-  }
-
-  @Override
-  public TokensResponse refreshTokens(String refreshToken) {
-    try {
-      log.info("Refreshing tokens using refresh token.");
-      log.debug("Received refresh token: {}", refreshToken);
-
-      DecodedJWT decodedJWT =
-          JWT.require(Algorithm.HMAC256(refreshSignerKey))
-              .withIssuer(ISSUER)
-              .build()
-              .verify(refreshToken);
-
-      String userId = decodedJWT.getSubject();
-      log.info("Refresh token verified successfully for user: {}", userId);
-      log.debug("Decoded JWT claims: {}", decodedJWT.getClaims());
-
-      Set<String> roleIds = roleService.getRoleIdsByUserId(userId);
-      log.debug("Role IDs for user {}: {}", userId, roleIds);
-
-      Set<String> permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
-      log.debug("Permissions for user {}: {}", userId, permissionNames);
-
-      log.info("Fetched roles and permissions for user: {}", userId);
-      String newAccessToken = generateAccessToken(userId, permissionNames);
-      log.debug("Generated new access token for user {}: {}", userId, newAccessToken);
-
-      String newRefreshToken = refreshToken;
-      if (decodedJWT.getExpiresAt().getTime() - System.currentTimeMillis()
-          < refreshTokenValidityDuration * 0.1) {
-        log.info("Generating new refresh token for user: {}", userId);
-        newRefreshToken = generateRefreshToken(userId);
-        log.debug("Generated new refresh token for user {}: {}", userId, newRefreshToken);
-      }
-
-      log.info("Tokens refreshed successfully for user: {}", userId);
-      return new TokensResponse(newAccessToken, newRefreshToken);
-
-    } catch (com.auth0.jwt.exceptions.TokenExpiredException e) {
-      log.warn("Refresh token expired.", e);
-      throw new RuntimeException("Refresh token has expired");
-    } catch (Exception e) {
-      log.error("Token refresh failed", e);
-      throw new RuntimeException("Invalid refresh token");
-    }
-  }
-
-  @Override
-  public Set<String> extractPermissionNames(String accessToken) {
-    try {
-      log.info("Extracting permissions from access token.");
-      log.debug("Received access token: {}", accessToken);
-
-      DecodedJWT decodedJWT =
-          JWT.require(Algorithm.HMAC256(accessSignerKey))
-              .withIssuer(ISSUER)
-              .build()
-              .verify(accessToken);
-
-      log.debug("Decoded JWT claims: {}", decodedJWT.getClaims());
-
-      Set<String> permissions = Set.copyOf(decodedJWT.getClaim("permissions").asList(String.class));
-      log.info("Permissions extracted successfully from access token: {}", permissions);
-
-      return permissions;
-    } catch (Exception e) {
-      log.error("Failed to extract permissions from access token", e);
-      throw new RuntimeException("Invalid access token");
-    }
-  }
-
-  @Override
-  public DecodedJWT decodeAccessToken(String accessToken) {
-    try {
-      log.info("Decoding access token.");
-      log.debug("Received access token: {}", accessToken);
-
-      DecodedJWT decodedJWT =
-          JWT.require(Algorithm.HMAC256(accessSignerKey))
-              .withIssuer(ISSUER)
-              .build()
-              .verify(accessToken);
-
-      log.info("Access token decoded successfully.");
-      log.debug("Decoded JWT claims: {}", decodedJWT.getClaims());
-
-      return decodedJWT;
-    } catch (Exception e) {
-      log.error("Failed to decode access token", e);
-      throw new RuntimeException("Invalid access token");
-    }
   }
 }

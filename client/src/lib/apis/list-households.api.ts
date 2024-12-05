@@ -39,12 +39,7 @@ export function createListHouseholdsQueryOptions(
   query: ListHouseholdsQuerySchema,
 ) {
   const queryKey = ["households", query] as const;
-  return queryOptions<
-    ListHouseholdsResponseSchema,
-    ListHouseholdsErrorResponseSchema,
-    ListHouseholdsQuerySchema,
-    typeof queryKey
-  >({
+  return queryOptions<ListHouseholdsResponseSchema>({
     queryKey,
     queryFn: () => listHouseholdsApi(listHouseholdsQuerySchema.parse(query)),
     throwOnError: isAxiosError,

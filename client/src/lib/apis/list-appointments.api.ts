@@ -34,20 +34,18 @@ export type ListAppointmentsErrorResponseSchema = z.infer<
 >;
 
 export async function listAppointmentsApi(query: ListAppointmentsQuerySchema) {
-  const response = await apiClient.get("/appointments", query);
-  return listAppointmentsResponseSchema.parse(response.data);
+  const response = await apiClient.get<ListAppointmentsResponseSchema>(
+    "/appointments",
+    query,
+  );
+  return response.data;
 }
 
 export function createListAppointmentsQueryOptions(
   query: ListAppointmentsQuerySchema,
 ) {
   const queryKey = ["appointments", query] as const;
-  return queryOptions<
-    ListAppointmentsResponseSchema,
-    ListAppointmentsErrorResponseSchema,
-    ListAppointmentsQuerySchema,
-    typeof queryKey
-  >({
+  return queryOptions<ListAppointmentsResponseSchema>({
     queryKey,
     queryFn: () =>
       listAppointmentsApi(listAppointmentsQuerySchema.parse(query)),
