@@ -4,6 +4,7 @@ import com.example.health_guardian_server.dtos.requests.CreateSideEffectRequest;
 import com.example.health_guardian_server.dtos.requests.ListSideEffectRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateSideEffectRequest;
 import com.example.health_guardian_server.dtos.responses.SideEffectResponse;
+import com.example.health_guardian_server.entities.SideEffect;
 import org.springframework.data.domain.Page;
 
 public interface SideEffectService {
@@ -14,7 +15,7 @@ public interface SideEffectService {
 
   SideEffectResponse createSideEffect(CreateSideEffectRequest request);
 
-  void deleteSideEffect(String sideEffectId);
+  SideEffect deleteSideEffect(String sideEffectId);
 
   SideEffectResponse updateSideEffect(String sideEffectId, UpdateSideEffectRequest request);
 }

@@ -18,11 +18,11 @@ export type UpdateSideEffectResponseSchema = z.infer<
 >;
 
 export async function updateSideEffectApi(
-  body: UpdateSideEffectBodySchema,
+  body: UpdateSideEffectBodySchema
 ): Promise<UpdateSideEffectResponseSchema> {
   const response = await apiClient.put<UpdateSideEffectResponseSchema>(
     `/side-effects/${body.id}`,
-    body,
+    body
   );
   return updateSideEffectResponseSchema.parse(response.data);
 }
