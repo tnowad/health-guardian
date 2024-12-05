@@ -42,11 +42,14 @@ export async function listHouseholdMembersApi(
   params: ListHouseholdMemebrsParamsSchema,
   query: ListHouseholdMembersQuerySchema,
 ) {
-  const response = await apiClient.get(
-    `/households/${params.householdId}/members`,
-    query,
+  const response = await apiClient.get<ListHouseholdMembersResponseSchema>(
+    `/household-members`,
+    {
+      ...query,
+      ...params,
+    },
   );
-  return listHouseholdMembersResponseSchema.parse(response.data);
+  return response.data;
 }
 
 export function createListHouseholdMembersQueryOptions(
