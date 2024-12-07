@@ -2,20 +2,16 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
   BookOpen,
   Bot,
-  Command,
   Frame,
   GalleryVerticalEnd,
   Map,
   PieChart,
-  Settings2,
   SquareTerminal,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -28,7 +24,6 @@ import {
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 import { useQuery } from "@tanstack/react-query";
 
-// This is sample data.
 const data = {
   user: {
     name: "shadcn",
@@ -37,282 +32,84 @@ const data = {
   },
   teams: [
     {
-      name: "Patient Sidebar",
+      name: "Medical Diary",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Staff Sidebar",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Medical Staff Sidebar",
-      logo: Command,
-      plan: "Free",
+      plan: "Powered by Anonymous",
     },
   ],
-  navMainPatient: [
+  navMain: [
     {
-      title: "Dashboard",
+      title: "Personal Information",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "Overview",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Profile",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Personal Details",
+          title: "Profile",
           url: "/profile",
         },
         {
-          title: "Medical Status",
+          title: "Household",
+          url: "#",
+        },
+        {
+          title: "Notification",
           url: "#",
         },
       ],
     },
     {
-      title: "Health",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Appointments",
-          url: "#",
-        },
-        {
-          title: "Medications",
-          url: "#",
-        },
-        {
-          title: "Consent Forms",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Logs and Notifications",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Health logs",
-          url: "#",
-        },
-        {
-          title: "Notifications",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Support",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Guardian Contact",
-          url: "#",
-        },
-        {
-          title: "Assigned Medical Staff",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navMainStaff: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "Patient Overview",
-          url: "#",
-        },
-        {
-          title: "System Status",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Patient Management",
+      title: "Medical Records",
       url: "#",
       icon: Bot,
       items: [
         {
-          title: "Patients",
+          title: "Medical History",
           url: "#",
         },
         {
-          title: "Appointments",
+          title: "Prescription",
+          url: "#",
+        },
+        {
+          title: "Physician Notes",
+          url: "#",
+        },
+        {
+          title: "Surgeries",
+          url: "#",
+        },
+        {
+          title: "Vaccination",
           url: "#",
         },
       ],
     },
     {
-      title: "System Management",
+      title: "Health Status",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Logs",
+          title: "Past Conditions",
           url: "#",
         },
         {
-          title: "Maintenance",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Notifications",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Unread Notifications",
+          title: "Allergies",
           url: "#",
         },
         {
-          title: "All Notifications",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Support",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Medical Staff Directory",
+          title: "Family History",
           url: "#",
         },
         {
-          title: "Guardian Directory",
+          title: "Diagnosis Results",
           url: "#",
         },
       ],
     },
   ],
-  navMainMedicalStaff: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "My Schedule",
-          url: "#",
-        },
-        {
-          title: "Patient Activity",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Patient Management",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Patient Profiles",
-          url: "#",
-        },
-        {
-          title: "Medical Records",
-          url: "#",
-        },
-        {
-          title: "Logs",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Appointments",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "My Appointments",
-          url: "#",
-        },
-        {
-          title: "All Appointments",
-          url: "#",
-        },
-        {
-          title: "Appointment History",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prescriptions and Medications",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Current Prescriptions",
-          url: "#",
-        },
-        {
-          title: "Prescription History",
-          url: "#",
-        },
-        {
-          title: "Side Effects",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Notifications",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Unread Notifications",
-          url: "#",
-        },
-        {
-          title: "All Notifications",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Staff Management",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Medical Staff Directory",
-          url: "#",
-        },
-        {
-          title: "Support Resources",
-          url: "#",
-        },
-      ],
-    },
-  ],
+
   projects: [
     {
       name: "Design Engineering",
@@ -334,7 +131,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const getCurrentUserInformationQuery = useQuery(
-    createGetCurrentUserInformationQueryOptions(),
+    createGetCurrentUserInformationQueryOptions()
   );
 
   const user = {
@@ -350,7 +147,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMainPatient} />
+        <NavMain items={data.navMain} />
         {/*<NavProjects projects={data.projects} />*/}
       </SidebarContent>
       <SidebarFooter>
