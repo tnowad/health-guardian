@@ -3,6 +3,7 @@ package com.example.health_guardian_server.services.impl;
 import static com.example.health_guardian_server.dtos.enums.VerificationType.*;
 import static com.example.health_guardian_server.utils.Constants.*;
 import static java.time.temporal.ChronoUnit.MINUTES;
+
 import com.example.health_guardian_server.dtos.enums.VerificationType;
 import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
@@ -13,17 +14,8 @@ import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.dtos.responses.SignUpResponse;
 import com.example.health_guardian_server.entities.*;
 import com.example.health_guardian_server.repositories.VerificationRepository;
-import com.example.health_guardian_server.services.AccountService;
-import com.example.health_guardian_server.services.AuthService;
-import com.example.health_guardian_server.services.BaseRedisService;
-import com.example.health_guardian_server.services.LocalProviderService;
-import com.example.health_guardian_server.services.PatientService;
-import com.example.health_guardian_server.services.PermissionService;
-import com.example.health_guardian_server.services.RoleService;
-import com.example.health_guardian_server.services.TokenService;
-import com.example.health_guardian_server.services.UserService;
+import com.example.health_guardian_server.services.*;
 import jakarta.transaction.Transactional;
-
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Date;
@@ -34,7 +26,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +39,7 @@ public class AuthServiceImpl implements AuthService {
   AccountService accountService;
   RoleService roleService;
   PermissionService permissionService;
+  MailService mailService;
   TokenService tokenService;
   UserService userService;
   PatientService patientService;
@@ -119,21 +111,22 @@ public class AuthServiceImpl implements AuthService {
     var localProvider = localProviderService.createLocalProvider(request.getEmail(), request.getPassword());
 
     log.debug("Creating patient record for user: {}", request.getEmail());
-    var patient = patientService.createPatient(Patient.builder()
-      .firstName(request.getFirstName())
-      .lastName(request.getLastName())
-      .gender(request.getGender().toString())
-      .dateOfBirth(request.getDateOfBirth())
-      .build());
+    var patient = patientService.createPatient(
+        Patient.builder()
+            .firstName(request.getFirstName())
+            .lastName(request.getLastName())
+            .gender(request.getGender().toString())
+            .dateOfBirth(request.getDateOfBirth())
+            .build());
 
     log.debug("Creating user record for email: {}", request.getEmail());
     var user = userService.createUser(
-      User.builder()
-        .email(request.getEmail())
-        .patient(patient)
-        .username(request.getUsername())
-        .type(UserType.PATIENT)
-        .build());
+        User.builder()
+            .email(request.getEmail())
+            .patient(patient)
+            .username(request.getUsername())
+            .type(UserType.PATIENT)
+            .build());
 
     log.debug("Creating account and linking to user: {}", user.getId());
     var account = accountService.createAccountWithLocalProvider(user, localProvider);
@@ -148,16 +141,18 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public void verifyEmail(LocalProvider LocalProvider, String code, String token) {
-    throw new UnsupportedOperationException("Unimplemented method 'verifyEmail'");
+  public void verifyEmail(LocalProvider localProvider, String code, String token) {
+    var local = localProvider;
+    local.getAccount().setStatus(AccountStatus.ACTIVE);
+    localProviderService.saveLocalProvider(local);
   }
 
   @Override
   public void sendEmailVerification(String email, VerificationType verificationType) {
     LocalProvider localProvider = localProviderService.getLocalProviderByEmail(email);
 
-    List<Verification> verifications = verificationRepository.findByLocalProviderAndVerificationType(localProvider,
-        verificationType);
+    List<Verification> verifications = verificationRepository.findByLocalProviderAndVerificationType(
+        localProvider, verificationType);
 
     if (verificationType.equals(VERIFY_EMAIL_BY_CODE)
         || verificationType.equals(VERIFY_EMAIL_BY_TOKEN)) {
@@ -183,15 +178,22 @@ public class AuthServiceImpl implements AuthService {
   protected void sendEmail(String email, VerificationType verificationType) {
     LocalProvider localProvider = localProviderService.getLocalProviderByEmail(email);
 
-    Verification verification = verificationRepository.save(Verification.builder()
-        .code(generateVerificationCode(6))
-        .expiryTime(Date.from(Instant.now().plus(VERIFICATION_VALID_DURATION, MINUTES)))
-        .verificationType(verificationType)
-        .localProvider(localProvider)
-        .build());
+    Verification verification = verificationRepository.save(
+        Verification.builder()
+            .code(generateVerificationCode(6))
+            .expiryTime(Date.from(Instant.now().plus(VERIFICATION_VALID_DURATION, MINUTES)))
+            .verificationType(verificationType)
+            .localProvider(localProvider)
+            .build());
 
-    kafkaTemplate.send(KAFKA_TOPIC_SEND_MAIL,
-        verificationType + ":" + email + ":" + verification.getToken() + ":" + verification.getCode());
+    try {
+      mailService.sendMailToVerifyWithCode(email, verification.getCode());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    // kafkaTemplate.send(KAFKA_TOPIC_SEND_MAIL,
+    // verificationType + ":" + email + ":" + ":" + verification.getCode());
+
   }
 
   public static String generateVerificationCode(int length) {

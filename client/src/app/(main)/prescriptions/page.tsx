@@ -98,7 +98,7 @@ export default function PrescriptionsScreen() {
 
   const listPrescriptionsQuery = useQuery(
     createListPrescriptionsQueryOptions({
-      patientId: "d6b53a8e-d4e8-4198-b162-024b9db223e5",
+      patientId: getCurrentUserInformationQuery.data.patient?.id,
     }),
   );
 
@@ -245,9 +245,8 @@ export default function PrescriptionsScreen() {
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
-                        className={`col-span-3 justify-start text-left font-normal ${
-                          !newPrescription.startDate && "text-muted-foreground"
-                        }`}
+                        className={`col-span-3 justify-start text-left font-normal ${!newPrescription.startDate && "text-muted-foreground"
+                          }`}
                       >
                         {newPrescription.startDate ? (
                           format(newPrescription.startDate, "PPP")
@@ -277,9 +276,8 @@ export default function PrescriptionsScreen() {
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
-                        className={`col-span-3 justify-start text-left font-normal ${
-                          !newPrescription.endDate && "text-muted-foreground"
-                        }`}
+                        className={`col-span-3 justify-start text-left font-normal ${!newPrescription.endDate && "text-muted-foreground"
+                          }`}
                       >
                         {newPrescription.endDate ? (
                           format(newPrescription.endDate, "PPP")

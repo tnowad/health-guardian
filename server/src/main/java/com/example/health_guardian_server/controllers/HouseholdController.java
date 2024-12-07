@@ -3,6 +3,7 @@ package com.example.health_guardian_server.controllers;
 import com.example.health_guardian_server.dtos.requests.CreateHouseholdRequest;
 import com.example.health_guardian_server.dtos.requests.ListHouseholdsRequest;
 import com.example.health_guardian_server.dtos.responses.HouseholdResponse;
+import com.example.health_guardian_server.services.HouseholdMemberService;
 import com.example.health_guardian_server.services.HouseholdService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HouseholdController {
 
   private final HouseholdService householdService;
+  private final HouseholdMemberService householdMemberService;
 
   @GetMapping
   public ResponseEntity<Page<HouseholdResponse>> listHouseholds(
