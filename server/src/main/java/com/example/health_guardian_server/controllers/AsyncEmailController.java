@@ -27,7 +27,7 @@ public class AsyncEmailController {
     String email = message.split(":")[1];
     String code = message.split(":")[3];
 
-    log.info("Message received: {}", message);
+    log.info("Message received abcxyz: {}", message);
 
     try {
       switch (VerificationType.valueOf(type)) {

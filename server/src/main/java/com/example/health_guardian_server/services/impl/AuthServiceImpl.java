@@ -57,6 +57,9 @@ public class AuthServiceImpl implements AuthService {
     if (localProvider == null) {
       throw new RuntimeException("User not found");
     }
+    if (!localProvider.isVerified()) {
+      throw new RuntimeException("User not verified");
+    }
     if (!localProviderService.verifyLocalProviderPassword(
         request.getEmail(), request.getPassword())) {
       throw new RuntimeException("Invalid password");
@@ -122,15 +125,30 @@ public class AuthServiceImpl implements AuthService {
             .email(request.getEmail())
             .passwordHash(passwordEncoder.encode(request.getPassword()))
             .user(user)
+            .isVerified(false)
             .build());
+    kafkaTemplate.send(KAFKA_TOPIC_SEND_MAIL, "VERIFY_EMAIL_BY_CODE:" + request.getEmail());
 
     log.info("Sign-up successful for email: {}", request.getEmail());
-    return SignUpResponse.builder().message("Sign up successfully").build();
+    return SignUpResponse.builder().message("Sign up successfully\nPlease verify code in your mail. Thank you!")
+        .build();
   }
 
   @Override
-  public void verifyEmail(LocalProvider LocalProvider, String code, String token) {
-    throw new UnsupportedOperationException("Unimplemented method 'verifyEmail'");
+  public void verifyEmail(LocalProvider localProvider, String code, String token) {
+    Verification verification = (code != null)
+        ? verificationRepository
+            .findByCode(code)
+            .orElseThrow(() -> new RuntimeException("Invalid verification"))
+        : verificationRepository
+            .findById(token)
+            .orElseThrow(() -> new RuntimeException("Invalid verification"));
+
+    if (verification.getExpiryTime().before(new Date()))
+      throw new RuntimeException("Code invalid");
+    localProvider.setVerified(true);
+    localProviderService.saveLocalProvider(localProvider);
+    verificationRepository.delete(verification);
   }
 
   @Override

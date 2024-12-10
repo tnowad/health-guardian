@@ -4,6 +4,7 @@ import com.example.health_guardian_server.dtos.enums.VerificationType;
 import com.example.health_guardian_server.entities.LocalProvider;
 import com.example.health_guardian_server.entities.Verification;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface VerificationRepository extends JpaRepository<Verification, String> {
   List<Verification> findByLocalProviderAndVerificationType(
       LocalProvider localProvider, VerificationType type);
+
+  Optional<Verification> findByCode(String code);
 }

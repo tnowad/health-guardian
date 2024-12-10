@@ -102,6 +102,7 @@ public class SeedServiceImpl implements SeedService {
             .email(users.get(i).getEmail())
             .user(users.get(i))
             .passwordHash(passwordEncoder.encode("Password@123"))
+            .isVerified(true)
             .build();
         localProviders.add(localProvider);
       } else {
