@@ -319,7 +319,7 @@ public class SeedServiceImpl implements SeedService {
     for (User x : users) {
       Appointment appointment = Appointment.builder()
           .user(x)
-          .appoinmentDate(faker.date().future(30, TimeUnit.DAYS))
+          .appointmentDate(faker.date().future(30, TimeUnit.DAYS))
           .reason(faker.lorem().sentence(20))
           .address(faker.address().fullAddress())
           .status(

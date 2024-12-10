@@ -6,9 +6,10 @@ import lombok.Data;
 
 @Data
 public class CreateAppointmentRequest {
-  private String doctorId;
-  private String patientId;
+  private String userId;
   private Date appointmentDate;
-  private String reasonForVisit;
+  private String reason;
+  private String address;
   private AppointmentStatus status;
+  private String notes;
 }
