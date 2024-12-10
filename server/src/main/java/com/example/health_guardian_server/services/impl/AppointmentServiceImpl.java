@@ -5,8 +5,10 @@ import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateAppointmentRequest;
 import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
 import com.example.health_guardian_server.entities.Appointment;
+import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.mappers.AppointmentMapper;
 import com.example.health_guardian_server.repositories.AppointmentRepository;
+import com.example.health_guardian_server.repositories.UserRepository;
 import com.example.health_guardian_server.services.AppointmentService;
 import com.example.health_guardian_server.specifications.AppointmentSpecification;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -19,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -26,6 +30,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
   private final AppointmentRepository appointmentRepository;
   private final AppointmentMapper appointmentMapper;
+  private final UserRepository userRepository;
 
   @Override
   public Page<AppointmentResponse> getAllAppointments(ListAppointmentRequest request) {
@@ -60,18 +65,11 @@ public class AppointmentServiceImpl implements AppointmentService {
   public AppointmentResponse createAppointment(CreateAppointmentRequest createAppointmentRequest) {
     log.debug("Creating appointment: {}", createAppointmentRequest);
     Appointment createdAppointment = appointmentMapper.toAppointment(createAppointmentRequest);
-
-    // Optional<Patient> patient =
-    // patientRepository.findById(createAppointmentRequest.getPatientId());
-    // Optional<UserMedicalStaff> userMedicalStaff =
-    // userMedicalStaffRepository.findById(createAppointmentRequest.getDoctorId());
-
-    // createdAppointment.setPatient(patient.get());
-    // createdAppointment.setDoctor(userMedicalStaff.get());
-
+    Optional<User> user = userRepository.findById(createAppointmentRequest.getUserId());
+    createdAppointment.setUser(user.get());
     Appointment appointment = appointmentRepository.save(createdAppointment);
     log.info("Appointment created with id: {}", createdAppointment.getId());
-    return appointmentMapper.toResponse(createdAppointment);
+    return appointmentMapper.toResponse(appointment);
   }
 
   @Override
@@ -88,16 +86,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                       "Appointment not found with id " + appointmentId);
                 });
 
-    // Optional<Patient> patient =
-    // patientRepository.findById(request.getPatientId());
-    // Optional<UserMedicalStaff> userMedicalStaff =
-    // userMedicalStaffRepository.findById(request.getDoctorId());
-
-    // existingAppointment.setPatient(patient.get());
-    // existingAppointment.setDoctor(userMedicalStaff.get());
-    existingAppointment.setAppoinmentDate(request.getAppointmentDate());
-    existingAppointment.setReason(request.getReasonForVisit());
+    Optional<User> user = userRepository.findById(request.getUserId());
+    existingAppointment.setUser(user.get());
+    existingAppointment.setAppointmentDate(request.getAppointmentDate());
+    existingAppointment.setReason(request.getReason());
+    existingAppointment.setAddress(request.getAddress());
     existingAppointment.setStatus(request.getStatus());
+    existingAppointment.setNotes(request.getNotes());
     Appointment updatedAppointment = appointmentRepository.save(existingAppointment);
     log.info("Appointment updated with id: {}", updatedAppointment.getId());
     return appointmentMapper.toResponse(updatedAppointment);

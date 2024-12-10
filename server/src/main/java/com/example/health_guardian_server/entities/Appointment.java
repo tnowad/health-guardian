@@ -26,7 +26,7 @@ public class Appointment {
   private User user;
 
   @Column(name = "appointment_date")
-  private Date appoinmentDate;
+  private Date appointmentDate;
 
   @Column
   private String reason;

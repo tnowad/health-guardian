@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { apiClient } from "../client";
-import { unauthorizedResponseSchema } from "../schemas/error.schema";
-import { appointmentSchema } from "../schemas/appointment.schema";
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { getQueryClient } from "@/app/get-query-client";
+import { appointmentSchema } from "@/lib/schemas/(appointment)/appointment.schema";
+import { unauthorizedResponseSchema } from "@/lib/schemas/error.schema";
+import { apiClient } from "@/lib/client";
 
 export const createAppointmentBodySchema = appointmentSchema.omit({
   id: true,

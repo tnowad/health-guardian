@@ -74,7 +74,7 @@ public class SeedServiceImpl implements SeedService {
   @Transactional
   public void initial() {
     User user = User.builder()
-        .email("initialUser@gmail.com")
+        .email("admin@health-guardian.com")
         .avatar(faker.avatar().image())
         .firstName(faker.name().firstName())
         .lastName(faker.name().lastName())
@@ -319,7 +319,7 @@ public class SeedServiceImpl implements SeedService {
     for (User x : users) {
       Appointment appointment = Appointment.builder()
           .user(x)
-          .appoinmentDate(faker.date().future(30, TimeUnit.DAYS))
+          .appointmentDate(faker.date().future(30, TimeUnit.DAYS))
           .reason(faker.lorem().sentence(20))
           .address(faker.address().fullAddress())
           .status(

@@ -22,15 +22,12 @@ import org.springframework.web.bind.annotation.*;
 public class AppointmentController {
 
   private final AppointmentService appointmentService;
-  private final NotificationService notificationService;
-  private final UserService userService;
 
-  @PostMapping
-  public ResponseEntity<AppointmentResponse> createAppointment(
-      @RequestBody CreateAppointmentRequest createAppointmentRequest) {
-    AppointmentResponse createdAppointment =
-        appointmentService.createAppointment(createAppointmentRequest);
-    return new ResponseEntity<>(createdAppointment, HttpStatus.CREATED);
+  @GetMapping
+  public ResponseEntity<Page<AppointmentResponse>> getAllAppointments(
+    @ModelAttribute ListAppointmentRequest request) {
+    Page<AppointmentResponse> appointments = appointmentService.getAllAppointments(request);
+    return new ResponseEntity<>(appointments, HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
@@ -39,11 +36,12 @@ public class AppointmentController {
     return new ResponseEntity<>(appointment, HttpStatus.OK);
   }
 
-  @GetMapping
-  public ResponseEntity<Page<AppointmentResponse>> getAllAppointments(
-      @ModelAttribute ListAppointmentRequest request) {
-    Page<AppointmentResponse> appointments = appointmentService.getAllAppointments(request);
-    return new ResponseEntity<>(appointments, HttpStatus.OK);
+  @PostMapping
+  public ResponseEntity<AppointmentResponse> createAppointment(
+      @RequestBody CreateAppointmentRequest createAppointmentRequest) {
+    AppointmentResponse createdAppointment =
+        appointmentService.createAppointment(createAppointmentRequest);
+    return new ResponseEntity<>(createdAppointment, HttpStatus.CREATED);
   }
 
   @PutMapping("/{appointmentId}")

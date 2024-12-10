@@ -20,7 +20,7 @@ public interface AppointmentMapper {
   static SimpleResponse toAppointmentSimpleResponse(Appointment appointment) {
     return SimpleResponse.builder()
         .id(appointment.getId())
-        .message("MedicationId: " + appointment.getId())
+        .message("AppointmentId: " + appointment.getId())
         .build();
   }
 }

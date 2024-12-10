@@ -37,7 +37,7 @@ export const pageableResponseSchema = z.object({
 });
 
 export function createListResponseSchema<ItemType extends z.ZodTypeAny>(
-  schema: ItemType,
+  schema: ItemType
 ) {
   return z.object({
     content: z.array(schema),

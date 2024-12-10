@@ -17,6 +17,8 @@ public class AppointmentResponse {
   private String id;
   private String userId;
   private Date appointmentDate;
-  private String reasonForVisit;
+  private String reason;
+  private String address;
   private AppointmentStatus status;
+  private String notes;
 }
