@@ -1,7 +1,6 @@
 package com.example.health_guardian_server.configurations;
 
 import com.example.health_guardian_server.components.CustomJwtDecoder;
-import com.example.health_guardian_server.repositories.AccountRepository;
 import com.example.health_guardian_server.repositories.ExternalProviderRepository;
 import com.example.health_guardian_server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,6 @@ import org.springframework.web.filter.CorsFilter;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class SecurityConfiguration {
   CustomJwtDecoder customJwtDecoder;
-  AccountRepository accountRepository;
   ExternalProviderRepository externalProviderRepository;
   UserRepository userRepository;
   OAuth2AuthorizedClientService authorizedClientService;
@@ -94,7 +92,6 @@ public class SecurityConfiguration {
                 .successHandler(
                     customOAuth2SuccessHandler(
                         externalProviderRepository,
-                        accountRepository,
                         userRepository,
                         authorizedClientService)) // Thêm success handler
                 .failureUrl(
@@ -142,11 +139,10 @@ public class SecurityConfiguration {
   @Bean
   public CustomOAuth2SuccessHandler customOAuth2SuccessHandler(
       ExternalProviderRepository externalProviderRepository,
-      AccountRepository accountRepository,
       UserRepository userRepository,
       OAuth2AuthorizedClientService authorizedClientService) {
     return new CustomOAuth2SuccessHandler(
-        externalProviderRepository, accountRepository, userRepository, authorizedClientService);
+        externalProviderRepository, userRepository, authorizedClientService);
   }
 
   @Bean

@@ -1,28 +1,20 @@
 package com.example.health_guardian_server.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import java.util.Date;
+import com.example.health_guardian_server.entities.enums.AppointmentStatus;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "appointments")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
-@ToString
-@EqualsAndHashCode
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Appointment {
 
   @Id
@@ -30,17 +22,22 @@ public class Appointment {
   private String id;
 
   @ManyToOne
-  @JoinColumn(name = "patient_id", referencedColumnName = "id")
-  private Patient patient;
+  @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+  private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "doctor_id", referencedColumnName = "id")
-  private UserMedicalStaff doctor;
+  @Column(name = "appointment_date")
+  private Date appoinmentDate;
 
-  @NotNull private Date appointmentDate;
+  @Column
+  private String reason;
 
-  @NotBlank private String reasonForVisit;
+  @Column
+  private String address;
 
+  @Column
   @Enumerated(EnumType.STRING)
   private AppointmentStatus status;
+
+  @Column
+  private String notes;
 }

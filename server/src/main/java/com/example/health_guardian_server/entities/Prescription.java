@@ -1,54 +1,59 @@
 package com.example.health_guardian_server.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.example.health_guardian_server.entities.enums.PrescriptionStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Past;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import lombok.*;
-
 @Entity
 @Table(name = "prescriptions")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Builder
-@EqualsAndHashCode
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EntityListeners(AuditingEntityListener.class)
 public class Prescription {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  public String id;
 
   @ManyToOne
-  @JoinColumn(name = "patient_id", referencedColumnName = "id")
-  @JsonIgnore
-  private Patient patient;
+  @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+  private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "medication_id", referencedColumnName = "id")
-  private Medication medication;
+  @Column(name = "issued_by")
+  private String issuedBy;
 
-  @ManyToOne
-  @JoinColumn(name = "prescribed_by", referencedColumnName = "id")
-  private User prescribedBy;
+  @Column(name = "issued_date")
+  private Timestamp issuedDate;
 
-  private String dosage;
+  @Column(name = "valid_until")
+  private Date validUntil;
 
-  private String frequency;
-
-  @Past private Date startDate;
-
-  @Future private Date endDate;
-
+  @Column
   @Enumerated(EnumType.STRING)
   private PrescriptionStatus status;
+
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  private Timestamp createdAt;
+
+  @LastModifiedDate
+  @Column(nullable = false)
+  private Timestamp updatedAt;
+
+  @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
+  private List<PrescriptionItem> prescriptionItems;
 }

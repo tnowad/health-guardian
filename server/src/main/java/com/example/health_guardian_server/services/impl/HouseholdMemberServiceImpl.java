@@ -2,13 +2,11 @@ package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.dtos.requests.CreateHouseholdMemberRequest;
 import com.example.health_guardian_server.dtos.requests.ListHouseholdMembersRequest;
-import com.example.health_guardian_server.dtos.requests.UpdateHouseholdMemberRequest;
 import com.example.health_guardian_server.dtos.responses.HouseholdMemberResponse;
 import com.example.health_guardian_server.entities.HouseholdMember;
 import com.example.health_guardian_server.mappers.HouseholdMemberMapper;
 import com.example.health_guardian_server.repositories.HouseholdMemberRepository;
 import com.example.health_guardian_server.repositories.HouseholdRepository;
-import com.example.health_guardian_server.repositories.PatientRepository;
 import com.example.health_guardian_server.services.HouseholdMemberService;
 import com.example.health_guardian_server.specifications.HouseholdMemberSpecification;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +15,12 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class HouseholdMemberServiceImpl implements HouseholdMemberService {
   private final HouseholdMemberRepository householdMemberRepository;
-  private final PatientRepository patientRepository;
   private final HouseholdMemberMapper householdMemberMapper;
   private final HouseholdRepository householdRepository;
 
@@ -32,13 +30,13 @@ public class HouseholdMemberServiceImpl implements HouseholdMemberService {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     HouseholdMemberSpecification specification = new HouseholdMemberSpecification(request);
 
-    var householdMembers = householdMemberRepository
-        .findAll(specification, pageRequest)
-        .map(householdMemberMapper::toHouseholdMemberResponse);
+    var householdMembers =
+        householdMemberRepository
+            .findAll(specification, pageRequest)
+            .map(householdMemberMapper::toHouseholdMemberResponse);
 
     log.info("Fetched {} household members", householdMembers.getTotalElements());
     return householdMembers;
-
   }
 
   @Override
@@ -49,7 +47,6 @@ public class HouseholdMemberServiceImpl implements HouseholdMemberService {
 
     log.info("Created household member with id: {}", createdHouseholdMember.getId());
     return householdMemberMapper.toHouseholdMemberResponse(createdHouseholdMember);
-
   }
 
   @Override
@@ -65,7 +62,6 @@ public class HouseholdMemberServiceImpl implements HouseholdMemberService {
               return new ResourceNotFoundException(
                   "Household member not found with id " + householdMemberId);
             });
-
   }
 
   @Override
@@ -73,35 +69,34 @@ public class HouseholdMemberServiceImpl implements HouseholdMemberService {
       String householdMemberId, CreateHouseholdMemberRequest request) {
 
     log.debug("Updating household member with id: {}", householdMemberId);
-    HouseholdMember existingHouseholdMember = householdMemberRepository
-        .findById(householdMemberId)
-        .orElseThrow(
-            () -> {
-              log.error("Household member not found with id: {}", householdMemberId);
-              return new ResourceNotFoundException(
-                  "Household member not found with id " + householdMemberId);
-            });
-    existingHouseholdMember.setRelationshipToPatient(request.getRelationshipToPatient());
-    HouseholdMember updatedHouseholdMember = householdMemberRepository.save(existingHouseholdMember);
+    HouseholdMember existingHouseholdMember =
+        householdMemberRepository
+            .findById(householdMemberId)
+            .orElseThrow(
+                () -> {
+                  log.error("Household member not found with id: {}", householdMemberId);
+                  return new ResourceNotFoundException(
+                      "Household member not found with id " + householdMemberId);
+                });
+    HouseholdMember updatedHouseholdMember =
+        householdMemberRepository.save(existingHouseholdMember);
     log.info("Household member updated with id: {}", updatedHouseholdMember.getId());
     return householdMemberMapper.toHouseholdMemberResponse(updatedHouseholdMember);
-
   }
 
   @Override
   public void deleteHouseholdMember(String householdMemberId) {
     log.debug("Deleting household member with id: {}", householdMemberId);
-    HouseholdMember existingHouseholdMember = householdMemberRepository
-        .findById(householdMemberId)
-        .orElseThrow(
-            () -> {
-              log.error("Household member not found with id: {}", householdMemberId);
-              return new ResourceNotFoundException(
-                  "Household member not found with id " + householdMemberId);
-            });
+    HouseholdMember existingHouseholdMember =
+        householdMemberRepository
+            .findById(householdMemberId)
+            .orElseThrow(
+                () -> {
+                  log.error("Household member not found with id: {}", householdMemberId);
+                  return new ResourceNotFoundException(
+                      "Household member not found with id " + householdMemberId);
+                });
     householdMemberRepository.delete(existingHouseholdMember);
     log.info("Deleted household member with id: {}", householdMemberId);
-
-
   }
 }

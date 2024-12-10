@@ -1,36 +1,28 @@
 package com.example.health_guardian_server.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "household_members")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
-@EqualsAndHashCode
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class HouseholdMember {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  public String id;
 
   @ManyToOne
-  @JoinColumn(name = "household_id", referencedColumnName = "id")
+  @JoinColumn(name = "household_id", nullable = false, referencedColumnName = "id")
   private Household household;
 
   @ManyToOne
-  @JoinColumn(name = "patient_id", referencedColumnName = "id")
-  private Patient patient;
-
-  private String relationshipToPatient;
+  @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+  private User user;
 }

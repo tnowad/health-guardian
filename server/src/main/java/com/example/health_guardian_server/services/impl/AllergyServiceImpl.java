@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-
 public class AllergyServiceImpl implements AllergyService {
   private final AllergyRepository allergyRepository;
   private final AllergyMapper allergyMapper;
@@ -30,9 +29,8 @@ public class AllergyServiceImpl implements AllergyService {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     AllergySpecification specification = new AllergySpecification(request);
 
-    var allergies = allergyRepository
-        .findAll(specification, pageRequest)
-        .map(allergyMapper::toResponse);
+    var allergies =
+        allergyRepository.findAll(specification, pageRequest).map(allergyMapper::toResponse);
 
     log.info("Fetched {} allergies", allergies.getTotalElements());
     return allergies;
@@ -48,8 +46,7 @@ public class AllergyServiceImpl implements AllergyService {
             () -> {
               log.error("Allergy not found with id: {}", allergyId);
               return new ResourceNotFoundException("Allergy not found with id: " + allergyId);
-            }
-        );
+            });
   }
 
   @Override
@@ -64,21 +61,29 @@ public class AllergyServiceImpl implements AllergyService {
   @Override
   public AllergyResponse updateAllergy(String allergyId, CreateAllergyRequest request) {
     log.debug("Updating allergy with id: {}", allergyId);
-    var allergy = allergyRepository.findById(allergyId)
-        .orElseThrow(() -> {
-          log.error("Allergy not found with id: {}", allergyId);
-          return new ResourceNotFoundException("Allergy not found with id: " + allergyId);
-        });
+    var allergy =
+        allergyRepository
+            .findById(allergyId)
+            .orElseThrow(
+                () -> {
+                  log.error("Allergy not found with id: {}", allergyId);
+                  return new ResourceNotFoundException("Allergy not found with id: " + allergyId);
+                });
 
     allergy.setAllergyName(request.getAllergyName());
     allergy.setReactionDescription(request.getReactionDescription());
     allergy.setSeverity(request.getSeverity());
-    var user = userRepository.findById(request.getUserId())
-        .orElseThrow(() -> {
-          log.error("User not found with id: {}", request.getUserId());
-          return new ResourceNotFoundException("User not found with id: " + request.getUserId());
-        });
+    var user =
+        userRepository
+            .findById(request.getUserId())
+            .orElseThrow(
+                () -> {
+                  log.error("User not found with id: {}", request.getUserId());
+                  return new ResourceNotFoundException(
+                      "User not found with id: " + request.getUserId());
+                });
     allergy.setUser(user);
+    // allergy.setUser(user);
     var updatedAllergy = allergyRepository.save(allergy);
     log.info("Updated allergy with id: {}", allergyId);
     return allergyMapper.toResponse(updatedAllergy);
@@ -90,6 +95,4 @@ public class AllergyServiceImpl implements AllergyService {
     allergyRepository.deleteById(allergyId);
     log.info("Deleted allergy with id: {}", allergyId);
   }
-
-
 }

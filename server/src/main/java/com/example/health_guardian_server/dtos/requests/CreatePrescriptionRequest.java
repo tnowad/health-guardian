@@ -1,9 +1,8 @@
 package com.example.health_guardian_server.dtos.requests;
 
-import com.example.health_guardian_server.entities.PrescriptionStatus;
-import lombok.Data;
-
+import com.example.health_guardian_server.entities.enums.PrescriptionStatus;
 import java.util.Date;
+import lombok.Data;
 
 @Data
 public class CreatePrescriptionRequest {

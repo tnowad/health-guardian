@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AppointmentRepository extends JpaRepository<Appointment, String> , JpaSpecificationExecutor<Appointment> {}
+public interface AppointmentRepository
+    extends JpaRepository<Appointment, String>, JpaSpecificationExecutor<Appointment> {}

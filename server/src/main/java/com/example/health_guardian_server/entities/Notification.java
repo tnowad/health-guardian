@@ -1,27 +1,20 @@
 package com.example.health_guardian_server.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import java.sql.Timestamp;
+import com.example.health_guardian_server.entities.enums.NotificationType;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "notifications")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
-@EqualsAndHashCode
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Notification {
 
   @Id
@@ -29,13 +22,16 @@ public class Notification {
   private String id;
 
   @ManyToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
   private User user;
 
+  @Column(name = "notification_type")
   @Enumerated(EnumType.STRING)
-  private NotificationType type;
+  private NotificationType notificationType;
 
-  @NotNull private Timestamp notificationDate;
+  @Column(name = "notification_date")
+  private Timestamp notificationDate;
 
-  private Boolean readStatus;
+  @Column(name = "read_status")
+  private boolean readStatus;
 }

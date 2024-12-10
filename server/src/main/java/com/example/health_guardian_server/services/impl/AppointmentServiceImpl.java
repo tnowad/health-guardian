@@ -5,12 +5,8 @@ import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateAppointmentRequest;
 import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
 import com.example.health_guardian_server.entities.Appointment;
-import com.example.health_guardian_server.entities.Patient;
-import com.example.health_guardian_server.entities.UserMedicalStaff;
 import com.example.health_guardian_server.mappers.AppointmentMapper;
 import com.example.health_guardian_server.repositories.AppointmentRepository;
-import com.example.health_guardian_server.repositories.PatientRepository;
-import com.example.health_guardian_server.repositories.UserMedicalStaffRepository;
 import com.example.health_guardian_server.services.AppointmentService;
 import com.example.health_guardian_server.specifications.AppointmentSpecification;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -23,8 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -32,8 +26,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
   private final AppointmentRepository appointmentRepository;
   private final AppointmentMapper appointmentMapper;
-  private final PatientRepository patientRepository;
-  private final UserMedicalStaffRepository userMedicalStaffRepository;
 
   @Override
   public Page<AppointmentResponse> getAllAppointments(ListAppointmentRequest request) {
@@ -41,9 +33,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     AppointmentSpecification specification = new AppointmentSpecification(request);
 
-    var appointments = appointmentRepository
-        .findAll(specification, pageRequest)
-        .map(appointmentMapper::toResponse);
+    var appointments =
+        appointmentRepository
+            .findAll(specification, pageRequest)
+            .map(appointmentMapper::toResponse);
 
     log.info("Fetched {} appointments", appointments.getTotalElements());
     return appointments;
@@ -68,11 +61,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     log.debug("Creating appointment: {}", createAppointmentRequest);
     Appointment createdAppointment = appointmentMapper.toAppointment(createAppointmentRequest);
 
-    Optional<Patient> patient = patientRepository.findById(createAppointmentRequest.getPatientId());
-    Optional<UserMedicalStaff> userMedicalStaff = userMedicalStaffRepository.findById(createAppointmentRequest.getDoctorId());
+    // Optional<Patient> patient =
+    // patientRepository.findById(createAppointmentRequest.getPatientId());
+    // Optional<UserMedicalStaff> userMedicalStaff =
+    // userMedicalStaffRepository.findById(createAppointmentRequest.getDoctorId());
 
-    createdAppointment.setPatient(patient.get());
-    createdAppointment.setDoctor(userMedicalStaff.get());
+    // createdAppointment.setPatient(patient.get());
+    // createdAppointment.setDoctor(userMedicalStaff.get());
 
     Appointment appointment = appointmentRepository.save(createdAppointment);
     log.info("Appointment created with id: {}", createdAppointment.getId());
@@ -83,22 +78,25 @@ public class AppointmentServiceImpl implements AppointmentService {
   public AppointmentResponse updateAppointment(
       String appointmentId, UpdateAppointmentRequest request) {
     log.debug("Updating appointment with id: {}", appointmentId);
-    Appointment existingAppointment = appointmentRepository
-        .findById(appointmentId)
-        .orElseThrow(
-            () -> {
-              log.error("Appointment not found with id: {}", appointmentId);
-              return new ResourceNotFoundException(
-                  "Appointment not found with id " + appointmentId);
-            });
+    Appointment existingAppointment =
+        appointmentRepository
+            .findById(appointmentId)
+            .orElseThrow(
+                () -> {
+                  log.error("Appointment not found with id: {}", appointmentId);
+                  return new ResourceNotFoundException(
+                      "Appointment not found with id " + appointmentId);
+                });
 
-    Optional<Patient> patient = patientRepository.findById(request.getPatientId());
-    Optional<UserMedicalStaff> userMedicalStaff = userMedicalStaffRepository.findById(request.getDoctorId());
+    // Optional<Patient> patient =
+    // patientRepository.findById(request.getPatientId());
+    // Optional<UserMedicalStaff> userMedicalStaff =
+    // userMedicalStaffRepository.findById(request.getDoctorId());
 
-    existingAppointment.setPatient(patient.get());
-    existingAppointment.setDoctor(userMedicalStaff.get());
-    existingAppointment.setAppointmentDate(request.getAppointmentDate());
-    existingAppointment.setReasonForVisit(request.getReasonForVisit());
+    // existingAppointment.setPatient(patient.get());
+    // existingAppointment.setDoctor(userMedicalStaff.get());
+    existingAppointment.setAppoinmentDate(request.getAppointmentDate());
+    existingAppointment.setReason(request.getReasonForVisit());
     existingAppointment.setStatus(request.getStatus());
     Appointment updatedAppointment = appointmentRepository.save(existingAppointment);
     log.info("Appointment updated with id: {}", updatedAppointment.getId());
@@ -108,14 +106,15 @@ public class AppointmentServiceImpl implements AppointmentService {
   @Override
   public Appointment deleteAppointment(String appointmentId) {
     log.debug("Deleting appointment with id: {}", appointmentId);
-    Appointment existingAppointment = appointmentRepository
-        .findById(appointmentId)
-        .orElseThrow(
-            () -> {
-              log.error("Appointment not found with id: {}", appointmentId);
-              return new ResourceNotFoundException(
-                  "Appointment not found with id " + appointmentId);
-            });
+    Appointment existingAppointment =
+        appointmentRepository
+            .findById(appointmentId)
+            .orElseThrow(
+                () -> {
+                  log.error("Appointment not found with id: {}", appointmentId);
+                  return new ResourceNotFoundException(
+                      "Appointment not found with id " + appointmentId);
+                });
 
     appointmentRepository.delete(existingAppointment);
     log.info("Appointment deleted with id: {}", appointmentId);
@@ -125,10 +124,11 @@ public class AppointmentServiceImpl implements AppointmentService {
   private void sendNotification(String title, String messageBody) {
     log.debug("Sending notification with title: '{}' and message: '{}'", title, messageBody);
     try {
-      Message message = Message.builder()
-          .setNotification(Notification.builder().setTitle(title).setBody(messageBody).build())
-          .setTopic("appointments")
-          .build();
+      Message message =
+          Message.builder()
+              .setNotification(Notification.builder().setTitle(title).setBody(messageBody).build())
+              .setTopic("appointments")
+              .build();
 
       FirebaseMessaging.getInstance().send(message);
       log.info("Notification sent with title: '{}' and message: '{}'", title, messageBody);

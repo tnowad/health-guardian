@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.configurations;
 
-import com.example.health_guardian_server.entities.*;
-import com.example.health_guardian_server.repositories.AccountRepository;
+import com.example.health_guardian_server.entities.ExternalProvider;
+import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.repositories.ExternalProviderRepository;
 import com.example.health_guardian_server.repositories.UserRepository;
 import jakarta.servlet.ServletException;
@@ -19,17 +19,14 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
-  private final AccountRepository accountRepository;
   private final ExternalProviderRepository externalProviderRepository;
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final UserRepository userRepository;
 
   public CustomOAuth2SuccessHandler(
       ExternalProviderRepository externalProviderRepository,
-      AccountRepository accountRepository,
       UserRepository userRepository,
       OAuth2AuthorizedClientService authorizedClientService) {
-    this.accountRepository = accountRepository;
     this.externalProviderRepository = externalProviderRepository;
     this.authorizedClientService = authorizedClientService;
     this.userRepository = userRepository;
@@ -66,19 +63,13 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
       externalProviderRepository.save(existingExternalProvider);
     } else {
       // Người dùng chưa tồn tại, tạo mới
-      User user =
-          User.builder()
-              .type(UserType.PATIENT) // Gán đúng loại người dùng
-              .build();
+      User user = User.builder().build();
       userRepository.save(user);
 
-      Account account =
-          Account.builder().profileType(provider).status(AccountStatus.ACTIVE).user(user).build();
-      accountRepository.save(account);
+      // accountRepository.save(account);
 
       ExternalProvider externalProvider =
           ExternalProvider.builder()
-              .account(account)
               .providerName(provider)
               .providerUserId(providerUserId)
               .providerUserEmail(email)

@@ -51,8 +51,17 @@ public class Verification {
   VerificationType verificationType;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "provider_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_verifications_providers", foreignKeyDefinition = "FOREIGN KEY (provider_id) REFERENCES local_providers(id) ON DELETE CASCADE ON"
-      + " UPDATE CASCADE"), nullable = false, updatable = false)
+  @JoinColumn(
+      name = "provider_id",
+      referencedColumnName = "id",
+      foreignKey =
+          @ForeignKey(
+              name = "fk_verifications_providers",
+              foreignKeyDefinition =
+                  "FOREIGN KEY (provider_id) REFERENCES local_providers(id) ON DELETE CASCADE ON"
+                      + " UPDATE CASCADE"),
+      nullable = false,
+      updatable = false)
   @JsonBackReference
   LocalProvider localProvider;
 }

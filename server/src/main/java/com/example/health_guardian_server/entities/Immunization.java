@@ -1,49 +1,38 @@
 package com.example.health_guardian_server.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "immunizations")
+@Table(name = "Immunizations")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Builder
-@EqualsAndHashCode
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Immunization {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  public String id;
 
   @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
   private User user;
 
-  @Column(name = "vaccination_date", nullable = false)
+  @Column(name = "vaccination_date")
   private Date vaccinationDate;
 
-  @NotBlank
   @Column(name = "vaccine_name", nullable = false)
   private String vaccineName;
 
-  @NotBlank
-  @Column(name = "batch_number", nullable = false)
+  @Column(name = "batch_number")
   private String batchNumber;
 
-  @Lob
+  @Column
   private String notes;
 }

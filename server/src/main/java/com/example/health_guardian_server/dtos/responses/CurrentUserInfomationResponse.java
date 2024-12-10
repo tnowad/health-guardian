@@ -1,6 +1,5 @@
 package com.example.health_guardian_server.dtos.responses;
 
-import com.example.health_guardian_server.entities.UserType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +16,4 @@ public class CurrentUserInfomationResponse {
   String username;
   String email;
   String avatarUrl;
-  UserType role;
-  StaffInforResponse staff;
-  MedicalStaffInforResponse medicalStaff;
-  PatientInforResponse patient;
 }

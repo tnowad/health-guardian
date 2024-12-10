@@ -7,7 +7,6 @@ import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
 import com.example.health_guardian_server.dtos.responses.SimpleResponse;
 import com.example.health_guardian_server.entities.Appointment;
 import com.example.health_guardian_server.mappers.AppointmentMapper;
-import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AppointmentService;
 import com.example.health_guardian_server.services.NotificationService;
 import com.example.health_guardian_server.services.UserService;
@@ -25,12 +24,12 @@ public class AppointmentController {
   private final AppointmentService appointmentService;
   private final NotificationService notificationService;
   private final UserService userService;
-  private final AccountService accountService;
 
   @PostMapping
   public ResponseEntity<AppointmentResponse> createAppointment(
       @RequestBody CreateAppointmentRequest createAppointmentRequest) {
-    AppointmentResponse createdAppointment = appointmentService.createAppointment(createAppointmentRequest);
+    AppointmentResponse createdAppointment =
+        appointmentService.createAppointment(createAppointmentRequest);
     return new ResponseEntity<>(createdAppointment, HttpStatus.CREATED);
   }
 
@@ -50,7 +49,8 @@ public class AppointmentController {
   @PutMapping("/{appointmentId}")
   public ResponseEntity<AppointmentResponse> updateAppointment(
       @PathVariable String appointmentId, @RequestBody UpdateAppointmentRequest request) {
-    AppointmentResponse updatedAppointment = appointmentService.updateAppointment(appointmentId, request);
+    AppointmentResponse updatedAppointment =
+        appointmentService.updateAppointment(appointmentId, request);
     return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
   }
 

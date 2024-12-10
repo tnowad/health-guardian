@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.dtos.requests;
 
 import com.example.health_guardian_server.entities.Appointment;
-import com.example.health_guardian_server.entities.AppointmentStatus;
+import com.example.health_guardian_server.entities.enums.AppointmentStatus;
 import com.example.health_guardian_server.specifications.AppointmentSpecification;
 import java.util.Date;
 import lombok.Data;
@@ -11,16 +11,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 @Data
-public class ListAppointmentRequest implements PageableRequest<Appointment>, PageableWithIdsRequest<String> {
+public class ListAppointmentRequest
+    implements PageableRequest<Appointment>, PageableWithIdsRequest<String> {
   String[] ids;
 
   private Integer page = 0;
 
   private Integer size = 10;
 
-  private String[] sortFields = new String[] { "appointmentDate" };
+  private String[] sortFields = new String[] {"appointmentDate"};
 
-  private Boolean[] desc = new Boolean[] { false };
+  private Boolean[] desc = new Boolean[] {false};
 
   private String patientId;
 

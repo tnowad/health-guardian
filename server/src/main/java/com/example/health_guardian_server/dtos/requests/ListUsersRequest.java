@@ -12,9 +12,9 @@ public class ListUsersRequest implements PageableRequest<User>, PageableWithIdsR
 
   private Integer size = 10;
 
-  private String[] sortFields = new String[] { "id" };
+  private String[] sortFields = new String[] {"id"};
 
-  private Boolean[] desc = new Boolean[] { false };
+  private Boolean[] desc = new Boolean[] {false};
 
   private String search = "";
 

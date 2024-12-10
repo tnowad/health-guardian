@@ -3,7 +3,6 @@ package com.example.health_guardian_server.specifications;
 import com.example.health_guardian_server.dtos.requests.ListHouseholdMembersRequest;
 import com.example.health_guardian_server.entities.Household;
 import com.example.health_guardian_server.entities.HouseholdMember;
-import com.example.health_guardian_server.entities.Patient;
 import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +24,6 @@ public class HouseholdMemberSpecification implements Specification<HouseholdMemb
       Join<HouseholdMember, Household> householdJoin = root.join("household");
       predicates.add(criteriaBuilder.equal(householdJoin.get("id"), request.getHouseholdId()));
     }
-
-    // Filter by patient ID
-    if (request.getPatientId() != null && !request.getPatientId().isEmpty()) {
-      Join<HouseholdMember, Patient> patientJoin = root.join("patient");
-      predicates.add(criteriaBuilder.equal(patientJoin.get("id"), request.getPatientId()));
-    }
-
     // Filter by relationship to patient
     if (request.getRelationshipToPatient() != null
         && !request.getRelationshipToPatient().isEmpty()) {
