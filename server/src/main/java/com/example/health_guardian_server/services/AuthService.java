@@ -1,13 +1,13 @@
 package com.example.health_guardian_server.services;
 
 import com.example.health_guardian_server.dtos.enums.VerificationType;
-import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
-import com.example.health_guardian_server.dtos.requests.SignInRequest;
-import com.example.health_guardian_server.dtos.requests.SignUpRequest;
-import com.example.health_guardian_server.dtos.responses.GetCurrentUserPermissionsResponse;
-import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
-import com.example.health_guardian_server.dtos.responses.SignInResponse;
-import com.example.health_guardian_server.dtos.responses.SignUpResponse;
+import com.example.health_guardian_server.dtos.requests.auth.RefreshTokenRequest;
+import com.example.health_guardian_server.dtos.requests.auth.SignInRequest;
+import com.example.health_guardian_server.dtos.requests.auth.SignUpRequest;
+import com.example.health_guardian_server.dtos.responses.user.GetCurrentUserPermissionsResponse;
+import com.example.health_guardian_server.dtos.responses.auth.RefreshTokenResponse;
+import com.example.health_guardian_server.dtos.responses.auth.SignInResponse;
+import com.example.health_guardian_server.dtos.responses.auth.SignUpResponse;
 import com.example.health_guardian_server.entities.LocalProvider;
 
 public interface AuthService {

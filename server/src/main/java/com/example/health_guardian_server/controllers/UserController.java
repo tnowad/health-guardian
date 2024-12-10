@@ -4,11 +4,11 @@ import static com.example.health_guardian_server.exceptions.file.FileErrorCode.C
 import static com.example.health_guardian_server.utils.Utils.convertMultipartFileToFile;
 import static com.example.health_guardian_server.utils.Utils.generateFileName;
 
-import com.example.health_guardian_server.dtos.requests.CreateUserRequest;
-import com.example.health_guardian_server.dtos.requests.ListUsersRequest;
-import com.example.health_guardian_server.dtos.requests.UpdateUserRequest;
-import com.example.health_guardian_server.dtos.responses.CurrentUserInfomationResponse;
-import com.example.health_guardian_server.dtos.responses.UserResponse;
+import com.example.health_guardian_server.dtos.requests.user.CreateUserRequest;
+import com.example.health_guardian_server.dtos.requests.user.ListUsersRequest;
+import com.example.health_guardian_server.dtos.requests.user.UpdateUserRequest;
+import com.example.health_guardian_server.dtos.responses.user.CurrentUserInfomationResponse;
+import com.example.health_guardian_server.dtos.responses.user.UserResponse;
 import com.example.health_guardian_server.exceptions.file.FileException;
 import com.example.health_guardian_server.mappers.UserMapper;
 import com.example.health_guardian_server.services.MinioClientService;

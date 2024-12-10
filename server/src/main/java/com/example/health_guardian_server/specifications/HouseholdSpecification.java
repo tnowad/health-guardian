@@ -1,6 +1,6 @@
 package com.example.health_guardian_server.specifications;
 
-import com.example.health_guardian_server.dtos.requests.ListHouseholdsRequest;
+import com.example.health_guardian_server.dtos.requests.household.ListHouseholdsRequest;
 import com.example.health_guardian_server.entities.Household;
 import jakarta.persistence.criteria.*;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.example.health_guardian_server.specifications;
 
-import com.example.health_guardian_server.dtos.requests.ListAllergiesRequest;
+import com.example.health_guardian_server.dtos.requests.allergy.ListAllergiesRequest;
 import com.example.health_guardian_server.entities.Allergy;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

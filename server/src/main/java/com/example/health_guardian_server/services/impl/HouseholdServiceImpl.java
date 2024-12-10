@@ -1,8 +1,8 @@
 package com.example.health_guardian_server.services.impl;
 
-import com.example.health_guardian_server.dtos.requests.CreateHouseholdRequest;
-import com.example.health_guardian_server.dtos.requests.ListHouseholdsRequest;
-import com.example.health_guardian_server.dtos.responses.HouseholdResponse;
+import com.example.health_guardian_server.dtos.requests.household.CreateHouseholdRequest;
+import com.example.health_guardian_server.dtos.requests.household.ListHouseholdsRequest;
+import com.example.health_guardian_server.dtos.responses.household.HouseholdResponse;
 import com.example.health_guardian_server.entities.Household;
 import com.example.health_guardian_server.mappers.HouseholdMapper;
 import com.example.health_guardian_server.repositories.HouseholdRepository;

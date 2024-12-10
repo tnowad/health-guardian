@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.services;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.health_guardian_server.dtos.responses.TokenResponse;
+import com.example.health_guardian_server.dtos.responses.auth.TokenResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;

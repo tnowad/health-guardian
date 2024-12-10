@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.mappers;
 
-import com.example.health_guardian_server.dtos.requests.CreateSurgeryRequest;
-import com.example.health_guardian_server.dtos.responses.SurgeryResponse;
+import com.example.health_guardian_server.dtos.requests.surgery.CreateSurgeryRequest;
+import com.example.health_guardian_server.dtos.responses.surgery.SurgeryResponse;
 import com.example.health_guardian_server.entities.Surgery;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

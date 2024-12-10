@@ -1,6 +1,6 @@
 package com.example.health_guardian_server.specifications;
 
-import com.example.health_guardian_server.dtos.requests.ListPastConditionsRequest;
+import com.example.health_guardian_server.dtos.requests.pass_condition.ListPastConditionsRequest;
 import com.example.health_guardian_server.entities.PastCondition;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

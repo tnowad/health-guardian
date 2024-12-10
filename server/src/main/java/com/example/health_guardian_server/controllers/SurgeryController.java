@@ -1,8 +1,8 @@
 package com.example.health_guardian_server.controllers;
 
-import com.example.health_guardian_server.dtos.requests.CreateSurgeryRequest;
-import com.example.health_guardian_server.dtos.requests.ListSurgeriesRequest;
-import com.example.health_guardian_server.dtos.responses.SurgeryResponse;
+import com.example.health_guardian_server.dtos.requests.surgery.CreateSurgeryRequest;
+import com.example.health_guardian_server.dtos.requests.surgery.ListSurgeriesRequest;
+import com.example.health_guardian_server.dtos.responses.surgery.SurgeryResponse;
 import com.example.health_guardian_server.services.SurgeryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
