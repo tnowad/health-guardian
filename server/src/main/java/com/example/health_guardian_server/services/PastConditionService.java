@@ -1,8 +1,8 @@
 package com.example.health_guardian_server.services;
 
-import com.example.health_guardian_server.dtos.requests.CreatePastConditionRequest;
-import com.example.health_guardian_server.dtos.requests.ListPastConditionsRequest;
-import com.example.health_guardian_server.dtos.responses.PastConditionResponse;
+import com.example.health_guardian_server.dtos.requests.pass_condition.CreatePastConditionRequest;
+import com.example.health_guardian_server.dtos.requests.pass_condition.ListPastConditionsRequest;
+import com.example.health_guardian_server.dtos.responses.pass_condition.PastConditionResponse;
 import org.springframework.data.domain.Page;
 
 public interface PastConditionService {

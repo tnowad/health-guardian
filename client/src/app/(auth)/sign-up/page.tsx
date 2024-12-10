@@ -46,13 +46,13 @@ export default function PatientSignUpPage() {
   const signUpForm = useForm<z.infer<typeof signUpBodySchema>>({
     resolver: zodResolver(signUpBodySchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      gender: undefined,
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      firstName: "John",
+      lastName: "Doe",
+      gender: "MALE",
+      dateOfBirth: "1990-01-01",
+      email: "johndoe@health-guardian.com",
+      password: "Password@123",
+      confirmPassword: "Password@123",
     },
   });
   const signUpMutation = useSignUpMutation();
@@ -139,7 +139,7 @@ export default function PatientSignUpPage() {
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={field.value}
+                        selected={new Date(field.value)}
                         onSelect={field.onChange}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
@@ -174,20 +174,6 @@ export default function PatientSignUpPage() {
                       <SelectItem value="OTHER">Other</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={signUpForm.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="johndoe" {...field} />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

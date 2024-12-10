@@ -1,8 +1,8 @@
 package com.example.health_guardian_server.services.impl;
 
-import com.example.health_guardian_server.dtos.requests.CreateAllergyRequest;
-import com.example.health_guardian_server.dtos.requests.ListAllergiesRequest;
-import com.example.health_guardian_server.dtos.responses.AllergyResponse;
+import com.example.health_guardian_server.dtos.requests.allergy.CreateAllergyRequest;
+import com.example.health_guardian_server.dtos.requests.allergy.ListAllergiesRequest;
+import com.example.health_guardian_server.dtos.responses.allergy.AllergyResponse;
 import com.example.health_guardian_server.mappers.AllergyMapper;
 import com.example.health_guardian_server.repositories.AllergyRepository;
 import com.example.health_guardian_server.repositories.UserRepository;

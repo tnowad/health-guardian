@@ -1,9 +1,9 @@
 package com.example.health_guardian_server.controllers;
 
-import com.example.health_guardian_server.dtos.requests.CreateAppointmentRequest;
-import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
-import com.example.health_guardian_server.dtos.requests.UpdateAppointmentRequest;
-import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
+import com.example.health_guardian_server.dtos.requests.appointment.CreateAppointmentRequest;
+import com.example.health_guardian_server.dtos.requests.appointment.ListAppointmentRequest;
+import com.example.health_guardian_server.dtos.requests.appointment.UpdateAppointmentRequest;
+import com.example.health_guardian_server.dtos.responses.appointment.AppointmentResponse;
 import com.example.health_guardian_server.dtos.responses.SimpleResponse;
 import com.example.health_guardian_server.entities.Appointment;
 import com.example.health_guardian_server.mappers.AppointmentMapper;

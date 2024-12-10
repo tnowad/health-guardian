@@ -1,8 +1,8 @@
 package com.example.health_guardian_server.services;
 
-import com.example.health_guardian_server.dtos.requests.CreateImmunizationRequest;
-import com.example.health_guardian_server.dtos.requests.ListImmunizationsRequest;
-import com.example.health_guardian_server.dtos.responses.ImmunizationResponse;
+import com.example.health_guardian_server.dtos.requests.immunization.CreateImmunizationRequest;
+import com.example.health_guardian_server.dtos.requests.immunization.ListImmunizationsRequest;
+import com.example.health_guardian_server.dtos.responses.immunization.ImmunizationResponse;
 import org.springframework.data.domain.Page;
 
 public interface ImmunizationService {

@@ -1,17 +1,8 @@
 package com.example.health_guardian_server.controllers;
 
-import com.example.health_guardian_server.dtos.requests.CreatePrescriptionRequest;
-import com.example.health_guardian_server.dtos.requests.ListPrescriptionRequest;
-import com.example.health_guardian_server.dtos.responses.PrescriptionResponse;
-import com.example.health_guardian_server.entities.Prescription;
 import com.example.health_guardian_server.mappers.PrescriptionMapper;
 import com.example.health_guardian_server.services.PrescriptionService;
-import java.util.Date;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

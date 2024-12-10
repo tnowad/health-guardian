@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.mappers;
 
-import com.example.health_guardian_server.dtos.requests.CreateHouseholdMemberRequest;
-import com.example.health_guardian_server.dtos.responses.HouseholdMemberResponse;
+import com.example.health_guardian_server.dtos.requests.household.CreateHouseholdMemberRequest;
+import com.example.health_guardian_server.dtos.responses.household.HouseholdMemberResponse;
 import com.example.health_guardian_server.entities.HouseholdMember;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

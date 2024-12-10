@@ -23,7 +23,7 @@ export async function verifyEmailApi(
   body: VerifyEmailBodySchema,
 ): Promise<VerifyEmailResponseSchema> {
   const response = await apiClient.post<VerifyEmailResponseSchema>(
-    "/verify-email",
+    "/auth/verify-email-by-code",
     body,
   );
   return response.data;

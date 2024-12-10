@@ -32,10 +32,13 @@ import { useRouter } from "next/navigation";
 export default function SignInPage() {
   const { toast } = useToast();
   const router = useRouter();
+  // 1. Create mutation hook
   const signInMutation = useSignInMutation();
+  // 2. Create form hook with type SignInBodySchema and resolver for zod schema
   const signInForm = useForm<SignInBodySchema>({
-    resolver: zodResolver(signInBodySchema),
+    resolver: zodResolver(signInBodySchema), // validate form with zod schema
     defaultValues: {
+      // initial form values
       email: "admin@health-guardian.com",
       password: "Password@123",
     },
@@ -69,9 +72,9 @@ export default function SignInPage() {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-4 py-0">
+      <CardContent className="py-0">
         <Form {...signInForm}>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit} className="space-y-4">
             <FormField
               control={signInForm.control}
               name="email"

@@ -8,12 +8,11 @@ export const signUpBodySchema = z
   .object({
     firstName: z.string().min(2, "First name must be at least 2 characters."),
     lastName: z.string().min(2, "Last name must be at least 2 characters."),
-    dateOfBirth: z.date({ required_error: "Date of birth is required." }),
+    dateOfBirth: z.coerce.string().date("Invalid date."),
     gender: z.enum(["MALE", "FEMALE", "OTHER"], {
       required_error: "Please select a gender.",
     }),
     email: z.string().email("Invalid email address."),
-    username: z.string().min(2, "Username must be at least 2 characters."),
     password: z.string().min(8, "Password must be at least 8 characters."),
     confirmPassword: z.string(),
   })
@@ -33,7 +32,10 @@ export type SignUpResponseSchema = z.infer<typeof signUpResponseSchema>;
 export async function signUpApi(
   body: SignUpBodySchema,
 ): Promise<SignUpResponseSchema> {
-  const response = await apiClient.post<SignUpResponseSchema>("/sign-up", body);
+  const response = await apiClient.post<SignUpResponseSchema>(
+    "/auth/sign-up",
+    body,
+  );
   return response.data;
 }
 

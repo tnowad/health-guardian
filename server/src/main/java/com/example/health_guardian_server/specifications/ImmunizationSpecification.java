@@ -1,6 +1,6 @@
 package com.example.health_guardian_server.specifications;
 
-import com.example.health_guardian_server.dtos.requests.ListImmunizationsRequest;
+import com.example.health_guardian_server.dtos.requests.immunization.ListImmunizationsRequest;
 import com.example.health_guardian_server.entities.Immunization;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

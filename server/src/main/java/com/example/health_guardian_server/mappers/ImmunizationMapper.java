@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.mappers;
 
-import com.example.health_guardian_server.dtos.requests.CreateImmunizationRequest;
-import com.example.health_guardian_server.dtos.responses.ImmunizationResponse;
+import com.example.health_guardian_server.dtos.requests.immunization.CreateImmunizationRequest;
+import com.example.health_guardian_server.dtos.responses.immunization.ImmunizationResponse;
 import com.example.health_guardian_server.entities.Immunization;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

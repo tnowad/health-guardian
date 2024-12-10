@@ -1,8 +1,8 @@
 package com.example.health_guardian_server.controllers;
 
-import com.example.health_guardian_server.dtos.requests.CreateAllergyRequest;
-import com.example.health_guardian_server.dtos.requests.ListAllergiesRequest;
-import com.example.health_guardian_server.dtos.responses.AllergyResponse;
+import com.example.health_guardian_server.dtos.requests.allergy.CreateAllergyRequest;
+import com.example.health_guardian_server.dtos.requests.allergy.ListAllergiesRequest;
+import com.example.health_guardian_server.dtos.responses.allergy.AllergyResponse;
 import com.example.health_guardian_server.services.AllergyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
