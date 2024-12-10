@@ -1,6 +1,6 @@
 package com.example.health_guardian_server.mappers;
 
-import com.example.health_guardian_server.dtos.responses.UserResponse;
+import com.example.health_guardian_server.dtos.responses.user.UserResponse;
 import com.example.health_guardian_server.entities.User;
 import org.mapstruct.Mapper;
 

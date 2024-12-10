@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.mappers;
 
-import com.example.health_guardian_server.dtos.requests.CreateAppointmentRequest;
-import com.example.health_guardian_server.dtos.responses.AppointmentResponse;
+import com.example.health_guardian_server.dtos.requests.appointment.CreateAppointmentRequest;
+import com.example.health_guardian_server.dtos.responses.appointment.AppointmentResponse;
 import com.example.health_guardian_server.dtos.responses.SimpleResponse;
 import com.example.health_guardian_server.entities.Appointment;
 import org.mapstruct.Mapper;

@@ -74,7 +74,7 @@ public class SeedServiceImpl implements SeedService {
   @Transactional
   public void initial() {
     User user = User.builder()
-        .email("initialUser@gmail.com")
+        .email("admin@health-guardian.com")
         .avatar(faker.avatar().image())
         .firstName(faker.name().firstName())
         .lastName(faker.name().lastName())

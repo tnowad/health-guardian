@@ -1,6 +1,6 @@
 package com.example.health_guardian_server.specifications;
 
-import com.example.health_guardian_server.dtos.requests.ListAppointmentRequest;
+import com.example.health_guardian_server.dtos.requests.appointment.ListAppointmentRequest;
 import com.example.health_guardian_server.entities.Appointment;
 import jakarta.persistence.criteria.*;
 import java.util.ArrayList;

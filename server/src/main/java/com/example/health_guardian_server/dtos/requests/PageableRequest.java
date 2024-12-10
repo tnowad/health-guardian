@@ -6,10 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-interface PageableWithIdsRequest<T> {
-  T[] getIds();
-}
-
 public interface PageableRequest<T> {
   Integer getPage();
 

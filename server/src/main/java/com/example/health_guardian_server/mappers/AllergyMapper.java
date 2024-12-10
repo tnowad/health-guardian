@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.mappers;
 
-import com.example.health_guardian_server.dtos.requests.CreateAllergyRequest;
-import com.example.health_guardian_server.dtos.responses.AllergyResponse;
+import com.example.health_guardian_server.dtos.requests.allergy.CreateAllergyRequest;
+import com.example.health_guardian_server.dtos.responses.allergy.AllergyResponse;
 import com.example.health_guardian_server.entities.Allergy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

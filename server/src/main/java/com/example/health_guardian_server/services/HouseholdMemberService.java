@@ -1,9 +1,8 @@
 package com.example.health_guardian_server.services;
 
-import com.example.health_guardian_server.dtos.requests.CreateHouseholdMemberRequest;
-import com.example.health_guardian_server.dtos.requests.ListHouseholdMembersRequest;
-import com.example.health_guardian_server.dtos.requests.UpdateHouseholdMemberRequest;
-import com.example.health_guardian_server.dtos.responses.HouseholdMemberResponse;
+import com.example.health_guardian_server.dtos.requests.household.CreateHouseholdMemberRequest;
+import com.example.health_guardian_server.dtos.requests.household.ListHouseholdMembersRequest;
+import com.example.health_guardian_server.dtos.responses.household.HouseholdMemberResponse;
 import org.springframework.data.domain.Page;
 
 public interface HouseholdMemberService {
