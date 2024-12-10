@@ -12,13 +12,14 @@ import com.example.health_guardian_server.dtos.requests.auth.SignInRequest;
 import com.example.health_guardian_server.dtos.requests.auth.SignOutRequest;
 import com.example.health_guardian_server.dtos.requests.auth.SignUpRequest;
 import com.example.health_guardian_server.dtos.requests.auth.VerifyEmailByCodeRequest;
+import com.example.health_guardian_server.dtos.responses.SimpleResponse;
 import com.example.health_guardian_server.dtos.responses.auth.ForgotPasswordResponse;
-import com.example.health_guardian_server.dtos.responses.user.GetCurrentUserPermissionsResponse;
 import com.example.health_guardian_server.dtos.responses.auth.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.auth.ResetPasswordResponse;
 import com.example.health_guardian_server.dtos.responses.auth.SendEmailForgotPasswordResponse;
 import com.example.health_guardian_server.dtos.responses.auth.SignInResponse;
 import com.example.health_guardian_server.dtos.responses.auth.SignUpResponse;
+import com.example.health_guardian_server.dtos.responses.user.GetCurrentUserPermissionsResponse;
 import com.example.health_guardian_server.entities.LocalProvider;
 import com.example.health_guardian_server.services.AuthService;
 import com.example.health_guardian_server.services.LocalProviderService;
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,33 +66,27 @@ public class AuthController {
   @Operation(summary = "Send email verification", description = "Send email verification")
   @PostMapping("/send-email-verification")
   @ResponseStatus(OK)
-  ResponseEntity<String> sendEmailVerification(
+  ResponseEntity<SimpleResponse> sendEmailVerification(
       @RequestBody @Valid SendEmailVerificationRequest request) {
     authService.sendEmailVerification(request.email(), VerificationType.VERIFY_EMAIL_BY_CODE);
 
-    return ResponseEntity.status(OK).body("resend_verification_email_success");
+    return ResponseEntity.status(OK)
+        .body(SimpleResponse.builder().message("resend_verification_email_success").build());
   }
 
   @Operation(summary = "Verify email by code", description = "Verify email by code")
   @PostMapping("/verify-email-by-code")
   @ResponseStatus(OK)
-  ResponseEntity<String> verifyEmail(@RequestBody @Valid VerifyEmailByCodeRequest request) {
+  ResponseEntity<SimpleResponse> verifyEmail(@RequestBody @Valid VerifyEmailByCodeRequest request) {
     LocalProvider localProvider = localProviderService.getLocalProviderByEmail(request.email());
     if (localProvider == null) {
-      return ResponseEntity.status(NOT_FOUND).body("email_not_found");
+      return ResponseEntity.status(NOT_FOUND)
+          .body(SimpleResponse.builder().message("email_not_found").build());
     }
     authService.verifyEmail(localProvider, request.code(), null);
 
-    return ResponseEntity.status(OK).body("verify_email_success");
-  }
-
-  @Operation(summary = "Verify email by token", description = "Verify email by token")
-  @GetMapping("/verify-email-by-token")
-  @ResponseStatus(OK)
-  ResponseEntity<String> verifyEmail(@RequestParam(name = "token") String token) {
-    authService.verifyEmail(null, null, token);
-
-    return ResponseEntity.status(OK).body("verify_email_success");
+    return ResponseEntity.status(OK)
+        .body(SimpleResponse.builder().message("verify_email_success").build());
   }
 
   @Operation(summary = "Sign out", description = "Sign out user")

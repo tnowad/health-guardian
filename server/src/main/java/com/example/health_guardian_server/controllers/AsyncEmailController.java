@@ -25,7 +25,7 @@ public class AsyncEmailController {
   public void listenNotificationDelivery(String message) {
     String type = message.split(":")[0];
     String email = message.split(":")[1];
-    String code = message.split(":")[3];
+    String code = message.split(":")[2];
 
     log.info("Message received abcxyz: {}", message);
 
