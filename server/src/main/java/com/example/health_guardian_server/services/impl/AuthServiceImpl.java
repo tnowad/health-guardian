@@ -83,10 +83,8 @@ public class AuthServiceImpl implements AuthService {
   public GetCurrentUserPermissionsResponse getCurrentUserPermissions(String accessToken) {
     Set<String> permissionNames = new HashSet<>();
     if (accessToken == null) {
-
-      // permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
     } else {
-      permissionNames = tokenService.extractPermissionNames(accessToken);
+      permissionNames.add(PermissionName.VIEW_MAIN_DASHBOARD.toString());
     }
     return GetCurrentUserPermissionsResponse.builder()
         .items(permissionNames)
