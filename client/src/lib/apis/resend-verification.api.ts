@@ -23,7 +23,7 @@ export async function resendVerificationApi(
   body: ResendVerificationBodySchema,
 ): Promise<ResendVerificationResponseSchema> {
   const response = await apiClient.post<ResendVerificationResponseSchema>(
-    "/resend-verification",
+    "/auth/send-email-verification",
     body,
   );
   return resendVerificationResponseSchema.parse(response.data);
