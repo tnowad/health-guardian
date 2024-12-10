@@ -8,11 +8,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface SurgeryMapper {
-  // Define methods
 
   @Mapping(source = "user.id", target = "userId")
   SurgeryResponse toResponse(Surgery surgery);
 
   Surgery toSurgery(CreateSurgeryRequest surgery);
-
 }

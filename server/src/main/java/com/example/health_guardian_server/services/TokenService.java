@@ -1,18 +1,20 @@
 package com.example.health_guardian_server.services;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.health_guardian_server.dtos.responses.TokensResponse;
-import java.util.Set;
+import com.example.health_guardian_server.dtos.responses.TokenResponse;
+import org.springframework.stereotype.Service;
 
+import java.util.Set;
+@Service
 public interface TokenService {
 
   String generateRefreshToken(String userId);
 
-  String generateAccessToken(String userId, Set<String> permissionNames);
+  String generateAccessToken(String userId);
 
-  TokensResponse generateTokens(String userId, Set<String> permissionNames);
+  TokenResponse generateTokens(String userId);
 
-  TokensResponse refreshTokens(String refreshToken);
+  TokenResponse refreshTokens(String refreshToken);
 
   Set<String> extractPermissionNames(String accessToken);
 

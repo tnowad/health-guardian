@@ -1,11 +1,9 @@
 package com.example.health_guardian_server.specifications;
 
 import com.example.health_guardian_server.dtos.requests.ListUsersRequest;
-import com.example.health_guardian_server.entities.Account;
 import com.example.health_guardian_server.entities.User;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
@@ -36,11 +34,6 @@ public class UserSpecification implements Specification<User> {
 
     if (type != null && !type.isEmpty()) {
       predicates.add(criteriaBuilder.equal(root.get("type"), type));
-    }
-
-    if (ids != null && ids.length > 0) {
-      Join<User, Account> join = root.join("accounts");
-      predicates.add(join.get("id").in((Object[]) ids));
     }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

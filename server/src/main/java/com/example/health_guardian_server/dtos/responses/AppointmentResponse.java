@@ -1,7 +1,9 @@
 package com.example.health_guardian_server.dtos.responses;
 
-import com.example.health_guardian_server.entities.AppointmentStatus;
 import java.util.Date;
+
+import com.example.health_guardian_server.entities.enums.AppointmentStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AppointmentResponse {
   private String id;
-  private String doctorId;
-  private String patientId;
+  private String userId;
   private Date appointmentDate;
   private String reasonForVisit;
   private AppointmentStatus status;

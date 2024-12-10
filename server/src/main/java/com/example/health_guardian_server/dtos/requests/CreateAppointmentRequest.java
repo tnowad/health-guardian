@@ -1,6 +1,6 @@
 package com.example.health_guardian_server.dtos.requests;
 
-import com.example.health_guardian_server.entities.AppointmentStatus;
+import com.example.health_guardian_server.entities.enums.AppointmentStatus;
 import java.util.Date;
 import lombok.Data;
 

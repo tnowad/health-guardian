@@ -10,7 +10,6 @@ import com.example.health_guardian_server.services.SurgeryService;
 import com.example.health_guardian_server.specifications.SurgerySpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,9 +29,8 @@ public class SurgeryServiceImpl implements SurgeryService {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     SurgerySpecification specification = new SurgerySpecification(request);
 
-    var surgeries = surgeryRepository
-        .findAll(specification, pageRequest)
-        .map(surgeryMapper::toResponse);
+    var surgeries =
+        surgeryRepository.findAll(specification, pageRequest).map(surgeryMapper::toResponse);
 
     log.info("Fetched {} surgeries", surgeries.getTotalElements());
     return surgeries;
@@ -48,8 +46,7 @@ public class SurgeryServiceImpl implements SurgeryService {
             () -> {
               log.error("Surgery not found with id: {}", surgeryId);
               return new ResourceNotFoundException("Surgery not found with id: " + surgeryId);
-            }
-        );
+            });
   }
 
   @Override
@@ -64,25 +61,27 @@ public class SurgeryServiceImpl implements SurgeryService {
   @Override
   public SurgeryResponse updateSurgery(String surgeryId, CreateSurgeryRequest request) {
     log.debug("Updating surgery with id: {} and request: {}", surgeryId, request);
-    var surgery = surgeryRepository
-        .findById(surgeryId)
-        .orElseThrow(
-            () -> {
-              log.error("Surgery not found with id: {}", surgeryId);
-              return new ResourceNotFoundException("Surgery not found with id: " + surgeryId);
-            }
-        );
+    var surgery =
+        surgeryRepository
+            .findById(surgeryId)
+            .orElseThrow(
+                () -> {
+                  log.error("Surgery not found with id: {}", surgeryId);
+                  return new ResourceNotFoundException("Surgery not found with id: " + surgeryId);
+                });
     surgery.setDate(request.getDate());
     surgery.setNotes(request.getNotes());
     surgery.setDescription(request.getDescription());
 
-    var user = userRepository.findById(request.getUserId())
-        .orElseThrow(
-            () -> {
-              log.error("User not found with id: {}", request.getUserId());
-              return new ResourceNotFoundException("User not found with id: " + request.getUserId());
-            }
-        );
+    var user =
+        userRepository
+            .findById(request.getUserId())
+            .orElseThrow(
+                () -> {
+                  log.error("User not found with id: {}", request.getUserId());
+                  return new ResourceNotFoundException(
+                      "User not found with id: " + request.getUserId());
+                });
     surgery.setUser(user);
     var updatedSurgery = surgeryRepository.save(surgery);
     log.info("Updated surgery with id: {}", updatedSurgery.getId());

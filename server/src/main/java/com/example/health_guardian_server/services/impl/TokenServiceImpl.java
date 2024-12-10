@@ -3,7 +3,7 @@ package com.example.health_guardian_server.services.impl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.health_guardian_server.dtos.responses.TokensResponse;
+import com.example.health_guardian_server.dtos.responses.TokenResponse;
 import com.example.health_guardian_server.services.PermissionService;
 import com.example.health_guardian_server.services.RoleService;
 import com.example.health_guardian_server.services.TokenService;
@@ -28,8 +28,6 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class TokenServiceImpl implements TokenService {
   RedisTemplate<String, String> redisTemplate;
-  RoleService roleService;
-  PermissionService permissionService;
 
   @NonFinal
   @Value("${jwt.accessSignerKey}")
@@ -50,7 +48,7 @@ public class TokenServiceImpl implements TokenService {
   private static final String ISSUER = "health-guardian-server";
 
   @Override
-  public String generateAccessToken(String userId, Set<String> permissionNames) {
+  public String generateAccessToken(String userId) {
     String cacheKey = "accessToken:" + userId;
     ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
 
@@ -68,7 +66,6 @@ public class TokenServiceImpl implements TokenService {
         .withSubject(userId)
         .withIssuedAt(now)
         .withExpiresAt(expirationTime)
-        .withClaim("permissions", List.copyOf(permissionNames))
         .sign(Algorithm.HMAC256(accessSignerKey));
 
     valueOps.set(cacheKey, accessToken, accessTokenValidityDuration, TimeUnit.MILLISECONDS);
@@ -105,7 +102,7 @@ public class TokenServiceImpl implements TokenService {
   }
 
   @Override
-  public TokensResponse refreshTokens(String refreshToken) {
+  public TokenResponse refreshTokens(String refreshToken) {
     try {
       DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(refreshSignerKey))
           .withIssuer(ISSUER)
@@ -114,17 +111,14 @@ public class TokenServiceImpl implements TokenService {
 
       String userId = decodedJWT.getSubject();
 
-      Set<String> roleIds = roleService.getRoleIdsByUserId(userId);
-      Set<String> permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
-
-      String newAccessToken = generateAccessToken(userId, permissionNames);
+      String newAccessToken = generateAccessToken(userId);
       String newRefreshToken = refreshToken;
 
       if (decodedJWT.getExpiresAt().getTime() - System.currentTimeMillis() < refreshTokenValidityDuration * 0.1) {
         newRefreshToken = generateRefreshToken(userId);
       }
 
-      return new TokensResponse(newAccessToken, newRefreshToken);
+      return new TokenResponse(newAccessToken, newRefreshToken);
 
     } catch (Exception e) {
       log.error("Token refresh failed", e);
@@ -161,14 +155,13 @@ public class TokenServiceImpl implements TokenService {
   }
 
   @Override
-  public TokensResponse generateTokens(String userId, Set<String> permissionNames) {
+  public TokenResponse generateTokens(String userId) {
     log.info("Generating tokens for user: {}", userId);
-    log.debug("Permissions for token generation: {}", permissionNames);
 
-    String accessToken = generateAccessToken(userId, permissionNames);
+    String accessToken = generateAccessToken(userId);
     String refreshToken = generateRefreshToken(userId);
 
     log.info("Tokens generated successfully for user: {}", userId);
-    return new TokensResponse(accessToken, refreshToken);
+    return new TokenResponse(accessToken, refreshToken);
   }
 }

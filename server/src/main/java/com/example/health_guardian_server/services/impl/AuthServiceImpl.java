@@ -3,6 +3,7 @@ package com.example.health_guardian_server.services.impl;
 import static com.example.health_guardian_server.dtos.enums.VerificationType.*;
 import static com.example.health_guardian_server.utils.Constants.*;
 import static java.time.temporal.ChronoUnit.MINUTES;
+
 import com.example.health_guardian_server.dtos.enums.VerificationType;
 import com.example.health_guardian_server.dtos.requests.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.SignInRequest;
@@ -11,19 +12,18 @@ import com.example.health_guardian_server.dtos.responses.GetCurrentUserPermissio
 import com.example.health_guardian_server.dtos.responses.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.SignInResponse;
 import com.example.health_guardian_server.dtos.responses.SignUpResponse;
-import com.example.health_guardian_server.entities.*;
+import com.example.health_guardian_server.dtos.responses.TokenResponse;
+import com.example.health_guardian_server.entities.LocalProvider;
+import com.example.health_guardian_server.entities.User;
+import com.example.health_guardian_server.entities.Verification;
 import com.example.health_guardian_server.repositories.VerificationRepository;
-import com.example.health_guardian_server.services.AccountService;
 import com.example.health_guardian_server.services.AuthService;
 import com.example.health_guardian_server.services.BaseRedisService;
 import com.example.health_guardian_server.services.LocalProviderService;
-import com.example.health_guardian_server.services.PatientService;
-import com.example.health_guardian_server.services.PermissionService;
 import com.example.health_guardian_server.services.RoleService;
 import com.example.health_guardian_server.services.TokenService;
 import com.example.health_guardian_server.services.UserService;
 import jakarta.transaction.Transactional;
-
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Date;
@@ -34,7 +34,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -45,12 +44,8 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
   LocalProviderService localProviderService;
-  AccountService accountService;
-  RoleService roleService;
-  PermissionService permissionService;
   TokenService tokenService;
   UserService userService;
-  PatientService patientService;
   BaseRedisService<String, String, Object> baseRedisService;
   VerificationRepository verificationRepository;
   KafkaTemplate<String, String> kafkaTemplate;
@@ -67,17 +62,7 @@ public class AuthServiceImpl implements AuthService {
       throw new RuntimeException("Invalid password");
     }
 
-    var status = accountService.checkAccountStatus(localProvider.getAccountId());
-    if (status == AccountStatus.DELETED) {
-      throw new RuntimeException("Account deleted");
-    } else if (status == AccountStatus.INACTIVE) {
-      throw new RuntimeException("Account inactive");
-    }
-    var userId = accountService.getUserIdByAccountId(localProvider.getAccountId());
-
-    var roleIds = roleService.getRoleIdsByUserId(userId);
-    var permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
-    var tokens = tokenService.generateTokens(userId, permissionNames);
+    var tokens = tokenService.generateTokens(localProvider.getUser().getId());
 
     return SignInResponse.builder().tokens(tokens).message("Sign in successfully").build();
   }
@@ -95,8 +80,8 @@ public class AuthServiceImpl implements AuthService {
   public GetCurrentUserPermissionsResponse getCurrentUserPermissions(String accessToken) {
     Set<String> permissionNames = new HashSet<>();
     if (accessToken == null) {
-      var roleIds = roleService.getDefaultRoleIds();
-      permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
+
+      // permissionNames = permissionService.getPermissionNamesByRoleIds(roleIds);
     } else {
       permissionNames = tokenService.extractPermissionNames(accessToken);
     }
@@ -116,32 +101,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     log.debug("Creating local provider for email: {}", request.getEmail());
-    var localProvider = localProviderService.createLocalProvider(request.getEmail(), request.getPassword());
+    var localProvider =
+        localProviderService.createLocalProvider(request.getEmail(), request.getPassword());
 
     log.debug("Creating patient record for user: {}", request.getEmail());
-    var patient = patientService.createPatient(Patient.builder()
-      .firstName(request.getFirstName())
-      .lastName(request.getLastName())
-      .gender(request.getGender().toString())
-      .dateOfBirth(request.getDateOfBirth())
-      .build());
 
     log.debug("Creating user record for email: {}", request.getEmail());
-    var user = userService.createUser(
-      User.builder()
-        .email(request.getEmail())
-        .patient(patient)
-        .username(request.getUsername())
-        .type(UserType.PATIENT)
-        .build());
+    var user = userService.createUser(User.builder().email(request.getEmail()).build());
 
     log.debug("Creating account and linking to user: {}", user.getId());
-    var account = accountService.createAccountWithLocalProvider(user, localProvider);
-    localProvider.setAccount(account);
     localProviderService.saveLocalProvider(localProvider);
     log.debug("Assigning default roles for user: {}", user.getId());
-    var roleIds = roleService.getDefaultRoleIdsForPatient();
-    roleService.assignRolesToUser(user.getId(), roleIds);
 
     log.info("Sign-up successful for email: {}", request.getEmail());
     return SignUpResponse.builder().message("Sign up successfully").build();
@@ -156,22 +126,22 @@ public class AuthServiceImpl implements AuthService {
   public void sendEmailVerification(String email, VerificationType verificationType) {
     LocalProvider localProvider = localProviderService.getLocalProviderByEmail(email);
 
-    List<Verification> verifications = verificationRepository.findByLocalProviderAndVerificationType(localProvider,
-        verificationType);
+    List<Verification> verifications =
+        verificationRepository.findByLocalProviderAndVerificationType(
+            localProvider, verificationType);
 
     if (verificationType.equals(VERIFY_EMAIL_BY_CODE)
         || verificationType.equals(VERIFY_EMAIL_BY_TOKEN)) {
-      if (localProvider.getAccount().getStatus().equals(AccountStatus.ACTIVE))
-        throw new RuntimeException("User already verified");
-      else {
-        if (!verifications.isEmpty())
-          verificationRepository.deleteAll(verifications);
-        sendEmail(email, verificationType);
-      }
+      // if (localProvider.getAccount().getStatus().equals(AccountStatus.ACTIVE))
+      // throw new RuntimeException("User already verified");
+      // else {
+      // if (!verifications.isEmpty())
+      // verificationRepository.deleteAll(verifications);
+      // sendEmail(email, verificationType);
+      // }
 
     } else {
-      if (verifications.isEmpty())
-        throw new RuntimeException("Can't send mail");
+      if (verifications.isEmpty()) throw new RuntimeException("Can't send mail");
       else {
         verificationRepository.deleteAll(verifications);
         sendEmail(email, verificationType);
@@ -183,15 +153,24 @@ public class AuthServiceImpl implements AuthService {
   protected void sendEmail(String email, VerificationType verificationType) {
     LocalProvider localProvider = localProviderService.getLocalProviderByEmail(email);
 
-    Verification verification = verificationRepository.save(Verification.builder()
-        .code(generateVerificationCode(6))
-        .expiryTime(Date.from(Instant.now().plus(VERIFICATION_VALID_DURATION, MINUTES)))
-        .verificationType(verificationType)
-        .localProvider(localProvider)
-        .build());
+    Verification verification =
+        verificationRepository.save(
+            Verification.builder()
+                .code(generateVerificationCode(6))
+                .expiryTime(Date.from(Instant.now().plus(VERIFICATION_VALID_DURATION, MINUTES)))
+                .verificationType(verificationType)
+                .localProvider(localProvider)
+                .build());
 
-    kafkaTemplate.send(KAFKA_TOPIC_SEND_MAIL,
-        verificationType + ":" + email + ":" + verification.getToken() + ":" + verification.getCode());
+    kafkaTemplate.send(
+        KAFKA_TOPIC_SEND_MAIL,
+        verificationType
+            + ":"
+            + email
+            + ":"
+            + verification.getToken()
+            + ":"
+            + verification.getCode());
   }
 
   public static String generateVerificationCode(int length) {
@@ -251,7 +230,6 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public String forgotPassword(LocalProvider localProvider, String code) {
-    // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'forgotPassword'");
   }
 }

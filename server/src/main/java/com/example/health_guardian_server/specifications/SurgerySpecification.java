@@ -6,11 +6,10 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 
 @RequiredArgsConstructor
 public class SurgerySpecification implements Specification<Surgery> {
@@ -18,7 +17,7 @@ public class SurgerySpecification implements Specification<Surgery> {
 
   @Override
   public Predicate toPredicate(
-    Root<Surgery> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+      Root<Surgery> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     List<Predicate> predicates = new ArrayList<>();
 
     // Filter by user ID

@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface PastConditionMapper {
-  // Define methods
   @Mapping(source = "user.id", target = "userId")
   PastConditionResponse toResponse(PastCondition pastCondition);
 

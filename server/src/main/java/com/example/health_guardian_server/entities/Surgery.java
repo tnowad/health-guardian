@@ -1,45 +1,35 @@
 package com.example.health_guardian_server.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "surgeries")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Builder
-@EqualsAndHashCode
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Surgery {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  public String id;
 
   @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
   private User user;
 
-  @NotNull
-  @Column(nullable = false)
+  @Column
   private Date date;
 
-  @Lob
+  @Column
   private String description;
 
-  @Lob
+  @Column
   private String notes;
 }

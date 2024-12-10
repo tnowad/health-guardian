@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HouseholdRepository
-    extends JpaRepository<Household, String>, JpaSpecificationExecutor<Household> {
-}
+    extends JpaRepository<Household, String>, JpaSpecificationExecutor<Household> {}

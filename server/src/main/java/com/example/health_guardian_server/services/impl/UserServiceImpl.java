@@ -4,9 +4,6 @@ import com.example.health_guardian_server.dtos.requests.CreateUserRequest;
 import com.example.health_guardian_server.dtos.requests.ListUsersRequest;
 import com.example.health_guardian_server.dtos.requests.UpdateUserRequest;
 import com.example.health_guardian_server.dtos.responses.CurrentUserInfomationResponse;
-import com.example.health_guardian_server.dtos.responses.MedicalStaffInforResponse;
-import com.example.health_guardian_server.dtos.responses.PatientInforResponse;
-import com.example.health_guardian_server.dtos.responses.StaffInforResponse;
 import com.example.health_guardian_server.dtos.responses.UserResponse;
 import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.mappers.UserMapper;
@@ -32,22 +29,22 @@ public class UserServiceImpl implements UserService {
   UserMapper userMapper;
 
   @Override
-  public User getUserByAccountId(String accountId) {
-    log.debug("Fetching user with accountId: {}", accountId);
-    User user = userRepository.findByAccountId(accountId);
+  public User getUserByAccountId(String id) {
+    log.debug("Fetching user with accountId: {}", id);
+    User user = userRepository.findById(id).get();
     if (user == null) {
-      log.warn("User with accountId: {} not found", accountId);
+      log.warn("User with accountId: {} not found", id);
     } else {
-      log.info("User with accountId: {} found", accountId);
+      log.info("User with accountId: {} found", id);
     }
     return user;
   }
 
   @Override
   public User createUser(User user) {
-    log.debug("Creating new user with username: {}", user.getUsername());
+    log.debug("Creating new user with email: {}", user.getEmail());
     User savedUser = userRepository.save(user);
-    log.info("User with username: {} created successfully", savedUser.getUsername());
+    log.info("User with email: {} created successfully", savedUser.getEmail());
     return savedUser;
   }
 
@@ -123,7 +120,7 @@ public class UserServiceImpl implements UserService {
 
     User user =
         userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
-    log.debug("User found: {}", user.getUsername());
+    log.debug("User found: {}", user.getEmail());
 
     return buildResponse(user);
   }
@@ -132,43 +129,16 @@ public class UserServiceImpl implements UserService {
     log.debug("Building current user information response");
     CurrentUserInfomationResponse response = new CurrentUserInfomationResponse();
     response.setUserId(user.getId());
-    response.setUsername(user.getUsername());
     response.setEmail(user.getEmail());
-    response.setName(user.getUsername());
+    response.setName(user.getFirstName() + " " + user.getLastName());
     String url = "https://default-avatar-url.com";
     try {
       url = minioClientService.getObjectUrl(user.getAvatar(), "user-avatars");
       log.debug("Avatar URL retrieved: {}", url);
     } catch (Exception e) {
-      log.error("Error when retrieving avatar URL for user: {}", user.getUsername(), e);
+      log.error("Error when retrieving avatar URL for user: {}", user.getEmail(), e);
     }
     response.setAvatarUrl(url);
-    response.setRole(user.getType());
-
-    if (user.getUserStaffs().size() > 0) {
-      response.setName(
-          user.getUserStaffs().getFirst().getFirstName()
-              + " "
-              + user.getUserStaffs().getFirst().getLastName());
-      StaffInforResponse staffResponse = new StaffInforResponse();
-      staffResponse.setId(user.getUserStaffs().getFirst().getId());
-      response.setStaff(staffResponse);
-    }
-
-    if (user.getUserMedicalStaffs().size() > 0) {
-      MedicalStaffInforResponse medicalStaffResponse = new MedicalStaffInforResponse();
-      var medicalStaff = user.getUserMedicalStaffs().getFirst();
-      medicalStaffResponse.setId(medicalStaff.getId());
-      medicalStaffResponse.setSpecialization(medicalStaff.getSpecialization());
-      response.setMedicalStaff(medicalStaffResponse);
-    }
-
-    if (user.getPatient() != null) {
-      response.setName(user.getPatient().getFirstName() + " " + user.getPatient().getLastName());
-      PatientInforResponse patientResponse = new PatientInforResponse();
-      patientResponse.setId(user.getPatient().getId());
-      response.setPatient(patientResponse);
-    }
 
     log.debug("User information response built successfully: {}", response);
     return response;

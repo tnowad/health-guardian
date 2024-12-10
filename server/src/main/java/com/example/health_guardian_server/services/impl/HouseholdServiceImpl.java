@@ -6,7 +6,6 @@ import com.example.health_guardian_server.dtos.responses.HouseholdResponse;
 import com.example.health_guardian_server.entities.Household;
 import com.example.health_guardian_server.mappers.HouseholdMapper;
 import com.example.health_guardian_server.repositories.HouseholdRepository;
-import com.example.health_guardian_server.repositories.PatientRepository;
 import com.example.health_guardian_server.services.HouseholdService;
 import com.example.health_guardian_server.specifications.HouseholdSpecification;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ public class HouseholdServiceImpl implements HouseholdService {
 
   private final HouseholdRepository householdRepository;
   private final HouseholdMapper householdMapper;
-  private final PatientRepository patientRepository;
 
   @Override
   public Page<HouseholdResponse> listHouseholds(ListHouseholdsRequest request) {
@@ -77,7 +75,7 @@ public class HouseholdServiceImpl implements HouseholdService {
                       "Household not found with id " + householdId);
                 });
 
-    household.setHead(patientRepository.getReferenceById(request.getHeadId()));
+    // household.setHead(userRe.getReferenceById(request.getHeadId()));
 
     Household updatedHousehold = householdRepository.save(household);
     log.info("Household updated with id: {}", updatedHousehold.getId());

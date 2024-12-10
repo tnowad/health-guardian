@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class HouseholdMemberResponse {
   private String id;
   private String householdId;
-  private String patientId;
+  private String userId;
   private String relationshipToPatient;
 }

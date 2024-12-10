@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RefreshTokenResponse {
   String message;
-  TokensResponse tokens;
+  TokenResponse tokens;
 }
