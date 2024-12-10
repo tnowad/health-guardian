@@ -40,18 +40,13 @@ public class LocalProviderServiceImpl implements LocalProviderService {
   }
 
   @Override
-  public LocalProvider createLocalProvider(String email, String password) {
-    log.debug("Creating a new LocalProvider with email: {}", email);
-    if (localProviderRepository.findByEmail(email) != null) {
-      log.warn("LocalProvider already exists for email: {}", email);
+  public LocalProvider createLocalProvider(LocalProvider localProvider) {
+    log.debug("Creating a new LocalProvider with email: {}", localProvider.getEmail());
+    if (localProviderRepository.findByEmail(localProvider.getEmail()) != null) {
+      log.warn("LocalProvider already exists for email: {}", localProvider.getEmail());
       throw new IllegalArgumentException("LocalProvider with this email already exists");
     }
-
-    LocalProvider localProvider = new LocalProvider();
-    localProvider.setEmail(email);
-    localProvider.setPasswordHash(passwordEncoder.encode(password));
     LocalProvider savedProvider = localProviderRepository.save(localProvider);
-
     log.info("LocalProvider created with ID: {}", savedProvider.getId());
     return savedProvider;
   }

@@ -9,5 +9,5 @@ public interface LocalProviderService {
 
   boolean verifyLocalProviderPassword(String email, String password);
 
-  LocalProvider createLocalProvider(String email, String password);
+  LocalProvider createLocalProvider(LocalProvider localProvider);
 }
