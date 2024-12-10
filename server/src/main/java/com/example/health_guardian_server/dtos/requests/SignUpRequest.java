@@ -1,14 +1,13 @@
 package com.example.health_guardian_server.dtos.requests;
 
-import com.example.health_guardian_server.dtos.enums.Gender;
+import com.example.health_guardian_server.entities.enums.GenderType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-
 import java.util.Date;
+import lombok.Data;
 
 @Data
 public class SignUpRequest {
@@ -17,11 +16,6 @@ public class SignUpRequest {
   @NotBlank
   @Schema(description = "User's email address", example = "user@example.com")
   private String email;
-
-  @Email
-  @NotBlank
-  @Schema(description = "User's email address", example = "user@example.com")
-  private String username;
 
   @NotBlank
   @Size(min = 1, max = 50)
@@ -38,7 +32,7 @@ public class SignUpRequest {
 
   @NotBlank
   @NotNull
-  private Gender gender;
+  private GenderType gender;
 
   @Size(min = 8)
   @NotBlank

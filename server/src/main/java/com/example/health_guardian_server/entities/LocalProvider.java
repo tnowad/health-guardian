@@ -21,9 +21,12 @@ public class LocalProvider {
   private String email;
 
   @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+  @JoinColumn(name = "user_id", nullable = true, referencedColumnName = "id")
   private User user;
 
   @Column(name = "password_hash")
   private String passwordHash;
+
+  @Column(name = "is_verified")
+  private boolean isVerified;
 }

@@ -1,6 +1,5 @@
 package com.example.health_guardian_server.dtos.responses;
 
-
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -8,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserResponse {
   String id;
-  String username;
   String email;
   String avatar;
+  String name;
 }
