@@ -1,11 +1,11 @@
 package com.example.health_guardian_server.repositories;
 
-import com.example.health_guardian_server.entities.Allergy;
-import com.example.health_guardian_server.entities.FamilyHistory;
+import com.example.health_guardian_server.entities.Prescription;
+import com.example.health_guardian_server.entities.VisitSummary;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FamilyHistoryRepository extends JpaRepository<FamilyHistory, String>, JpaSpecificationExecutor<FamilyHistory> {
+public interface VisitSummaryRepository extends JpaRepository<VisitSummary, String>, JpaSpecificationExecutor<VisitSummary> {
 }
