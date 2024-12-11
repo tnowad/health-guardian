@@ -21,12 +21,40 @@
     }
   ],
   "paths": {
-    "/userstaff/update/{id}": {
+    "/visit-summaries/{id}": {
+      "get": {
+        "tags": [
+          "visit-summary-controller"
+        ],
+        "operationId": "getVisitSummaryById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/VisitSummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": [
-          "user-staff-controller"
+          "visit-summary-controller"
         ],
-        "operationId": "updateUserStaff",
+        "operationId": "updateAppointment",
         "parameters": [
           {
             "name": "id",
@@ -41,10 +69,11 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateUserStaffRequest"
+                "$ref": "#/components/schemas/UpdateVisitSummaryRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -52,7 +81,35 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserStaffResponse"
+                  "$ref": "#/components/schemas/VisitSummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "visit-summary-controller"
+        ],
+        "operationId": "deleteAppointment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleResponse"
                 }
               }
             }
@@ -149,54 +206,16 @@
         }
       }
     },
-    "/user-medical-staff/update/{id}": {
-      "put": {
-        "tags": [
-          "user-medical-staff-controller"
-        ],
-        "operationId": "updateUserMedicalStaff",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "userMedicalStaff",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UserMedicalStaffResponse"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserMedicalStaffResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/side-effects/{id}": {
+    "/surgeries/{id}": {
       "get": {
         "tags": [
-          "side-effect-controller"
+          "surgery-controller"
         ],
-        "operationId": "getSideEffect",
+        "operationId": "getSurgery",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "string"
@@ -209,7 +228,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/SideEffectResponse"
+                  "$ref": "#/components/schemas/SurgeryResponse"
                 }
               }
             }
@@ -218,36 +237,34 @@
       },
       "put": {
         "tags": [
-          "side-effect-controller"
+          "surgery-controller"
         ],
-        "operationId": "updateSideEffect",
+        "operationId": "updateSurgery",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CreateSurgeryRequest"
+            }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateSideEffectRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/SideEffectResponse"
+                  "$ref": "#/components/schemas/SurgeryResponse"
                 }
               }
             }
@@ -256,13 +273,13 @@
       },
       "delete": {
         "tags": [
-          "side-effect-controller"
+          "surgery-controller"
         ],
-        "operationId": "deleteSideEffect",
+        "operationId": "deleteSurgery",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "string"
@@ -276,30 +293,65 @@
         }
       }
     },
-    "/report-side-effects/{reportSideEffectId}": {
-      "put": {
+    "/past-conditions/{id}": {
+      "get": {
         "tags": [
-          "reported-side-effect-controller"
+          "past-condition-controller"
         ],
-        "operationId": "updateReportedSideEffect",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateReportedSideEffectsRequest"
-              }
+        "operationId": "getPastCondition",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
-          },
-          "required": true
-        },
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReportedSideEffectResponse"
+                  "$ref": "#/components/schemas/PastConditionResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "past-condition-controller"
+        ],
+        "operationId": "updatePastCondition",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CreatePastConditionRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PastConditionResponse"
                 }
               }
             }
@@ -308,10 +360,19 @@
       },
       "delete": {
         "tags": [
-          "reported-side-effect-controller"
+          "past-condition-controller"
         ],
-        "operationId": "deleteReportedSideEffect",
-        "parameters": [],
+        "operationId": "deletePastCondition",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -319,12 +380,40 @@
         }
       }
     },
-    "/patient/update/{id}": {
+    "/immunizations/{id}": {
+      "get": {
+        "tags": [
+          "immunization-controller"
+        ],
+        "operationId": "getImmunization",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImmunizationResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": [
-          "patient-controller"
+          "immunization-controller"
         ],
-        "operationId": "updatePatient",
+        "operationId": "updateImmunization",
         "parameters": [
           {
             "name": "id",
@@ -335,11 +424,11 @@
             }
           },
           {
-            "name": "patient",
+            "name": "request",
             "in": "query",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/Patient"
+              "$ref": "#/components/schemas/CreateImmunizationRequest"
             }
           }
         ],
@@ -349,85 +438,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PatientResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/patient-log/update/{id}": {
-      "put": {
-        "tags": [
-          "patient-log-controller"
-        ],
-        "operationId": "updatePatientLog",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "updatePatientLogRequest",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UpdatePatientLogRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PatientLogResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/medications/{medicationId}": {
-      "put": {
-        "tags": [
-          "medication-controller"
-        ],
-        "operationId": "updateMedication",
-        "parameters": [
-          {
-            "name": "medicationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateMedicationRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/MedicationResponse"
+                  "$ref": "#/components/schemas/ImmunizationResponse"
                 }
               }
             }
@@ -436,13 +447,13 @@
       },
       "delete": {
         "tags": [
-          "medication-controller"
+          "immunization-controller"
         ],
-        "operationId": "deleteMedication",
+        "operationId": "deleteImmunization",
         "parameters": [
           {
-            "name": "medicationId",
-            "in": "path",
+            "name": "id",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "string"
@@ -504,7 +515,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateHouseholdRequest"
+                "$ref": "#/components/schemas/CreateHouseholdRequest"
               }
             }
           },
@@ -593,7 +604,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateHouseholdMemberRequest"
+                "$ref": "#/components/schemas/CreateHouseholdMemberRequest"
               }
             }
           },
@@ -634,182 +645,15 @@
         }
       }
     },
-    "/hospitals/update/{id}": {
-      "put": {
-        "tags": [
-          "hospital-controller"
-        ],
-        "operationId": "updateHospital",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HospitalResponse"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/HospitalResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/guardian/update/{id}": {
-      "put": {
-        "tags": [
-          "guardian-controller"
-        ],
-        "operationId": "updateGuardian",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "guardianResponse",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/GuardianResponse"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GuardianResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/consent-forms/{consentFormId}": {
-      "get": {
-        "tags": [
-          "consent-form-controller"
-        ],
-        "operationId": "getConsentForm",
-        "parameters": [
-          {
-            "name": "consentFormId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConsentFormResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "consent-form-controller"
-        ],
-        "operationId": "updateConsentForm",
-        "parameters": [
-          {
-            "name": "consentFormId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateConsentFormRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConsentFormResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "consent-form-controller"
-        ],
-        "operationId": "deleteConsentForm",
-        "parameters": [
-          {
-            "name": "consentFormId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/appointments/update/{id}": {
+    "/appointments/{appointmentId}": {
       "put": {
         "tags": [
           "appointment-controller"
         ],
-        "operationId": "updateAppointment",
+        "operationId": "updateAppointment_1",
         "parameters": [
           {
-            "name": "id",
+            "name": "appointmentId",
             "in": "path",
             "required": true,
             "schema": {
@@ -821,7 +665,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Appointment"
+                "$ref": "#/components/schemas/UpdateAppointmentRequest"
               }
             }
           },
@@ -839,17 +683,15 @@
             }
           }
         }
-      }
-    },
-    "/aggregated-side-effects/{aggregatedSideEffectId}": {
-      "get": {
+      },
+      "delete": {
         "tags": [
-          "aggregated-side-effect-controller"
+          "appointment-controller"
         ],
-        "operationId": "getAggregatedSideEffect",
+        "operationId": "deleteAppointment_1",
         "parameters": [
           {
-            "name": "aggregatedSideEffectId",
+            "name": "appointmentId",
             "in": "path",
             "required": true,
             "schema": {
@@ -863,7 +705,37 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/AggregatedSideEffectResponse"
+                  "$ref": "#/components/schemas/SimpleResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/allergies": {
+      "get": {
+        "tags": [
+          "allergy-controller"
+        ],
+        "operationId": "listAllergies",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ListAllergiesRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageAllergyResponse"
                 }
               }
             }
@@ -872,24 +744,108 @@
       },
       "put": {
         "tags": [
-          "aggregated-side-effect-controller"
+          "allergy-controller"
         ],
-        "operationId": "updateAggregatedSideEffect",
+        "operationId": "updateAllergy",
         "parameters": [
           {
-            "name": "aggregatedSideEffectId",
-            "in": "path",
+            "name": "id",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CreateAllergyRequest"
+            }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllergyResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "allergy-controller"
+        ],
+        "operationId": "createAllergy",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CreateAllergyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllergyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/visit-summaries": {
+      "get": {
+        "tags": [
+          "visit-summary-controller"
+        ],
+        "operationId": "getAllVisitSummaries",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ListVisitSummaryRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVisitSummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "visit-summary-controller"
+        ],
+        "operationId": "createVisitSummary",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateAggregatedSideEffectRequest"
+                "$ref": "#/components/schemas/CreateVisitSummaryRequest"
               }
             }
           },
@@ -901,57 +857,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/AggregatedSideEffectResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "aggregated-side-effect-controller"
-        ],
-        "operationId": "deleteAggregatedSideEffect",
-        "parameters": [
-          {
-            "name": "aggregatedSideEffectId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/userstaff/create": {
-      "post": {
-        "tags": [
-          "user-staff-controller"
-        ],
-        "operationId": "createUserStaff",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserStaffRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserStaffResponse"
+                  "$ref": "#/components/schemas/VisitSummaryResponse"
                 }
               }
             }
@@ -1055,49 +961,19 @@
         }
       }
     },
-    "/user-medical-staff/create": {
-      "post": {
-        "tags": [
-          "user-medical-staff-controller"
-        ],
-        "operationId": "createUserMedicalStaff",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserMedicalStaffRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserMedicalStaffResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/side-effects": {
+    "/surgeries": {
       "get": {
         "tags": [
-          "side-effect-controller"
+          "surgery-controller"
         ],
-        "operationId": "listSideEffects",
+        "operationId": "listSurgeries",
         "parameters": [
           {
             "name": "request",
             "in": "query",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/ListSideEffectRequest"
+              "$ref": "#/components/schemas/ListSurgeriesRequest"
             }
           }
         ],
@@ -1107,7 +983,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageSideEffectResponse"
+                  "$ref": "#/components/schemas/PageSurgeryResponse"
                 }
               }
             }
@@ -1116,26 +992,26 @@
       },
       "post": {
         "tags": [
-          "side-effect-controller"
+          "surgery-controller"
         ],
-        "operationId": "createSideEffect",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateSideEffectRequest"
-              }
+        "operationId": "createSurgery",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CreateSurgeryRequest"
             }
-          },
-          "required": true
-        },
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/SideEffectResponse"
+                  "$ref": "#/components/schemas/SurgeryResponse"
                 }
               }
             }
@@ -1203,19 +1079,19 @@
         }
       }
     },
-    "/report-side-effects": {
+    "/past-conditions": {
       "get": {
         "tags": [
-          "reported-side-effect-controller"
+          "past-condition-controller"
         ],
-        "operationId": "listReportedSideEffects",
+        "operationId": "listPastConditions",
         "parameters": [
           {
             "name": "request",
             "in": "query",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/ListReportedSideEffectsRequest"
+              "$ref": "#/components/schemas/ListPastConditionsRequest"
             }
           }
         ],
@@ -1225,7 +1101,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageReportedSideEffectResponse"
+                  "$ref": "#/components/schemas/PagePastConditionResponse"
                 }
               }
             }
@@ -1234,157 +1110,16 @@
       },
       "post": {
         "tags": [
-          "reported-side-effect-controller"
+          "past-condition-controller"
         ],
-        "operationId": "createReportSideEffect",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateReportedSideEffectRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReportedSideEffectResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/patient/create": {
-      "post": {
-        "tags": [
-          "patient-controller"
-        ],
-        "operationId": "createPatient",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePatientRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PatientResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/patient-log/upload-images/{id}": {
-      "post": {
-        "tags": [
-          "patient-log-controller"
-        ],
-        "operationId": "uploadFiles",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "required": [
-                  "patient-log-files"
-                ],
-                "type": "object",
-                "properties": {
-                  "patient-log-files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PatientLogResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/patient-log/create": {
-      "post": {
-        "tags": [
-          "patient-log-controller"
-        ],
-        "operationId": "createPatientLog",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PatientLog"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PatientLogResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/medications": {
-      "get": {
-        "tags": [
-          "medication-controller"
-        ],
-        "operationId": "listMedications",
+        "operationId": "createPastCondition",
         "parameters": [
           {
             "name": "request",
             "in": "query",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/ListMedicationRequest"
+              "$ref": "#/components/schemas/CreatePastConditionRequest"
             }
           }
         ],
@@ -1394,7 +1129,37 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageMedicationResponse"
+                  "$ref": "#/components/schemas/PastConditionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/immunizations": {
+      "get": {
+        "tags": [
+          "immunization-controller"
+        ],
+        "operationId": "listImmunizations",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ListImmunizationsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageImmunizationResponse"
                 }
               }
             }
@@ -1403,26 +1168,26 @@
       },
       "post": {
         "tags": [
-          "medication-controller"
+          "immunization-controller"
         ],
-        "operationId": "createMedication",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateMedicationRequest"
-              }
+        "operationId": "createImmunization",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CreateImmunizationRequest"
             }
-          },
-          "required": true
-        },
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/MedicationResponse"
+                  "$ref": "#/components/schemas/ImmunizationResponse"
                 }
               }
             }
@@ -1546,124 +1311,6 @@
         }
       }
     },
-    "/hospitals/create": {
-      "post": {
-        "tags": [
-          "hospital-controller"
-        ],
-        "operationId": "createHospital",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateHospitalRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/HospitalResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/guardian/create": {
-      "post": {
-        "tags": [
-          "guardian-controller"
-        ],
-        "operationId": "createGuardian",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GuardianResponse"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GuardianResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/consent-forms": {
-      "get": {
-        "tags": [
-          "consent-form-controller"
-        ],
-        "operationId": "listConsentForms",
-        "parameters": [
-          {
-            "name": "request",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ListConsentFormsRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PageConsentFormResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "consent-form-controller"
-        ],
-        "operationId": "createConsentForm",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateConsentFormRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConsentFormResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/auth/verify-email-by-code": {
       "post": {
         "tags": [
@@ -1688,7 +1335,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/SimpleResponse"
                 }
               }
             }
@@ -1731,17 +1378,22 @@
         "tags": [
           "auth-controller"
         ],
+        "summary": "Sign out",
+        "description": "Sign out user",
         "operationId": "signOut",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object"
-                }
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignOutRequest"
               }
             }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -1776,6 +1428,38 @@
         }
       }
     },
+    "/auth/send-forgot-password": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "summary": "Send email forgot password",
+        "description": "Send email forgot password",
+        "operationId": "sendEmailForgotPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendEmailForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendEmailForgotPasswordResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/send-email-verification": {
       "post": {
         "tags": [
@@ -1800,7 +1484,39 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/SimpleResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "summary": "Reset password",
+        "description": "Reset password",
+        "operationId": "resetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetPasswordResponse"
                 }
               }
             }
@@ -1838,7 +1554,67 @@
         }
       }
     },
-    "/appointments/create": {
+    "/auth/forgot": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "summary": "Verify forgot password code",
+        "description": "Verify forgot password code",
+        "operationId": "forgotPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotPasswordResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appointments": {
+      "get": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "operationId": "getAllAppointments",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ListAppointmentRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageAppointmentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "appointment-controller"
@@ -1848,7 +1624,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Appointment"
+                "$ref": "#/components/schemas/CreateAppointmentRequest"
               }
             }
           },
@@ -1937,64 +1713,6 @@
               "*/*": {
                 "schema": {
                   "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/aggregated-side-effects": {
-      "get": {
-        "tags": [
-          "aggregated-side-effect-controller"
-        ],
-        "operationId": "listAggregatedSideEffects",
-        "parameters": [
-          {
-            "name": "request",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ListAggregatedSideEffectsRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PageAggregatedSideEffectResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "aggregated-side-effect-controller"
-        ],
-        "operationId": "createAggregatedSideEffect",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateAggregatedSideEffectRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/AggregatedSideEffectResponse"
                 }
               }
             }
@@ -2121,66 +1839,6 @@
         }
       }
     },
-    "/userstaff/id/{id}": {
-      "get": {
-        "tags": [
-          "user-staff-controller"
-        ],
-        "operationId": "getUserStaffById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserStaffResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/userstaff/all": {
-      "get": {
-        "tags": [
-          "user-staff-controller"
-        ],
-        "operationId": "getAllUserStaffs",
-        "parameters": [
-          {
-            "name": "request",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ListUserStaffRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PageUserStaffResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/users/current-user/information": {
       "get": {
         "tags": [
@@ -2194,686 +1852,6 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/CurrentUserInfomationResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user-medical-staff/id/{id}": {
-      "get": {
-        "tags": [
-          "user-medical-staff-controller"
-        ],
-        "operationId": "getUserMedicalStaffById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserMedicalStaffResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user-medical-staff/all": {
-      "get": {
-        "tags": [
-          "user-medical-staff-controller"
-        ],
-        "operationId": "getAllUserMedicalStaffs",
-        "parameters": [
-          {
-            "name": "request",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ListUserMedicalStaffRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PageUserMedicalStaffResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/report-side-effects/{reportedSideEffectId}": {
-      "get": {
-        "tags": [
-          "reported-side-effect-controller"
-        ],
-        "operationId": "getReportSideEffect",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReportedSideEffectResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/prescriptions/{id}": {
-      "get": {
-        "tags": [
-          "prescription-controller"
-        ],
-        "operationId": "getPrescriptionById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Prescription"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/prescriptions/status/{status}": {
-      "get": {
-        "tags": [
-          "prescription-controller"
-        ],
-        "operationId": "getPrescriptionsByStatus",
-        "parameters": [
-          {
-            "name": "status",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Prescription"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/prescriptions/patient/{patientId}": {
-      "get": {
-        "tags": [
-          "prescription-controller"
-        ],
-        "operationId": "getPrescriptionsByPatientId",
-        "parameters": [
-          {
-            "name": "patientId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Prescription"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/prescriptions/patient/{patientId}/status/{status}": {
-      "get": {
-        "tags": [
-          "prescription-controller"
-        ],
-        "operationId": "getPrescriptionsByPatientIdAndStatus",
-        "parameters": [
-          {
-            "name": "patientId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Prescription"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/prescriptions/patient/{patientId}/medication/{medicationId}": {
-      "get": {
-        "tags": [
-          "prescription-controller"
-        ],
-        "operationId": "getPrescriptionsByPatientIdAndMedicationId",
-        "parameters": [
-          {
-            "name": "patientId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "medicationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Prescription"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/prescriptions/patient/{patientId}/date/{date}": {
-      "get": {
-        "tags": [
-          "prescription-controller"
-        ],
-        "operationId": "getPrescriptionsByPatientIdAndEndDate",
-        "parameters": [
-          {
-            "name": "patientId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "date",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Prescription"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/prescriptions/medication/{medicationId}": {
-      "get": {
-        "tags": [
-          "prescription-controller"
-        ],
-        "operationId": "getPrescriptionsByMedicationId",
-        "parameters": [
-          {
-            "name": "medicationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Prescription"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/prescriptions/all": {
-      "get": {
-        "tags": [
-          "prescription-controller"
-        ],
-        "operationId": "getAllPrescriptions",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Prescription"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/patient/id/{id}": {
-      "get": {
-        "tags": [
-          "patient-controller"
-        ],
-        "operationId": "getPatientById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PatientResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/patient/all": {
-      "get": {
-        "tags": [
-          "patient-controller"
-        ],
-        "operationId": "getAllPatients",
-        "parameters": [
-          {
-            "name": "request",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ListPatientRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PagePatientResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/patient-log/{id}": {
-      "get": {
-        "tags": [
-          "patient-log-controller"
-        ],
-        "operationId": "getPatientLog",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PatientLogResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/patient-log/id/{id}": {
-      "get": {
-        "tags": [
-          "patient-log-controller"
-        ],
-        "operationId": "getPatientLogById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PatientLogResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/patient-log/all": {
-      "get": {
-        "tags": [
-          "patient-log-controller"
-        ],
-        "operationId": "getAllPatientLogs",
-        "parameters": [
-          {
-            "name": "request",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ListPatientLogRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PagePatientLogResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/medications/{mediationId}": {
-      "get": {
-        "tags": [
-          "medication-controller"
-        ],
-        "operationId": "getMedication",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/MedicationResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/hospitals/id/{id}": {
-      "get": {
-        "tags": [
-          "hospital-controller"
-        ],
-        "operationId": "getHospitalById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/HospitalResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/hospitals/all": {
-      "get": {
-        "tags": [
-          "hospital-controller"
-        ],
-        "operationId": "getAllHospitals",
-        "parameters": [
-          {
-            "name": "request",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ListHospitalRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PageHospitalResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/guardian/id/{id}": {
-      "get": {
-        "tags": [
-          "guardian-controller"
-        ],
-        "operationId": "getGuardianById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GuardianResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/guardian/all": {
-      "get": {
-        "tags": [
-          "guardian-controller"
-        ],
-        "operationId": "getAllGuardians",
-        "parameters": [
-          {
-            "name": "request",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/ListGuardiansRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PageGuardianResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/auth/verify-email-by-token": {
-      "get": {
-        "tags": [
-          "auth-controller"
-        ],
-        "summary": "Verify email by token",
-        "description": "Verify email by token",
-        "operationId": "verifyEmail_1",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
                 }
               }
             }
@@ -2941,19 +1919,19 @@
         }
       }
     },
-    "/appointments/all": {
+    "/allergies/{id}": {
       "get": {
         "tags": [
-          "appointment-controller"
+          "allergy-controller"
         ],
-        "operationId": "getAllAppointments",
+        "operationId": "getAllergy",
         "parameters": [
           {
-            "name": "request",
+            "name": "id",
             "in": "query",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/ListAppointmentRequest"
+              "type": "string"
             }
           }
         ],
@@ -2963,10 +1941,31 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageAppointmentResponse"
+                  "$ref": "#/components/schemas/AllergyResponse"
                 }
               }
             }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "allergy-controller"
+        ],
+        "operationId": "deleteAllergy",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -3763,523 +2762,70 @@
           }
         }
       }
-    },
-    "/userstaff/delete/{id}": {
-      "delete": {
-        "tags": [
-          "user-staff-controller"
-        ],
-        "operationId": "deleteUserStaff",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/user-medical-staff/delete/{id}": {
-      "delete": {
-        "tags": [
-          "user-medical-staff-controller"
-        ],
-        "operationId": "deleteUserMedicalStaff",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/patient/delete/{id}": {
-      "delete": {
-        "tags": [
-          "patient-controller"
-        ],
-        "operationId": "deletePatient",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/patient-log/delete/{id}": {
-      "delete": {
-        "tags": [
-          "patient-log-controller"
-        ],
-        "operationId": "deletePatientLog",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/hospitals/delete/{id}": {
-      "delete": {
-        "tags": [
-          "hospital-controller"
-        ],
-        "operationId": "deleteHospital",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/guardian/delete/{id}": {
-      "delete": {
-        "tags": [
-          "guardian-controller"
-        ],
-        "operationId": "deleteGuardian",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/appointments/delete/{id}": {
-      "delete": {
-        "tags": [
-          "appointment-controller"
-        ],
-        "operationId": "deleteAppointment",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
     }
   },
   "components": {
     "schemas": {
-      "UpdateUserStaffRequest": {
-        "type": "object"
-      },
-      "Account": {
+      "UpdateVisitSummaryRequest": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
-          },
-          "profileType": {
             "type": "string"
           },
           "userId": {
             "type": "string"
           },
-          "user": {
-            "$ref": "#/components/schemas/User"
+          "visitDate": {
+            "type": "string",
+            "format": "date-time"
           },
-          "status": {
+          "visitType": {
             "type": "string",
             "enum": [
-              "ACTIVE",
-              "INACTIVE",
-              "DELETED"
+              "CHECKUP",
+              "FOLLOW_UP",
+              "EMERGENCY",
+              "CONSULTATION",
+              "SURGERY",
+              "THERAPY"
             ]
           },
-          "localProviders": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LocalProvider"
-            }
+          "summary": {
+            "type": "string"
           },
-          "externalProviders": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ExternalProvider"
-            }
+          "notes": {
+            "type": "string"
           }
         }
       },
-      "ExternalProvider": {
+      "VisitSummaryResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
-          "account": {
-            "$ref": "#/components/schemas/Account"
-          },
-          "providerName": {
+          "userId": {
             "type": "string"
           },
-          "providerUserId": {
-            "type": "string"
-          },
-          "providerUserEmail": {
-            "type": "string"
-          },
-          "token": {
-            "type": "string"
-          }
-        }
-      },
-      "Guardian": {
-        "required": [
-          "name",
-          "phone",
-          "relationshipToPatient"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "relationshipToPatient": {
-            "type": "string"
-          },
-          "phone": {
-            "pattern": "^\\+?[0-9]*$",
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "Hospital": {
-        "required": [
-          "location",
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "location": {
-            "type": "string"
-          },
-          "phone": {
-            "pattern": "^\\+?[0-9]*$",
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "LocalProvider": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "accountId": {
-            "type": "string"
-          },
-          "account": {
-            "$ref": "#/components/schemas/Account"
-          },
-          "email": {
-            "type": "string"
-          },
-          "passwordHash": {
-            "type": "string"
-          }
-        }
-      },
-      "Patient": {
-        "required": [
-          "firstName",
-          "gender",
-          "lastName"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "dob": {
+          "visitDate": {
             "type": "string",
             "format": "date-time"
           },
-          "gender": {
-            "type": "string"
-          },
-          "guardian": {
-            "$ref": "#/components/schemas/Guardian"
-          },
-          "status": {
+          "visitType": {
             "type": "string",
             "enum": [
-              "HEALTHY",
-              "ILL",
-              "RECOVERING",
-              "CRITICAL"
+              "CHECKUP",
+              "FOLLOW_UP",
+              "EMERGENCY",
+              "CONSULTATION",
+              "SURGERY",
+              "THERAPY"
             ]
           },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "Permission": {
-        "type": "object",
-        "properties": {
-          "id": {
+          "summary": {
             "type": "string"
           },
-          "name": {
-            "type": "string"
-          },
-          "roles": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Role"
-            }
-          }
-        }
-      },
-      "Role": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "permissions": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Permission"
-            }
-          },
-          "users": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/User"
-            }
-          }
-        }
-      },
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "username": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "PATIENT",
-              "ADMIN",
-              "STAFF",
-              "MEDICAL_STAFF"
-            ]
-          },
-          "accounts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Account"
-            }
-          },
-          "userStaffs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserStaff"
-            }
-          },
-          "avatar": {
-            "type": "string"
-          },
-          "userMedicalStaffs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserMedicalStaff"
-            }
-          },
-          "patient": {
-            "$ref": "#/components/schemas/Patient"
-          },
-          "roles": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Role"
-            }
-          }
-        }
-      },
-      "UserMedicalStaff": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "hospital": {
-            "$ref": "#/components/schemas/Hospital"
-          },
-          "staffType": {
-            "type": "string"
-          },
-          "specialization": {
-            "type": "string"
-          },
-          "role": {
-            "type": "string"
-          },
-          "active": {
-            "type": "boolean"
-          },
-          "endDate": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "UserStaff": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "dateOfBirth": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "role": {
-            "type": "string"
-          },
-          "roleType": {
-            "type": "string"
-          }
-        }
-      },
-      "UserStaffResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "role": {
-            "type": "string"
-          },
-          "roleType": {
+          "notes": {
             "type": "string"
           }
         }
@@ -4297,238 +2843,208 @@
         "properties": {
           "id": {
             "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
           }
         }
       },
-      "UserMedicalStaffResponse": {
+      "CreateSurgeryRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "SurgeryResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "hospital": {
-            "$ref": "#/components/schemas/Hospital"
-          },
-          "staffType": {
+          "userId": {
             "type": "string"
           },
-          "specialization": {
-            "type": "string"
-          },
-          "role": {
-            "type": "string"
-          },
-          "active": {
-            "type": "boolean"
-          },
-          "endDate": {
+          "date": {
             "type": "string",
             "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
           }
         }
       },
-      "UpdateSideEffectRequest": {
-        "type": "object"
-      },
-      "SideEffectResponse": {
-        "type": "object"
-      },
-      "UpdateReportedSideEffectsRequest": {
-        "type": "object"
-      },
-      "ReportedSideEffectResponse": {
-        "type": "object"
-      },
-      "PatientResponse": {
+      "CreatePastConditionRequest": {
         "type": "object",
         "properties": {
-          "id": {
+          "userId": {
             "type": "string"
           },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "dob": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "gender": {
-            "type": "string"
-          },
-          "guardian": {
-            "$ref": "#/components/schemas/Guardian"
-          },
-          "status": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "UpdatePatientLogRequest": {
-        "type": "object",
-        "properties": {
-          "fileNames": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "logType": {
+          "condition": {
             "type": "string"
           },
           "description": {
             "type": "string"
           },
-          "message": {
-            "type": "string"
-          }
-        }
-      },
-      "PatientLogResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "patient": {
-            "$ref": "#/components/schemas/Patient"
-          },
-          "logType": {
-            "type": "string"
-          },
-          "fileUrls": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "message": {
-            "type": "string"
-          },
-          "createdAt": {
+          "dateDiagnosed": {
             "type": "string",
             "format": "date-time"
           }
         }
       },
-      "UpdateMedicationRequest": {
-        "type": "object"
-      },
-      "MedicationResponse": {
+      "PastConditionResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
-          "name": {
+          "userId": {
             "type": "string"
           },
-          "activeIngredient": {
+          "condition": {
             "type": "string"
           },
-          "dosageForm": {
+          "description": {
             "type": "string"
           },
-          "standardDosage": {
+          "dateDiagnosed": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateImmunizationRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
             "type": "string"
           },
-          "manufacturer": {
+          "vaccinationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "vaccineName": {
+            "type": "string"
+          },
+          "batchNumber": {
+            "type": "string"
+          },
+          "notes": {
             "type": "string"
           }
         }
       },
-      "UpdateHouseholdRequest": {
-        "type": "object"
+      "ImmunizationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "vaccinationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "vaccineName": {
+            "type": "string"
+          },
+          "batchNumber": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateHouseholdRequest": {
+        "type": "object",
+        "properties": {
+          "headId": {
+            "type": "string"
+          }
+        }
       },
       "HouseholdResponse": {
-        "type": "object"
-      },
-      "UpdateHouseholdMemberRequest": {
-        "type": "object"
-      },
-      "HouseholdMemberResponse": {
-        "type": "object"
-      },
-      "HospitalResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
-          "name": {
-            "type": "string"
-          },
-          "location": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string"
-          },
-          "email": {
+          "headId": {
             "type": "string"
           }
         }
       },
-      "GuardianResponse": {
+      "CreateHouseholdMemberRequest": {
         "type": "object",
         "properties": {
-          "id": {
+          "householdId": {
             "type": "string"
           },
-          "name": {
+          "patientId": {
             "type": "string"
           },
           "relationshipToPatient": {
             "type": "string"
-          },
-          "phone": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
           }
         }
       },
-      "UpdateConsentFormRequest": {
-        "type": "object"
-      },
-      "ConsentFormResponse": {
-        "type": "object"
-      },
-      "Appointment": {
-        "required": [
-          "appointmentDate",
-          "reasonForVisit"
-        ],
+      "HouseholdMemberResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
-          "patient": {
-            "$ref": "#/components/schemas/Patient"
+          "householdId": {
+            "type": "string"
           },
-          "doctor": {
-            "$ref": "#/components/schemas/UserMedicalStaff"
+          "userId": {
+            "type": "string"
+          },
+          "relationshipToPatient": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateAppointmentRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
           },
           "appointmentDate": {
             "type": "string",
             "format": "date-time"
           },
-          "reasonForVisit": {
+          "reason": {
+            "type": "string"
+          },
+          "address": {
             "type": "string"
           },
           "status": {
@@ -4538,6 +3054,9 @@
               "COMPLETED",
               "CANCELED"
             ]
+          },
+          "notes": {
+            "type": "string"
           }
         }
       },
@@ -4547,17 +3066,17 @@
           "id": {
             "type": "string"
           },
-          "patient": {
-            "$ref": "#/components/schemas/Patient"
-          },
-          "doctor": {
-            "$ref": "#/components/schemas/UserMedicalStaff"
+          "userId": {
+            "type": "string"
           },
           "appointmentDate": {
             "type": "string",
             "format": "date-time"
           },
-          "reasonForVisit": {
+          "reason": {
+            "type": "string"
+          },
+          "address": {
             "type": "string"
           },
           "status": {
@@ -4567,145 +3086,79 @@
               "COMPLETED",
               "CANCELED"
             ]
+          },
+          "notes": {
+            "type": "string"
           }
         }
       },
-      "UpdateAggregatedSideEffectRequest": {
-        "type": "object"
-      },
-      "AggregatedSideEffectResponse": {
-        "type": "object"
-      },
-      "CreateUserStaffRequest": {
-        "required": [
-          "role",
-          "roleType",
-          "userId"
-        ],
+      "CreateAllergyRequest": {
         "type": "object",
         "properties": {
           "userId": {
             "type": "string"
           },
-          "role": {
+          "allergyName": {
             "type": "string"
           },
-          "roleType": {
+          "severity": {
+            "type": "string"
+          },
+          "reactionDescription": {
             "type": "string"
           }
         }
       },
-      "CreateUserRequest": {
-        "type": "object"
-      },
-      "CreateUserMedicalStaffRequest": {
-        "required": [
-          "active",
-          "endDate",
-          "hospital",
-          "role",
-          "specialization",
-          "staffType",
-          "userId"
-        ],
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string"
-          },
-          "hospital": {
-            "$ref": "#/components/schemas/Hospital"
-          },
-          "staffType": {
-            "type": "string"
-          },
-          "specialization": {
-            "type": "string"
-          },
-          "role": {
-            "type": "string"
-          },
-          "active": {
-            "type": "boolean"
-          },
-          "endDate": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "CreateSideEffectRequest": {
-        "type": "object"
-      },
-      "CreateReportedSideEffectRequest": {
-        "type": "object"
-      },
-      "CreatePatientRequest": {
-        "type": "object"
-      },
-      "PatientLog": {
+      "AllergyResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
-          "patient": {
-            "$ref": "#/components/schemas/Patient"
-          },
-          "fileNames": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "logType": {
+          "userId": {
             "type": "string"
           },
-          "description": {
+          "allergyName": {
             "type": "string"
           },
-          "message": {
+          "severity": {
             "type": "string"
           },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
+          "reactionDescription": {
+            "type": "string"
           }
         }
       },
-      "CreateMedicationRequest": {
-        "type": "object"
-      },
-      "CreateHouseholdRequest": {
-        "type": "object"
-      },
-      "CreateHouseholdMemberRequest": {
-        "type": "object"
-      },
-      "CreateHospitalRequest": {
-        "required": [
-          "email",
-          "location",
-          "name",
-          "phone"
-        ],
+      "CreateVisitSummaryRequest": {
         "type": "object",
         "properties": {
-          "name": {
+          "userId": {
             "type": "string"
           },
-          "location": {
+          "visitDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "visitType": {
+            "type": "string",
+            "enum": [
+              "CHECKUP",
+              "FOLLOW_UP",
+              "EMERGENCY",
+              "CONSULTATION",
+              "SURGERY",
+              "THERAPY"
+            ]
+          },
+          "summary": {
             "type": "string"
           },
-          "phone": {
-            "type": "string"
-          },
-          "email": {
+          "notes": {
             "type": "string"
           }
         }
       },
-      "CreateConsentFormRequest": {
+      "CreateUserRequest": {
         "type": "object"
       },
       "VerifyEmailByCodeRequest": {
@@ -4725,22 +3178,30 @@
           }
         }
       },
+      "SimpleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
       "SignUpRequest": {
         "required": [
+          "confirmPassword",
+          "dateOfBirth",
           "email",
           "firstName",
+          "gender",
           "lastName",
-          "password",
-          "username"
+          "password"
         ],
         "type": "object",
         "properties": {
           "email": {
-            "type": "string",
-            "description": "User's email address",
-            "example": "user@example.com"
-          },
-          "username": {
             "type": "string",
             "description": "User's email address",
             "example": "user@example.com"
@@ -4759,7 +3220,26 @@
             "description": "User's last name",
             "example": "Doe"
           },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER"
+            ]
+          },
           "password": {
+            "maxLength": 2147483647,
+            "minLength": 8,
+            "type": "string",
+            "description": "User's password",
+            "example": "Password@123"
+          },
+          "confirmPassword": {
             "maxLength": 2147483647,
             "minLength": 8,
             "type": "string",
@@ -4773,13 +3253,14 @@
         "properties": {
           "message": {
             "type": "string"
-          },
-          "tokens": {
-            "$ref": "#/components/schemas/TokensResponse"
           }
         }
       },
-      "TokensResponse": {
+      "SignOutRequest": {
+        "required": [
+          "accessToken",
+          "refreshToken"
+        ],
         "type": "object",
         "properties": {
           "accessToken": {
@@ -4814,22 +3295,83 @@
             "type": "string"
           },
           "tokens": {
-            "$ref": "#/components/schemas/TokensResponse"
+            "$ref": "#/components/schemas/TokenResponse"
           }
         }
       },
-      "SendEmailVerificationRequest": {
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        }
+      },
+      "SendEmailForgotPasswordRequest": {
         "required": [
-          "email",
-          "type"
+          "email"
         ],
         "type": "object",
         "properties": {
           "email": {
             "type": "string"
+          }
+        }
+      },
+      "SendEmailForgotPasswordResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
           },
-          "type": {
-            "type": "object"
+          "retryAfter": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SendEmailVerificationRequest": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ResetPasswordRequest": {
+        "required": [
+          "password",
+          "passwordConfirmation",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 20,
+            "minLength": 6,
+            "type": "string"
+          },
+          "passwordConfirmation": {
+            "maxLength": 20,
+            "minLength": 6,
+            "type": "string"
+          }
+        }
+      },
+      "ResetPasswordResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
           }
         }
       },
@@ -4853,7 +3395,64 @@
             "type": "string"
           },
           "tokens": {
-            "$ref": "#/components/schemas/TokensResponse"
+            "$ref": "#/components/schemas/TokenResponse"
+          }
+        }
+      },
+      "ForgotPasswordRequest": {
+        "required": [
+          "code",
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "code": {
+            "maxLength": 6,
+            "minLength": 6,
+            "type": "string"
+          }
+        }
+      },
+      "ForgotPasswordResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateAppointmentRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "appointmentDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "COMPLETED",
+              "CANCELED"
+            ]
+          },
+          "notes": {
+            "type": "string"
           }
         }
       },
@@ -4865,10 +3464,7 @@
           }
         }
       },
-      "CreateAggregatedSideEffectRequest": {
-        "type": "object"
-      },
-      "ListUserStaffRequest": {
+      "ListVisitSummaryRequest": {
         "type": "object",
         "properties": {
           "page": {
@@ -4891,39 +3487,52 @@
               "type": "boolean"
             }
           },
-          "search": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
           "ids": {
             "type": "array",
             "items": {
               "type": "string"
             }
+          },
+          "userId": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "visitType": {
+            "type": "string",
+            "enum": [
+              "CHECKUP",
+              "FOLLOW_UP",
+              "EMERGENCY",
+              "CONSULTATION",
+              "SURGERY",
+              "THERAPY"
+            ]
+          },
+          "summary": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
           }
         }
       },
-      "PageUserStaffResponse": {
+      "PageVisitSummaryResponse": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "size": {
             "type": "integer",
@@ -4932,7 +3541,7 @@
           "content": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UserStaffResponse"
+              "$ref": "#/components/schemas/VisitSummaryResponse"
             }
           },
           "number": {
@@ -4949,6 +3558,15 @@
             "type": "integer",
             "format": "int32"
           },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
           "empty": {
             "type": "boolean"
           }
@@ -4957,20 +3575,6 @@
       "PageableObject": {
         "type": "object",
         "properties": {
-          "paged": {
-            "type": "boolean"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unpaged": {
-            "type": "boolean"
-          },
           "offset": {
             "type": "integer",
             "format": "int64"
@@ -4980,6 +3584,20 @@
             "items": {
               "$ref": "#/components/schemas/SortObject"
             }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paged": {
+            "type": "boolean"
+          },
+          "unpaged": {
+            "type": "boolean"
           }
         }
       },
@@ -5026,39 +3644,44 @@
               "type": "boolean"
             }
           },
-          "search": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
           "ids": {
             "type": "array",
             "items": {
               "type": "string"
             }
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER"
+            ]
           }
         }
       },
       "PageUserResponse": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "size": {
             "type": "integer",
@@ -5084,6 +3707,15 @@
             "type": "integer",
             "format": "int32"
           },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
           "empty": {
             "type": "boolean"
           }
@@ -5106,216 +3738,18 @@
           },
           "avatarUrl": {
             "type": "string"
-          },
-          "role": {
-            "type": "string",
-            "enum": [
-              "PATIENT",
-              "ADMIN",
-              "STAFF",
-              "MEDICAL_STAFF"
-            ]
-          },
-          "staff": {
-            "$ref": "#/components/schemas/StaffInforResponse"
-          },
-          "medicalStaff": {
-            "$ref": "#/components/schemas/MedicalStaffInforResponse"
-          },
-          "patient": {
-            "$ref": "#/components/schemas/PatientInforResponse"
           }
         }
       },
-      "MedicalStaffInforResponse": {
+      "ListSurgeriesRequest": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "specialization": {
-            "type": "string"
-          }
-        }
-      },
-      "PatientInforResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        }
-      },
-      "StaffInforResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        }
-      },
-      "ListUserMedicalStaffRequest": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sortFields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "desc": {
-            "type": "array",
-            "items": {
-              "type": "boolean"
-            }
-          },
-          "search": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
           "ids": {
             "type": "array",
             "items": {
               "type": "string"
             }
-          }
-        }
-      },
-      "PageUserMedicalStaffResponse": {
-        "type": "object",
-        "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
           },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "content": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserMedicalStaffResponse"
-            }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SortObject"
-            }
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "empty": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ListSideEffectRequest": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "severity": {
-            "type": "string",
-            "enum": [
-              "MILD",
-              "MODERATE",
-              "SEVERE"
-            ]
-          },
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "PageSideEffectResponse": {
-        "type": "object",
-        "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "content": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SideEffectResponse"
-            }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SortObject"
-            }
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "empty": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ListReportedSideEffectsRequest": {
-        "type": "object",
-        "properties": {
           "page": {
             "type": "integer",
             "format": "int32"
@@ -5336,16 +3770,104 @@
               "type": "boolean"
             }
           },
-          "patientId": {
+          "userId": {
             "type": "string"
           },
-          "sideEffectId": {
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "PageSurgeryResponse": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SurgeryResponse"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ListPastConditionsRequest": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sortFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            }
+          },
+          "userId": {
             "type": "string"
           },
-          "prescriptionId": {
-            "type": "string"
-          },
-          "severity": {
+          "condition": {
             "type": "string"
           },
           "startDate": {
@@ -5358,25 +3880,16 @@
           }
         }
       },
-      "PageReportedSideEffectResponse": {
+      "PagePastConditionResponse": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "size": {
             "type": "integer",
@@ -5385,7 +3898,7 @@
           "content": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ReportedSideEffectResponse"
+              "$ref": "#/components/schemas/PastConditionResponse"
             }
           },
           "number": {
@@ -5402,56 +3915,53 @@
             "type": "integer",
             "format": "int32"
           },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
           "empty": {
             "type": "boolean"
           }
         }
       },
-      "Medication": {
-        "required": [
-          "name"
-        ],
+      "ListImmunizationsRequest": {
         "type": "object",
         "properties": {
-          "id": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sortFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "desc": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            }
+          },
+          "userId": {
             "type": "string"
           },
-          "name": {
-            "type": "string"
-          },
-          "activeIngredient": {
-            "type": "string"
-          },
-          "dosageForm": {
-            "type": "string"
-          },
-          "standardDosage": {
-            "type": "string"
-          },
-          "manufacturer": {
-            "type": "string"
-          }
-        }
-      },
-      "Prescription": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "patient": {
-            "$ref": "#/components/schemas/Patient"
-          },
-          "medication": {
-            "$ref": "#/components/schemas/Medication"
-          },
-          "prescribedBy": {
-            "$ref": "#/components/schemas/User"
-          },
-          "dosage": {
-            "type": "string"
-          },
-          "frequency": {
+          "vaccineName": {
             "type": "string"
           },
           "startDate": {
@@ -5461,73 +3971,19 @@
           "endDate": {
             "type": "string",
             "format": "date-time"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "ACTIVE",
-              "COMPLETED",
-              "EXPIRED"
-            ]
           }
         }
       },
-      "ListPatientRequest": {
+      "PageImmunizationResponse": {
         "type": "object",
         "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sortFields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "desc": {
-            "type": "array",
-            "items": {
-              "type": "boolean"
-            }
-          },
-          "search": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "PagePatientResponse": {
-        "type": "object",
-        "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "size": {
             "type": "integer",
@@ -5536,7 +3992,7 @@
           "content": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/PatientResponse"
+              "$ref": "#/components/schemas/ImmunizationResponse"
             }
           },
           "number": {
@@ -5553,180 +4009,14 @@
             "type": "integer",
             "format": "int32"
           },
-          "empty": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ListPatientLogRequest": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sortFields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "desc": {
-            "type": "array",
-            "items": {
-              "type": "boolean"
-            }
-          },
-          "search": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "PagePatientLogResponse": {
-        "type": "object",
-        "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
           "first": {
             "type": "boolean"
           },
           "last": {
             "type": "boolean"
           },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "content": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PatientLogResponse"
-            }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SortObject"
-            }
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "empty": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ListMedicationRequest": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "activeIngredient": {
-            "type": "string"
-          },
-          "dosageForm": {
-            "type": "string"
-          },
-          "standardDosage": {
-            "type": "string"
-          },
-          "manufacturer": {
-            "type": "string"
-          },
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sortFields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "desc": {
-            "type": "array",
-            "items": {
-              "type": "boolean"
-            }
-          }
-        }
-      },
-      "PageMedicationResponse": {
-        "type": "object",
-        "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
           "pageable": {
             "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "content": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MedicationResponse"
-            }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SortObject"
-            }
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
           },
           "empty": {
             "type": "boolean"
@@ -5756,7 +4046,16 @@
               "type": "boolean"
             }
           },
-          "headPatientId": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "headId": {
             "type": "string"
           }
         }
@@ -5764,22 +4063,13 @@
       "PageHouseholdResponse": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "size": {
             "type": "integer",
@@ -5804,6 +4094,15 @@
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
           },
           "empty": {
             "type": "boolean"
@@ -5833,13 +4132,16 @@
               "type": "boolean"
             }
           },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "householdId": {
             "type": "string"
           },
-          "patientId": {
-            "type": "string"
-          },
-          "relationshipToPatient": {
+          "userId": {
             "type": "string"
           }
         }
@@ -5847,22 +4149,13 @@
       "PageHouseholdMemberResponse": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "size": {
             "type": "integer",
@@ -5888,264 +4181,14 @@
             "type": "integer",
             "format": "int32"
           },
-          "empty": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ListHospitalRequest": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sortFields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "desc": {
-            "type": "array",
-            "items": {
-              "type": "boolean"
-            }
-          },
-          "search": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "PageHospitalResponse": {
-        "type": "object",
-        "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
           "first": {
             "type": "boolean"
           },
           "last": {
             "type": "boolean"
           },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "content": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HospitalResponse"
-            }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SortObject"
-            }
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "empty": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ListGuardiansRequest": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sortFields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "desc": {
-            "type": "array",
-            "items": {
-              "type": "boolean"
-            }
-          },
-          "search": {
-            "type": "string"
-          },
-          "relationshipToPatient": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "PageGuardianResponse": {
-        "type": "object",
-        "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
           "pageable": {
             "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "content": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GuardianResponse"
-            }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SortObject"
-            }
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "empty": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ListConsentFormsRequest": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sortFields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "desc": {
-            "type": "array",
-            "items": {
-              "type": "boolean"
-            }
-          },
-          "patientId": {
-            "type": "string"
-          },
-          "formName": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "consentDate": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "PageConsentFormResponse": {
-        "type": "object",
-        "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "content": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ConsentFormResponse"
-            }
-          },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SortObject"
-            }
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
           },
           "empty": {
             "type": "boolean"
@@ -6190,39 +4233,52 @@
               "type": "boolean"
             }
           },
-          "search": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
           "ids": {
             "type": "array",
             "items": {
               "type": "string"
             }
+          },
+          "userId": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "COMPLETED",
+              "CANCELED"
+            ]
+          },
+          "notes": {
+            "type": "string"
           }
         }
       },
       "PageAppointmentResponse": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "size": {
             "type": "integer",
@@ -6248,14 +4304,29 @@
             "type": "integer",
             "format": "int32"
           },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
           "empty": {
             "type": "boolean"
           }
         }
       },
-      "ListAggregatedSideEffectsRequest": {
+      "ListAllergiesRequest": {
         "type": "object",
         "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "page": {
             "type": "integer",
             "format": "int32"
@@ -6276,41 +4347,27 @@
               "type": "boolean"
             }
           },
-          "sideEffectId": {
+          "userId": {
             "type": "string"
           },
-          "medicationId": {
+          "allergyName": {
             "type": "string"
           },
-          "periodStart": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "periodEnd": {
-            "type": "string",
-            "format": "date-time"
+          "severity": {
+            "type": "string"
           }
         }
       },
-      "PageAggregatedSideEffectResponse": {
+      "PageAllergyResponse": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "size": {
             "type": "integer",
@@ -6319,7 +4376,7 @@
           "content": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AggregatedSideEffectResponse"
+              "$ref": "#/components/schemas/AllergyResponse"
             }
           },
           "number": {
@@ -6335,6 +4392,15 @@
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
           },
           "empty": {
             "type": "boolean"

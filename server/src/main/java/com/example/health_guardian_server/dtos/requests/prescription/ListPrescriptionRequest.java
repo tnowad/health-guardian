@@ -20,7 +20,7 @@ public class ListPrescriptionRequest implements PageableRequest<Prescription> {
 
   private Integer size = 10;
 
-  private String[] sortFields = new String[] { "startDate" };
+  private String[] sortFields = new String[] { "id" };
 
   private Boolean[] desc = new Boolean[] { false };
 
@@ -41,14 +41,4 @@ public class ListPrescriptionRequest implements PageableRequest<Prescription> {
     return new PrescriptionSpecification(this);
   }
 
-  @Override
-  public Pageable toPageable() {
-    if (sortFields != null && sortFields.length > 0) {
-      String sortBy = sortFields[0];
-      boolean isDescending = desc != null && desc.length > 0 && desc[0];
-      return PageRequest.of(
-          page, size, isDescending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending());
-    }
-    return PageRequest.of(page, size);
-  }
 }
