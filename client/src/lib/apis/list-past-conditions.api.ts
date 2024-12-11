@@ -27,8 +27,8 @@ export const listPastConditionsErrorResponseSchema = z.discriminatedUnion("type"
 export type ListPastConditionsErrorResponseSchema = z.infer<typeof listPastConditionsErrorResponseSchema>;
 
 export async function listPastConditionsApi(query: ListPastConditionsQuerySchema) {
-    const response = await apiClient.get("/past-conditions", query);
-    return listPastConditionsResponseSchema.parse(response.data);
+    const response = await apiClient.get<ListPastConditionsResponseSchema>("/past-conditions", query);
+    return response.data;
 }
 
 export function createListPastConditionsQueryOptions(
