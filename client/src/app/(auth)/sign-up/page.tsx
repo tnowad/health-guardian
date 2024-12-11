@@ -64,7 +64,10 @@ export default function PatientSignUpPage() {
           title: "Sign Up Success",
           description: data.message,
         });
-        router.push("/email-verification?email=" + values.email);
+        router.push(
+          "/email-verification?email=" +
+            new URLSearchParams({ email: values.email }).toString(),
+        );
       },
       onError: () => {
         toast({
@@ -72,7 +75,7 @@ export default function PatientSignUpPage() {
           description: "An error occurred while signing up.",
         });
       },
-    })
+    }),
   );
 
   return (
