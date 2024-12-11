@@ -33,7 +33,7 @@ function DeleteAllergyButton({ allergyId }: { allergyId: string }) {
 
   // Handle the deletion on confirmation
   const handleDelete = () => {
-    deleteMutation.mutate (undefined, {
+    deleteMutation.mutate(undefined, {
       onSuccess: () => {
         setDialogOpen(false); // Close dialog on success
         // Optionally trigger refetch or other actions after deletion
@@ -55,11 +55,14 @@ function DeleteAllergyButton({ allergyId }: { allergyId: string }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this allergy and remove your data from our system.
+              This action cannot be undone. This will permanently delete this
+              allergy and remove your data from our system.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDialogOpen(false)}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -68,16 +71,15 @@ function DeleteAllergyButton({ allergyId }: { allergyId: string }) {
   );
 }
 
-
 export default function AllergyScreen() {
   const currentUserInformationQuery = useSuspenseQuery(
-    createGetCurrentUserInformationQueryOptions()
+    createGetCurrentUserInformationQueryOptions(),
   );
 
   const listAllergiesQuery = useQuery(
     createListAllergiesQueryOptions({
       userId: currentUserInformationQuery.data?.userId,
-    })
+    }),
   );
   console.log(listAllergiesQuery.error);
 
@@ -107,7 +109,9 @@ export default function AllergyScreen() {
             <tr className="bg-gray-100">
               <th className="border border-gray-300 p-2">ID</th>
               <th className="border border-gray-300 p-2">Allergy Name</th>
-              <th className="border border-gray-300 p-2">Reaction Description</th>
+              <th className="border border-gray-300 p-2">
+                Reaction Description
+              </th>
               <th className="border border-gray-300 p-2">Severity</th>
               <th className="border border-gray-300 p-2">Action</th>
             </tr>
