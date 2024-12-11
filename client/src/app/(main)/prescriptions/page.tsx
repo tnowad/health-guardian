@@ -25,6 +25,14 @@ export default function ListPrescriptions() {
     );
   }
 
+  if (listPrescriptionsQuery.isError) {
+    return (
+      <div className="container mx-auto p-4 text-red-600">
+        Failed to load prescriptions. Please try again later.
+      </div>
+    );
+  }
+
   const prescriptions = listPrescriptionsQuery.data?.content ?? [];
 
   return (
