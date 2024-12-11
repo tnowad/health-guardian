@@ -32,11 +32,26 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useUploadFileMutation } from "@/lib/apis/upload-file.api";
 
-type UploadImageInputProps = {
+type UploadFileProps = {
   onChange: ({ id, url }: { id: string; url: string }) => void;
 };
-function UploadImageInput({ onChange }: UploadImageInputProps) {}
+function UploadFile({ onChange }: UploadFileProps) {
+  const uploadFileMutation = useUploadFileMutation();
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const data = await uploadFileMutation.mutateAsync({ file });
+    onChange(data);
+  };
+  return <Input type="file" onChange={handleFileChange} />;
+}
 
 export function CreateHouseholdForm() {
   const { toast } = useToast();
@@ -76,12 +91,6 @@ export function CreateHouseholdForm() {
     }),
   );
 
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
-  };
   return (
     <Card className="w-full mx-auto">
       <CardHeader>
@@ -107,6 +116,29 @@ export function CreateHouseholdForm() {
               )}
             />
 
+            <FormField
+              control={createHouseholdForm.control}
+              name="avatar"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Avatar</FormLabel>
+                  <FormControl>
+                    <UploadFile
+                      {...field}
+                      onChange={(value) => {
+                        field.onChange(value.id);
+                        setAvatarPreview(value.url);
+                      }}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Upload an image to represent your household.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="space-y-2">
               <Label htmlFor="avatar">Avatar</Label>
               <div className="flex items-center space-x-4">
@@ -117,12 +149,10 @@ export function CreateHouseholdForm() {
                   />
                   <AvatarFallback>AV</AvatarFallback>
                 </Avatar>
-                <Input
-                  id="avatar"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarChange}
-                  className="w-full"
+                <UploadFile
+                  onChange={(file) => {
+                    setAvatarPreview(file.url);
+                  }}
                 />
               </div>
             </div>
