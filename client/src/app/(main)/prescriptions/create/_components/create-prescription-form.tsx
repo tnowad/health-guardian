@@ -28,18 +28,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  CreatePrescriptionBodySchema,
   createPrescriptionBodySchema,
   useCreatePrescriptionMutation,
 } from "@/lib/apis/create-prescription.api";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 
 export function CreatePrescriptionForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const createPrescription = useCreatePrescriptionMutation();
+  const createPrescriptionMutation = useCreatePrescriptionMutation();
+  const currentUserInformationQuery = useSuspenseQuery(
+    createGetCurrentUserInformationQueryOptions(),
+  );
 
-  const form = useForm({
+  const createPrescriptionForm = useForm<CreatePrescriptionBodySchema>({
     resolver: zodResolver(createPrescriptionBodySchema),
     defaultValues: {
-      userId: "",
+      userId: currentUserInformationQuery.data?.userId,
       issuedBy: "",
       validUntil: "",
       issuedDate: new Date().toISOString().split("T")[0],
@@ -58,47 +63,29 @@ export function CreatePrescriptionForm() {
   });
 
   const { fields, append, remove } = useFieldArray({
-    control: form.control,
+    control: createPrescriptionForm.control,
     name: "items",
   });
 
-  const onSubmit = async (data) => {
-    setIsSubmitting(true);
-    try {
-      await createPrescription.mutateAsync(data);
-      form.reset();
-      // You can add a success message or redirect here
-    } catch (error) {
-      console.error("Error creating prescription:", error);
-      // You can add an error message here
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const onSubmit = createPrescriptionForm.handleSubmit((values) =>
+    createPrescriptionMutation.mutate(values, {
+      onSuccess() {
+        createPrescriptionForm.reset();
+      },
+      onError() {},
+    }),
+  );
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full mx-auto">
       <CardHeader>
         <CardTitle>Create New Prescription</CardTitle>
       </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+      <Form {...createPrescriptionForm}>
+        <form onSubmit={onSubmit}>
           <CardContent className="space-y-4">
             <FormField
-              control={form.control}
-              name="userId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>User ID</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
+              control={createPrescriptionForm.control}
               name="issuedBy"
               render={({ field }) => (
                 <FormItem>
@@ -111,7 +98,7 @@ export function CreatePrescriptionForm() {
               )}
             />
             <FormField
-              control={form.control}
+              control={createPrescriptionForm.control}
               name="validUntil"
               render={({ field }) => (
                 <FormItem>
@@ -124,7 +111,7 @@ export function CreatePrescriptionForm() {
               )}
             />
             <FormField
-              control={form.control}
+              control={createPrescriptionForm.control}
               name="issuedDate"
               render={({ field }) => (
                 <FormItem>
@@ -137,7 +124,7 @@ export function CreatePrescriptionForm() {
               )}
             />
             <FormField
-              control={form.control}
+              control={createPrescriptionForm.control}
               name="status"
               render={({ field }) => (
                 <FormItem>
@@ -165,7 +152,7 @@ export function CreatePrescriptionForm() {
             {fields.map((field, index) => (
               <div key={field.id} className="space-y-4 border p-4 rounded-md">
                 <FormField
-                  control={form.control}
+                  control={createPrescriptionForm.control}
                   name={`items.${index}.medicationName`}
                   render={({ field }) => (
                     <FormItem>
@@ -178,7 +165,7 @@ export function CreatePrescriptionForm() {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={createPrescriptionForm.control}
                   name={`items.${index}.dosage`}
                   render={({ field }) => (
                     <FormItem>
@@ -191,7 +178,7 @@ export function CreatePrescriptionForm() {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={createPrescriptionForm.control}
                   name={`items.${index}.frequency`}
                   render={({ field }) => (
                     <FormItem>
@@ -204,7 +191,7 @@ export function CreatePrescriptionForm() {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={createPrescriptionForm.control}
                   name={`items.${index}.startDate`}
                   render={({ field }) => (
                     <FormItem>
@@ -217,7 +204,7 @@ export function CreatePrescriptionForm() {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={createPrescriptionForm.control}
                   name={`items.${index}.endDate`}
                   render={({ field }) => (
                     <FormItem>
@@ -230,7 +217,7 @@ export function CreatePrescriptionForm() {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={createPrescriptionForm.control}
                   name={`items.${index}.status`}
                   render={({ field }) => (
                     <FormItem>
@@ -282,8 +269,13 @@ export function CreatePrescriptionForm() {
             </Button>
           </CardContent>
           <CardFooter>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Prescription"}
+            <Button
+              type="submit"
+              disabled={createPrescriptionMutation.isPending}
+            >
+              {createPrescriptionMutation.isPending
+                ? "Creating..."
+                : "Create Prescription"}
             </Button>
           </CardFooter>
         </form>

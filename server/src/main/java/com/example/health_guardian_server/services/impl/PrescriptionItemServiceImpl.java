@@ -47,8 +47,8 @@ public class PrescriptionItemServiceImpl implements PrescriptionItemService {
     var prescriptionItems = prescriptionItemRepository
         .findAllByPrescription(prescription);
     var prescriptionItemResponses = prescriptionItems.stream()
-      .map(prescriptionItemMapper::toPrescriptionItemResponse)
-      .toList();
+        .map(prescriptionItemMapper::toPrescriptionItemResponse)
+        .toList();
     log.info("Fetched {} visit summaries", prescriptionItems.size());
     return prescriptionItemResponses;
   }

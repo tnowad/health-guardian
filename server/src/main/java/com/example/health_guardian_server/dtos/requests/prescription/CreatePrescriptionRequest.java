@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -29,4 +31,7 @@ public class CreatePrescriptionRequest {
 
   @NotNull(message = "Prescription Status cannot be null")
   private PrescriptionStatus status;
+
+  @NotNull(message = "Prescription Items cannot be null")
+  private List<CreatePrescriptionItemRequest> items;
 }

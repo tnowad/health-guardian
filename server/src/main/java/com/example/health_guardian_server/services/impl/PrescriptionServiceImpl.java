@@ -5,9 +5,10 @@ import com.example.health_guardian_server.dtos.requests.prescription.ListPrescri
 import com.example.health_guardian_server.dtos.responses.prescription.PrescriptionResponse;
 import com.example.health_guardian_server.entities.Prescription;
 import com.example.health_guardian_server.entities.User;
-
+import com.example.health_guardian_server.mappers.PrescriptionItemMapper;
 import com.example.health_guardian_server.mappers.PrescriptionMapper;
 import com.example.health_guardian_server.repositories.*;
+import com.example.health_guardian_server.services.PrescriptionItemService;
 import com.example.health_guardian_server.services.PrescriptionService;
 import com.example.health_guardian_server.specifications.PrescriptionSpecification;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   private final UserRepository userRepository;
 
   private final PrescriptionMapper prescriptionMapper;
+  private final PrescriptionItemRepository prescriptionItemRepository;
+  private final PrescriptionItemMapper prescriptionItemMapper;
 
   @Override
   public Page<PrescriptionResponse> getAllPrescriptions(ListPrescriptionRequest request) {
@@ -55,6 +59,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   }
 
   @Override
+  @Transactional
   public Prescription createPrescription(CreatePrescriptionRequest request) {
     log.debug("Creating visit summary: {}", request);
     Optional<User> user = userRepository.findById(request.getUserId());
@@ -62,6 +67,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
       log.error("User not found with id: {}", request.getUserId());
       throw new RuntimeException("User not found with id: " + request.getUserId());
     }
+
     var prescription = prescriptionRepository.save(
         Prescription.builder()
             .user(user.get())
@@ -70,7 +76,18 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             .validUntil(request.getValidUntil())
             .status(request.getStatus())
             .build());
+
     prescriptionRepository.save(prescription);
+
+    var prescriptionItems = request.getItems().stream()
+        .map(prescriptionItemMapper::toPrescriptionItem)
+        .toList();
+
+    prescriptionItems.forEach(prescriptionItem -> {
+      prescriptionItem.setPrescription(prescription);
+      prescriptionItemRepository.save(prescriptionItem);
+    });
+
     log.info("Visit summary created with id: {}", prescription.getId());
     return prescription;
   }
