@@ -12,6 +12,7 @@ import { isAxiosError } from "axios";
 export const listHouseholdsQuerySchema = pageableRequestSchema.extend({
   ids: z.array(z.string().uuid()).optional(),
   headId: z.string().uuid().optional(),
+  memberId: z.string().uuid().optional(),
 });
 export type ListHouseholdsQuerySchema = z.infer<
   typeof listHouseholdsQuerySchema
@@ -31,8 +32,11 @@ export type ListHouseholdsErrorResponseSchema = z.infer<
 >;
 
 export async function listHouseholdsApi(query: ListHouseholdsQuerySchema) {
-  const response = await apiClient.get("/households", query);
-  return listHouseholdsResponseSchema.parse(response.data);
+  const response = await apiClient.get<ListHouseholdsResponseSchema>(
+    "/households",
+    query,
+  );
+  return response.data;
 }
 
 export function createListHouseholdsQueryOptions(
