@@ -19,13 +19,13 @@ import java.util.Date;
 public class ListVisitSummaryRequest
     implements PageableRequest<VisitSummary>, PageableWithIdsRequest<String> {
 
-  private Integer page;
+  private Integer page = 0;
 
-  private Integer size;
+  private Integer size = 10;
 
-  private String[] sortFields;
+  private String[] sortFields = new String[] { "id" };
 
-  private Boolean[] desc;
+  private Boolean[] desc = new Boolean[] { false };
 
   private String[] ids;
 

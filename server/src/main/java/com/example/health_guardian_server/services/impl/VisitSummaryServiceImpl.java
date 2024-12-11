@@ -31,12 +31,11 @@ public class VisitSummaryServiceImpl implements VisitSummaryService {
   private final VisitSummaryMapper visitSummaryMapper;
   private final UserRepository userRepository;
 
-
   @Override
   public Page<VisitSummaryResponse> getAllVisitSummaries(ListVisitSummaryRequest request) {
     log.debug("Fetching all visit summaries with request: {}", request);
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
-    VisitSummarySpecification specification = new VisitSummarySpecification((request);
+    VisitSummarySpecification specification = new VisitSummarySpecification((request));
 
     var visitSummaries =
       visitSummaryRepository
