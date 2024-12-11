@@ -103,8 +103,8 @@ const data = {
           url: "/family-history",
         },
         {
-          title: "Diagnosis Results",
-          url: "/diagnois-results",
+          title: "Diagnostic Reports",
+          url: "/diagnostic-reports",
         },
       ],
     },
