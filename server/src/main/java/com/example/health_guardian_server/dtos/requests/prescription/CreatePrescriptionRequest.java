@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
+import java.sql.Timestamp;
 import java.util.Date;
 import lombok.Data;
 
@@ -20,7 +21,7 @@ public class CreatePrescriptionRequest {
 
   @NotNull(message = "Issued Date cannot be null")
   @Past(message = "Issued Date must be a past date")
-  private Date issuedDate;
+  private Timestamp issuedDate;
 
   @NotNull(message = "Valid Until cannot be null")
   @Future(message = "Valid Until must be a future date")
