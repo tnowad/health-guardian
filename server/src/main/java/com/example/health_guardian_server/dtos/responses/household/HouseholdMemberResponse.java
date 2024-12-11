@@ -13,5 +13,6 @@ public class HouseholdMemberResponse {
   private String id;
   private String householdId;
   private String userId;
-  String name;
+  private String firstName;
+  private String lastName;
 }
