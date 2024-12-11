@@ -39,18 +39,10 @@ public class PrescriptionItemServiceImpl implements PrescriptionItemService {
   private final PrescriptionItemMapper prescriptionItemMapper;
 
   @Override
-  public List<PrescriptionItemResponse> getAllPrescriptionItems(ListPrescriptionItemRequest request) {
+  public Page<PrescriptionItemResponse> getAllPrescriptionItems(ListPrescriptionItemRequest request) {
     log.debug("Fetching all visit summaries with request: {}", request);
-    PrescriptionItemSpecification specification = new PrescriptionItemSpecification((request));
-
-    var prescription = prescriptionService.getPrescriptionById(request.getPrescriptionId());
-    var prescriptionItems = prescriptionItemRepository
-        .findAllByPrescription(prescription);
-    var prescriptionItemResponses = prescriptionItems.stream()
-        .map(prescriptionItemMapper::toPrescriptionItemResponse)
-        .toList();
-    log.info("Fetched {} visit summaries", prescriptionItems.size());
-    return prescriptionItemResponses;
+    return prescriptionItemRepository.findAll(request.toSpecification(), request.toPageable())
+        .map(prescriptionItemMapper::toPrescriptionItemResponse);
   }
 
   @Override

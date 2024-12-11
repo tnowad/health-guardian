@@ -11,7 +11,7 @@ import com.example.health_guardian_server.entities.PrescriptionItem;
 
 public interface PrescriptionItemService {
 
-  List<PrescriptionItemResponse> getAllPrescriptionItems(ListPrescriptionItemRequest request);
+  Page<PrescriptionItemResponse> getAllPrescriptionItems(ListPrescriptionItemRequest request);
 
   PrescriptionItem getPrescriptionItemById(String id);
 

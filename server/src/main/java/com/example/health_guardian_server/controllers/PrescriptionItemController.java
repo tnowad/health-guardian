@@ -8,6 +8,8 @@ import com.example.health_guardian_server.mappers.PrescriptionItemMapper;
 import com.example.health_guardian_server.services.PrescriptionItemService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +30,7 @@ public class PrescriptionItemController {
   private final PrescriptionItemMapper prescriptionItemMapper;
 
   @GetMapping
-  public ResponseEntity<List<PrescriptionItemResponse>> getAllPrescriptionItems(
+  public ResponseEntity<Page<PrescriptionItemResponse>> getAllPrescriptionItems(
       @ModelAttribute ListPrescriptionItemRequest request) {
     return new ResponseEntity<>(
         prescriptionItemService.getAllPrescriptionItems(request), HttpStatus.OK);
