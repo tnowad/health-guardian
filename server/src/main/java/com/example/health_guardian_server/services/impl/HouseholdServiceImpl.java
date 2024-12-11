@@ -4,9 +4,12 @@ import com.example.health_guardian_server.dtos.requests.household.CreateHousehol
 import com.example.health_guardian_server.dtos.requests.household.ListHouseholdsRequest;
 import com.example.health_guardian_server.dtos.responses.household.HouseholdResponse;
 import com.example.health_guardian_server.entities.Household;
+import com.example.health_guardian_server.entities.HouseholdMember;
 import com.example.health_guardian_server.mappers.HouseholdMapper;
+import com.example.health_guardian_server.repositories.HouseholdMemberRepository;
 import com.example.health_guardian_server.repositories.HouseholdRepository;
 import com.example.health_guardian_server.services.HouseholdService;
+import com.example.health_guardian_server.services.UserService;
 import com.example.health_guardian_server.specifications.HouseholdSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,8 @@ public class HouseholdServiceImpl implements HouseholdService {
 
   private final HouseholdRepository householdRepository;
   private final HouseholdMapper householdMapper;
+  private final HouseholdMemberRepository householdMemberRepository;
+  private final UserService userService;
 
   @Override
   public Page<HouseholdResponse> listHouseholds(ListHouseholdsRequest request) {
@@ -30,10 +35,9 @@ public class HouseholdServiceImpl implements HouseholdService {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     HouseholdSpecification specification = new HouseholdSpecification(request);
 
-    var households =
-        householdRepository
-            .findAll(specification, pageRequest)
-            .map(householdMapper::toHouseholdResponse);
+    var households = householdRepository
+        .findAll(specification, pageRequest)
+        .map(householdMapper::toHouseholdResponse);
 
     log.info("Fetched {} appointments", households.getTotalElements());
     return households;
@@ -44,6 +48,9 @@ public class HouseholdServiceImpl implements HouseholdService {
 
     log.debug("Creating household: {}", request);
     Household createdHousehold = householdRepository.save(householdMapper.toHousehold(request));
+    var headUser = userService.getUserById(request.getHeadId());
+    householdMemberRepository.save(
+        HouseholdMember.builder().household(createdHousehold).user(headUser).build());
     return householdMapper.toHouseholdResponse(createdHousehold);
   }
 
@@ -65,15 +72,14 @@ public class HouseholdServiceImpl implements HouseholdService {
   public HouseholdResponse updateHousehold(String householdId, CreateHouseholdRequest request) {
 
     log.debug("Updating household with id: {}", householdId);
-    Household household =
-        householdRepository
-            .findById(householdId)
-            .orElseThrow(
-                () -> {
-                  log.error("Household not found with id: {}", householdId);
-                  return new ResourceNotFoundException(
-                      "Household not found with id " + householdId);
-                });
+    Household household = householdRepository
+        .findById(householdId)
+        .orElseThrow(
+            () -> {
+              log.error("Household not found with id: {}", householdId);
+              return new ResourceNotFoundException(
+                  "Household not found with id " + householdId);
+            });
 
     // household.setHead(userRe.getReferenceById(request.getHeadId()));
 
@@ -86,15 +92,14 @@ public class HouseholdServiceImpl implements HouseholdService {
   public void deleteHousehold(String householdId) {
 
     log.debug("Deleting household with id: {}", householdId);
-    Household household =
-        householdRepository
-            .findById(householdId)
-            .orElseThrow(
-                () -> {
-                  log.error("Household not found with id: {}", householdId);
-                  return new ResourceNotFoundException(
-                      "Household not found with id " + householdId);
-                });
+    Household household = householdRepository
+        .findById(householdId)
+        .orElseThrow(
+            () -> {
+              log.error("Household not found with id: {}", householdId);
+              return new ResourceNotFoundException(
+                  "Household not found with id " + householdId);
+            });
 
     householdRepository.delete(household);
     log.info("Household deleted with id: {}", householdId);
