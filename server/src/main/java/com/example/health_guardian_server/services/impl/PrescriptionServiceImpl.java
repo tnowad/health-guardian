@@ -5,6 +5,7 @@ import com.example.health_guardian_server.dtos.requests.prescription.ListPrescri
 import com.example.health_guardian_server.dtos.responses.prescription.PrescriptionResponse;
 import com.example.health_guardian_server.entities.Prescription;
 import com.example.health_guardian_server.entities.User;
+
 import com.example.health_guardian_server.mappers.PrescriptionMapper;
 import com.example.health_guardian_server.repositories.*;
 import com.example.health_guardian_server.services.PrescriptionService;
@@ -51,6 +52,12 @@ public class PrescriptionServiceImpl implements PrescriptionService {
               return new ResourceNotFoundException("Prescription not found with id " + id);
             });
     return prescription;
+  }
+
+  @Override
+  public Prescription getPrescriptionById(String id) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getPrescriptionById'");
   }
 
   @Override

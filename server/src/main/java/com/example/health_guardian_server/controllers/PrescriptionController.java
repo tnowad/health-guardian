@@ -50,4 +50,5 @@ public class PrescriptionController {
         prescriptionMapper.toPrescriptionResponse(prescription);
     return new ResponseEntity<>(prescriptionResponse, HttpStatus.OK);
   }
+
 }
