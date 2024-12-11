@@ -33,10 +33,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     PrescriptionSpecification specification = new PrescriptionSpecification((request));
 
-    var prescriptions =
-        prescriptionRepository
-            .findAll(specification, pageRequest)
-            .map(prescriptionMapper::toPrescriptionResponse);
+    var prescriptions = prescriptionRepository
+        .findAll(specification, pageRequest)
+        .map(prescriptionMapper::toPrescriptionResponse);
 
     log.info("Fetched {} visit summaries", prescriptions.getTotalElements());
     return prescriptions;
@@ -44,8 +43,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
   @Override
   public Prescription getPrescriptionById(String id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getPrescriptionById'");
+    var prescription = prescriptionRepository
+        .findById(id)
+        .orElseThrow(
+            () -> {
+              log.error("Prescription not found with id: {}", id);
+              return new ResourceNotFoundException("Prescription not found with id " + id);
+            });
+    return prescription;
   }
 
   @Override
@@ -56,15 +61,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
       log.error("User not found with id: {}", request.getUserId());
       throw new RuntimeException("User not found with id: " + request.getUserId());
     }
-    var prescription =
-        prescriptionRepository.save(
-            Prescription.builder()
-                .user(user.get())
-                .issuedBy(request.getIssuedBy())
-                .issuedDate(request.getIssuedDate())
-                .validUntil(request.getValidUntil())
-                .status(request.getStatus())
-                .build());
+    var prescription = prescriptionRepository.save(
+        Prescription.builder()
+            .user(user.get())
+            .issuedBy(request.getIssuedBy())
+            .issuedDate(request.getIssuedDate())
+            .validUntil(request.getValidUntil())
+            .status(request.getStatus())
+            .build());
     prescriptionRepository.save(prescription);
     log.info("Visit summary created with id: {}", prescription.getId());
     return prescription;
@@ -73,14 +77,13 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   @Override
   public void deletePrescription(String id) {
     log.debug("Deleting household with id: {}", id);
-    Prescription prescription =
-        prescriptionRepository
-            .findById(id)
-            .orElseThrow(
-                () -> {
-                  log.error("Prescription not found with id: {}", id);
-                  return new ResourceNotFoundException("Prescription not found with id " + id);
-                });
+    Prescription prescription = prescriptionRepository
+        .findById(id)
+        .orElseThrow(
+            () -> {
+              log.error("Prescription not found with id: {}", id);
+              return new ResourceNotFoundException("Prescription not found with id " + id);
+            });
 
     prescriptionRepository.delete(prescription);
     log.info("Prescription deleted with id: {}", id);
@@ -89,14 +92,13 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   @Override
   public Prescription updatePrescription(String prescriptionId, CreatePrescriptionRequest request) {
     log.debug("Updating visit summary with id: {}", prescriptionId);
-    Prescription prescription =
-        prescriptionRepository
-            .findById(prescriptionId)
-            .orElseThrow(
-                () -> {
-                  log.error("Prescription not found with id: {}", prescriptionId);
-                  return new RuntimeException("Prescription not found with id: " + prescriptionId);
-                });
+    Prescription prescription = prescriptionRepository
+        .findById(prescriptionId)
+        .orElseThrow(
+            () -> {
+              log.error("Prescription not found with id: {}", prescriptionId);
+              return new RuntimeException("Prescription not found with id: " + prescriptionId);
+            });
     prescriptionMapper.toPrescription(request);
     return prescriptionRepository.save(prescription);
   }

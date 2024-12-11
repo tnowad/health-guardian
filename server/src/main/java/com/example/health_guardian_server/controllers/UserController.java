@@ -10,7 +10,6 @@ import com.example.health_guardian_server.dtos.requests.user.UpdateUserRequest;
 import com.example.health_guardian_server.dtos.responses.user.CurrentUserInfomationResponse;
 import com.example.health_guardian_server.dtos.responses.user.UserResponse;
 import com.example.health_guardian_server.exceptions.file.FileException;
-import com.example.health_guardian_server.mappers.UserMapper;
 import com.example.health_guardian_server.services.MinioClientService;
 import com.example.health_guardian_server.services.UserService;
 import java.io.File;
@@ -43,7 +42,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
   UserService userService;
   MinioClientService minioClientService;
-  UserMapper userMapper;
 
   @GetMapping
   public ResponseEntity<Page<UserResponse>> listUsers(@ModelAttribute ListUsersRequest request) {
