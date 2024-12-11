@@ -2,15 +2,14 @@ package com.example.health_guardian_server.entities;
 
 import com.example.health_guardian_server.entities.enums.GenderType;
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "users")
@@ -28,11 +27,10 @@ public class User {
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String email;
 
-  @Column
-  private String avatar;
+  @Column private String avatar;
 
   @Column(name = "first_name")
   private String firstName;
@@ -47,8 +45,7 @@ public class User {
   @Enumerated(EnumType.STRING)
   private GenderType gender;
 
-  @Column
-  private String address;
+  @Column private String address;
 
   @CreatedDate
   @Column(nullable = false, updatable = false)

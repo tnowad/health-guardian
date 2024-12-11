@@ -1,4 +1,4 @@
-package com.example.health_guardian_server.dtos.requests.pass_condition;
+package com.example.health_guardian_server.dtos.requests.past_condition;
 
 import com.example.health_guardian_server.dtos.requests.PageableRequest;
 import com.example.health_guardian_server.dtos.requests.PageableWithIdsRequest;

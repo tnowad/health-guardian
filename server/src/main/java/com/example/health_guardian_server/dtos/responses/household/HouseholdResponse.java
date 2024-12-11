@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class HouseholdResponse {
   private String id;
   private String headId;
+  private String name;
+  private String avatar;
 }

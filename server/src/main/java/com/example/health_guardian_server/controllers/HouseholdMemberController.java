@@ -2,6 +2,7 @@ package com.example.health_guardian_server.controllers;
 
 import com.example.health_guardian_server.dtos.requests.household.CreateHouseholdMemberRequest;
 import com.example.health_guardian_server.dtos.requests.household.ListHouseholdMembersRequest;
+import com.example.health_guardian_server.dtos.responses.SimpleResponse;
 import com.example.health_guardian_server.dtos.responses.household.HouseholdMemberResponse;
 import com.example.health_guardian_server.services.HouseholdMemberService;
 import lombok.RequiredArgsConstructor;
@@ -32,10 +33,11 @@ public class HouseholdMemberController {
   }
 
   @PostMapping
-  public ResponseEntity<HouseholdMemberResponse> createHouseholdMember(
+  public ResponseEntity<SimpleResponse> createHouseholdMember(
       @RequestBody CreateHouseholdMemberRequest request) {
     HouseholdMemberResponse response = householdMemberService.createHouseholdMember(request);
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(
+        SimpleResponse.builder().id(response.getId()).message("Household member created").build());
   }
 
   @GetMapping("/{householdMemberId}")
@@ -48,7 +50,8 @@ public class HouseholdMemberController {
   @PutMapping("/{householdMemberId}")
   public ResponseEntity<HouseholdMemberResponse> updateHouseholdMember(
       @PathVariable String householdMemberId, @RequestBody CreateHouseholdMemberRequest request) {
-    HouseholdMemberResponse response = householdMemberService.updateHouseholdMember(householdMemberId, request);
+    HouseholdMemberResponse response =
+        householdMemberService.updateHouseholdMember(householdMemberId, request);
     return ResponseEntity.ok(response);
   }
 

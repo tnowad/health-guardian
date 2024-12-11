@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.mappers;
 
-import com.example.health_guardian_server.dtos.requests.pass_condition.CreatePastConditionRequest;
-import com.example.health_guardian_server.dtos.responses.pass_condition.PastConditionResponse;
+import com.example.health_guardian_server.dtos.requests.past_condition.CreatePastConditionRequest;
+import com.example.health_guardian_server.dtos.responses.past_condition.PastConditionResponse;
 import com.example.health_guardian_server.entities.PastCondition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

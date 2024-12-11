@@ -1,8 +1,8 @@
 package com.example.health_guardian_server.services.impl;
 
-import com.example.health_guardian_server.dtos.requests.pass_condition.CreatePastConditionRequest;
-import com.example.health_guardian_server.dtos.requests.pass_condition.ListPastConditionsRequest;
-import com.example.health_guardian_server.dtos.responses.pass_condition.PastConditionResponse;
+import com.example.health_guardian_server.dtos.requests.past_condition.CreatePastConditionRequest;
+import com.example.health_guardian_server.dtos.requests.past_condition.ListPastConditionsRequest;
+import com.example.health_guardian_server.dtos.responses.past_condition.PastConditionResponse;
 import com.example.health_guardian_server.mappers.PastConditionMapper;
 import com.example.health_guardian_server.repositories.PastConditionRepository;
 import com.example.health_guardian_server.repositories.UserRepository;
