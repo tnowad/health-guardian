@@ -10,8 +10,8 @@ import { queryOptions } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 
 export const listPastConditionsQuerySchema = pageableRequestSchema.extend({
-    name: z.string().optional(),
-    location: z.string().optional(),
+    ids: z.array(z.string().uuid()).optional(),
+    userId: z.string().uuid()
 });
 
 export type ListPastConditionsQuerySchema = z.infer<typeof listPastConditionsQuerySchema>;
@@ -36,10 +36,7 @@ export function createListPastConditionsQueryOptions(
 ) {
     const queryKey = ["past-conditions", query] as const;
     return queryOptions<
-        ListPastConditionsResponseSchema,
-        ListPastConditionsErrorResponseSchema,
-        ListPastConditionsQuerySchema,
-        typeof queryKey
+        ListPastConditionsResponseSchema
     >({
         queryKey,
         queryFn: () => listPastConditionsApi(listPastConditionsQuerySchema.parse(query)),
