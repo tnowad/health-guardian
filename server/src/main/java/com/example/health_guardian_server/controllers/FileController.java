@@ -1,3 +1,4 @@
+
 package com.example.health_guardian_server.controllers;
 
 import static com.example.health_guardian_server.exceptions.file.FileErrorCode.CAN_NOT_STORE_FILE;
@@ -23,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/files")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FileController {
@@ -36,15 +37,23 @@ public class FileController {
     String contentType = avatar.getContentType();
     String fileName = generateFileName(contentType.split("/")[0], contentType.split("/")[1]);
     try {
+      log.info("Starting file conversion for: {}", avatar.getOriginalFilename());
       File file = convertMultipartFileToFile(avatar, fileName);
+      log.info("File converted to local File object: {}", file.getPath());
+
       minioClientService.storeObject(file, fileName, contentType, "files");
+      log.info("File stored in Minio successfully with name: {}", fileName);
+
       Files.delete(file.toPath());
-      log.info("File uploaded successfully: {}", file.toPath());
+      log.info("Local file deleted after successful upload: {}", file.getPath());
     } catch (Exception e) {
+      log.error("Failed to store file: {} - Error: {}", avatar.getOriginalFilename(), e.getMessage());
       throw new FileException(CAN_NOT_STORE_FILE, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     var url = minioClientService.getObjectUrl(fileName, "files");
+    log.info("Generated URL for the uploaded file: {}", url);
+
     return ResponseEntity.ok(FileUploadResponse.builder().id(fileName).url(url).build());
   }
 }
