@@ -17,4 +17,6 @@ public interface HouseholdMemberService {
       String householdMemberId, CreateHouseholdMemberRequest request);
 
   void deleteHouseholdMember(String householdMemberId);
+
+    void deleteHouseholdMember(String householdMemberId, String householdId);
 }

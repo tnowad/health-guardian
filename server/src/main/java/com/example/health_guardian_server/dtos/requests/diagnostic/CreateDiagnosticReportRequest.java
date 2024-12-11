@@ -10,5 +10,5 @@ public class CreateDiagnosticReportRequest {
   private Date reportDate;
   private String reportType;
   private String summary;
-  private String note;
+  private String notes;
 }

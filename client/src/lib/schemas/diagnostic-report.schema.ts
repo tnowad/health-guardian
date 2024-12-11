@@ -16,4 +16,3 @@ export const diagnosticReportSchema = z.object({
 });
 
 export type DiagnosticReportSchema = z.infer<typeof diagnosticReportSchema>;
-
