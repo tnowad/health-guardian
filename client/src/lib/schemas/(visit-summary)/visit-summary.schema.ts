@@ -11,6 +11,7 @@ export const visitSummarySchema = z.object({
     "SURGERY",
     "THERAPY",
   ]),
+  summary: z.string(),
   notes: z.string(),
 });
 export type VisitSummarySchema = z.infer<typeof visitSummarySchema>;

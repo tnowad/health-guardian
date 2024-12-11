@@ -19,13 +19,13 @@ import { createListAllergiesQueryOptions } from "@/lib/apis/list-allergies.api";
 
 export default function AllergyScreen() {
   const currentUserInformationQuery = useSuspenseQuery(
-    createGetCurrentUserInformationQueryOptions(),
+    createGetCurrentUserInformationQueryOptions()
   );
 
   const listAllergiesQuery = useQuery(
     createListAllergiesQueryOptions({
       userId: currentUserInformationQuery.data?.userId,
-    }),
+    })
   );
   console.log(listAllergiesQuery.error);
 
