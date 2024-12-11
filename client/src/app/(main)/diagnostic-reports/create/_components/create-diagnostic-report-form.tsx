@@ -41,7 +41,7 @@ export function CreateDiagnosticReportForm() {
   const { toast } = useToast();
   const router = useRouter();
   const currentUserInformationQuery = useSuspenseQuery(
-    createGetCurrentUserInformationQueryOptions(),
+    createGetCurrentUserInformationQueryOptions()
   );
 
   const createDiagnosticReportMutation = useCreateDiagnosticReportMutation();
@@ -72,7 +72,7 @@ export function CreateDiagnosticReportForm() {
             "An error occurred while creating your diagnostic report",
         });
       },
-    }),
+    })
   );
 
   return (

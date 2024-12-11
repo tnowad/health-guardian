@@ -4,6 +4,7 @@ import com.example.health_guardian_server.dtos.requests.diagnostic.CreateDiagnos
 import com.example.health_guardian_server.dtos.requests.diagnostic.ListDiagnosticReportRequest;
 import com.example.health_guardian_server.dtos.responses.diagnostic.DiagnosticReportResponse;
 import com.example.health_guardian_server.entities.DiagnosticReport;
+import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.mappers.DiagnosticReportMapper;
 import com.example.health_guardian_server.repositories.DiagnosticReportRepository;
 import com.example.health_guardian_server.repositories.UserRepository;
@@ -47,6 +48,12 @@ public class DiagnosticReportServiceImpl implements DiagnosticReportService {
   public DiagnosticReportResponse createDiagnosticReport(CreateDiagnosticReportRequest request) {
     log.debug("Creating diagnostic report with request: {}", request);
     var diagnosticReport = diagnosticReportMapper.toDiagnosticReport(request);
+    User user = userRepository.findById(request.getUserId())
+      .orElseThrow(() -> {
+      log.error("User not found with id: {}", request.getUserId());
+      return new ResourceNotFoundException("User not found with id: " + request.getUserId());
+    });
+    diagnosticReport.setUser(user);
     var savedDiagnosticReport = diagnosticReportRepository.save(diagnosticReport);
     log.info("Created diagnostic report with id: {}", savedDiagnosticReport.getId());
     return diagnosticReportMapper.toResponse(savedDiagnosticReport);
