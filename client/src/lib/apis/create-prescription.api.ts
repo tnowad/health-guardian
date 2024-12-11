@@ -4,10 +4,20 @@ import { isAxiosError } from "axios";
 import { z } from "zod";
 import { apiClient } from "../client";
 import { prescriptionSchema } from "../schemas/prescription.schema";
+import { prescriptionItemSchema } from "../schemas/prescription-item.schema";
 
-export const createPrescriptionBodySchema = prescriptionSchema.omit({
-  id: true,
-});
+export const createPrescriptionBodySchema = prescriptionSchema
+  .omit({
+    id: true,
+  })
+  .extend({
+    items: z.array(
+      prescriptionItemSchema.omit({
+        id: true,
+        prescriptionId: true,
+      }),
+    ),
+  });
 
 export type CreatePrescriptionBodySchema = z.infer<
   typeof createPrescriptionBodySchema
@@ -20,11 +30,11 @@ export type CreatePrescriptionResponseSchema = z.infer<
 >;
 
 export async function createPrescriptionApi(
-  body: CreatePrescriptionBodySchema
+  body: CreatePrescriptionBodySchema,
 ): Promise<CreatePrescriptionResponseSchema> {
   const response = await apiClient.post<CreatePrescriptionResponseSchema>(
     `/prescriptions`,
-    body
+    body,
   );
   return createPrescriptionResponseSchema.parse(response.data);
 }

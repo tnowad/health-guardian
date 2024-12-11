@@ -11,10 +11,11 @@ import { isAxiosError } from "axios";
 
 export const listAllergiesQuerySchema = pageableRequestSchema.extend({
   ids: z.array(z.string().uuid()).optional(),
-  userId: z.string().uuid().optional(),
-  allergyName: z.string().optional(),
-  severity: z.string().optional(),
-  reactionDescription: z.string().optional(),
+  userId: z.string().uuid(), 
+    vaccinationDate: z.string().datetime().optional(), 
+    vaccineName: z.string().optional(), 
+    batchNumber: z.string().optional(), 
+    notes: z.string().optional(), 
 });
 
 export type ListAllergiesQuerySchema = z.infer<typeof listAllergiesQuerySchema>;

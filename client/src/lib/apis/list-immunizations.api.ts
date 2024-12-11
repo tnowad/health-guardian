@@ -10,8 +10,9 @@ import { queryOptions } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 
 export const listImmunizationsQuerySchema = pageableRequestSchema.extend({
-    name: z.string().optional(),
-    location: z.string().optional(),
+    userId : z.string().uuid().optional(),
+    ids: z.array(z.string().uuid()).optional(),
+    immunizationName: z.string().optional()
 });
 
 export type ListImmunizationsQuerySchema = z.infer<typeof listImmunizationsQuerySchema>;
@@ -27,8 +28,8 @@ export const listImmunizationsErrorResponseSchema = z.discriminatedUnion("type",
 export type ListImmunizationsErrorResponseSchema = z.infer<typeof listImmunizationsErrorResponseSchema>;
 
 export async function listImmunizationsApi(query: ListImmunizationsQuerySchema) {
-    const response = await apiClient.get("/immunizations", query);
-    return listImmunizationsResponseSchema.parse(response.data);
+    const response = await apiClient.get<ListImmunizationsResponseSchema>("/immunizations", query);
+    return response.data;
 }
 
 export function createListImmunizationsQueryOptions(
@@ -36,10 +37,7 @@ export function createListImmunizationsQueryOptions(
 ) {
     const queryKey = ["immunizations", query] as const;
     return queryOptions<
-        ListImmunizationsResponseSchema,
-        ListImmunizationsErrorResponseSchema,
-        ListImmunizationsQuerySchema,
-        typeof queryKey
+        ListImmunizationsResponseSchema
     >({
         queryKey,
         queryFn: () => listImmunizationsApi(listImmunizationsQuerySchema.parse(query)),
