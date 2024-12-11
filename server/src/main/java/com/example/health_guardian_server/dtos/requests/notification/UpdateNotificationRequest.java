@@ -1,18 +1,12 @@
-package com.example.health_guardian_server.dtos.responses.notification;
+package com.example.health_guardian_server.dtos.requests.notification;
 
 import com.example.health_guardian_server.entities.enums.NotificationType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Builder
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class NotificationResponse {
+public class UpdateNotificationRequest {
   private String id;
   private String userId;
   private NotificationType notificationType;

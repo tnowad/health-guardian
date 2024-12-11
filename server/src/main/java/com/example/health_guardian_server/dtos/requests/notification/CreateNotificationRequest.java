@@ -1,3 +1,14 @@
 package com.example.health_guardian_server.dtos.requests.notification;
 
-public class CreateNotificationRequest {}
+import com.example.health_guardian_server.entities.enums.NotificationType;
+import lombok.Data;
+
+import java.util.Date;
+
+@Data
+public class CreateNotificationRequest {
+  private String userId;
+  private NotificationType notificationType;
+  private Date notificationDate;
+  private boolean readStatus;
+}
