@@ -24,6 +24,7 @@ export default function HouseholdScreen() {
   const listHouseholdMembersQuery = useQuery(
     createListHouseholdMembersQueryOptions({
       memberId: currentUserInformationQuery.data?.userId,
+      size: 100,
     }),
   );
 

@@ -23,6 +23,10 @@ public class HouseholdMemberSpecification implements Specification<HouseholdMemb
           criteriaBuilder.equal(root.get("household").get("id"), request.getHouseholdId()));
     }
 
+    if (request.getMemberId() != null && !request.getMemberId().isEmpty()) {
+      predicates.add(criteriaBuilder.equal(root.get("user").get("id"), request.getMemberId()));
+    }
+
     if (request.getUserId() != null && !request.getUserId().isEmpty()) {
       predicates.add(criteriaBuilder.equal(root.get("user").get("id"), request.getUserId()));
     }

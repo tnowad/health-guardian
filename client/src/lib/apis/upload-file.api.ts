@@ -11,7 +11,7 @@ export const uploadFileBodySchema = z.object({
 export type UploadFileBodySchema = z.infer<typeof uploadFileBodySchema>;
 
 export const uploadFileResponseSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   url: z.string(),
 });
 

@@ -13,10 +13,14 @@ import com.example.health_guardian_server.services.UserService;
 import com.example.health_guardian_server.specifications.HouseholdSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -32,11 +36,9 @@ public class HouseholdServiceImpl implements HouseholdService {
   public Page<HouseholdResponse> listHouseholds(ListHouseholdsRequest request) {
 
     log.debug("Fetching all appointments with request: {}", request);
-    PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
-    HouseholdSpecification specification = new HouseholdSpecification(request);
 
     var households = householdRepository
-        .findAll(specification, pageRequest)
+        .findAll(request.toSpecification(), request.toPageable())
         .map(householdMapper::toHouseholdResponse);
 
     log.info("Fetched {} appointments", households.getTotalElements());
@@ -44,13 +46,24 @@ public class HouseholdServiceImpl implements HouseholdService {
   }
 
   @Override
+  @Transactional
   public HouseholdResponse createHousehold(CreateHouseholdRequest request) {
+    log.debug("Creating household with request: {}", request);
 
-    log.debug("Creating household: {}", request);
-    Household createdHousehold = householdRepository.save(householdMapper.toHousehold(request));
-    var headUser = userService.getUserById(request.getHeadId());
-    householdMemberRepository.save(
-        HouseholdMember.builder().household(createdHousehold).user(headUser).build());
+    log.debug("Mapping request to Household entity...");
+    Household createdHousehold = householdMapper.toHousehold(request);
+
+    log.debug("Setting household members with head user ID: {}", request.getHeadId());
+    createdHousehold.setHouseholdMembers(
+        List.of(HouseholdMember.builder()
+            .household(createdHousehold)
+            .user(userService.getUserById(request.getHeadId()))
+            .build()));
+
+    log.debug("Saving household to the repository...");
+    createdHousehold = householdRepository.save(createdHousehold);
+
+    log.debug("Mapping created Household entity to response...");
     return householdMapper.toHouseholdResponse(createdHousehold);
   }
 

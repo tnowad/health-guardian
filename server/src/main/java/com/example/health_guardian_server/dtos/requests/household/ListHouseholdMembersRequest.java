@@ -24,6 +24,8 @@ public class ListHouseholdMembersRequest
 
   private String userId;
 
+  private String memberId;
+
   @Override
   public Specification<HouseholdMember> toSpecification() {
     return new HouseholdMemberSpecification(this);
