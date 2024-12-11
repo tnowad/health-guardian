@@ -28,7 +28,7 @@ export async function updateSurgeryApi(
     `/surgeries/${body.id}`,
     body,
   );
-  return updateSurgeryResponseSchema.parse(response.data);
+  return response.data;
 }
 
 export function useUpdateSurgeryMutation() {
@@ -41,11 +41,11 @@ export function useUpdateSurgeryMutation() {
     UpdateSurgeryBodySchema
   >({
     mutationKey,
-    mutationFn: (body) =>
-      updateSurgeryApi(updateSurgeryBodySchema.parse(body)),
+    mutationFn: (body) => updateSurgeryApi(updateSurgeryBodySchema.parse(body)),
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["surgeries"] });
     },
     throwOnError: isAxiosError,
   });
 }
+
