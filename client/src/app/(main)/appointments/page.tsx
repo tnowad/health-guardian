@@ -46,7 +46,6 @@ import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-curr
 import { createListAppointmentsQueryOptions } from "@/lib/apis/(appointment)/list-appointment.api";
 
 export default function AppointmentsScreen() {
-  //   const [appointments, setAppointments] = useState<AppointmentSchema[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAppointment, setEditingAppointment] =
     useState<AppointmentSchema | null>(null);
@@ -90,6 +89,13 @@ export default function AppointmentsScreen() {
       userId: "",
     });
     setIsModalOpen(true);
+  };
+
+  const handleRemoveAppointment = (appointmentId: string) => {
+    const updatedAppointments = appointments.filter(
+      (app) => app.id !== appointmentId
+    );
+    setAppointments(updatedAppointments);
   };
 
   const handleSaveAppointment = () => {
@@ -159,13 +165,20 @@ export default function AppointmentsScreen() {
                     </Badge>
                   </TableCell>
                   <TableCell>{appointment.notes}</TableCell>
-                  <TableCell>
+                  <TableCell className="flex space-x-2">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleEditAppointment(appointment)}
                     >
                       Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRemoveAppointment(appointment.id)}
+                    >
+                      Remove
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -203,7 +216,7 @@ export default function AppointmentsScreen() {
                         )}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0 z-20">
                       <Calendar
                         mode="single"
                         selected={
@@ -261,19 +274,20 @@ export default function AppointmentsScreen() {
                   </Label>
                   <Select
                     value={newAppointment.status}
-                    onValueChange={(value: AppointmentSchema["status"]) =>
-                      setNewAppointment({ ...newAppointment, status: value })
+                    onValueChange={(value) =>
+                      setNewAppointment({
+                        ...newAppointment,
+                        status: value as AppointmentSchema["status"],
+                      })
                     }
                   >
                     <SelectTrigger className="col-span-3">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      {["SCHEDULED", "COMPLETED", "CANCELED"].map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {status}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="SCHEDULED">Scheduled</SelectItem>
+                      <SelectItem value="COMPLETED">Completed</SelectItem>
+                      <SelectItem value="CANCELED">Canceled</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
