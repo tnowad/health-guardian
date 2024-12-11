@@ -27,12 +27,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useMemo } from "react";
+import { createGetHouseholdDetailQueryOptions } from "@/lib/apis/get-household-detail.api";
+import { useToast } from "@/hooks/use-toast";
 type HouseholdDetailsCardProps = {
   householdId: string;
 };
 export function HouseholdDetailsCard({
   householdId,
 }: HouseholdDetailsCardProps) {
+  const { toast } = useToast();
   const currentUserInformationQuery = useSuspenseQuery(
     createGetCurrentUserInformationQueryOptions(),
   );
@@ -41,6 +44,10 @@ export function HouseholdDetailsCard({
     createListHouseholdMembersQueryOptions({
       householdId,
     }),
+  );
+
+  const getHouseholdDetails = useQuery(
+    createGetHouseholdDetailQueryOptions(householdId),
   );
 
   const listUsersQuery = useQuery(
@@ -63,9 +70,25 @@ export function HouseholdDetailsCard({
   return (
     <Card>
       <CardHeader className="col-end-2">
-        <CardTitle>My Households</CardTitle>
-        <Button asChild>
-          <Link href={`/households-member`}>Add new member</Link>
+        <CardTitle>
+          {getHouseholdDetails.data?.name ?? "Household Details"}
+        </CardTitle>
+
+        <Button>
+          <Link href={`/households/${householdId}/edit`}>Edit</Link>
+        </Button>
+        <Button
+          onClick={() => {
+            window.navigator.clipboard.writeText(
+              "http://localhost:3000/households/" + householdId + "/join",
+            );
+            toast({
+              title: "Link copied",
+              description: "The link has been copied to your clipboard",
+            });
+          }}
+        >
+          Invite Member
         </Button>
       </CardHeader>
       <CardContent>
