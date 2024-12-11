@@ -55,12 +55,6 @@ public class PrescriptionServiceImpl implements PrescriptionService {
   }
 
   @Override
-  public Prescription getPrescriptionById(String id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getPrescriptionById'");
-  }
-
-  @Override
   public Prescription createPrescription(CreatePrescriptionRequest request) {
     log.debug("Creating visit summary: {}", request);
     Optional<User> user = userRepository.findById(request.getUserId());
