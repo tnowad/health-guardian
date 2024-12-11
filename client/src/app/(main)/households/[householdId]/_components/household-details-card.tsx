@@ -60,12 +60,21 @@ export function HouseholdDetailsCard({
 
   const householdMembers = useMemo(() => {
     return (
-      listUsersQuery.data?.content.map((user) => ({
-        id: user.id,
-        name: user.firstName + " " + user.lastName,
-      })) ?? []
+      listHouseholdMembersQuery.data?.content.map((householdMember) => {
+        const user = listUsersQuery.data?.content.find(
+          (user) => user.id === householdMember.userId,
+        );
+        return {
+          id: householdMember.id,
+          name:
+            user?.firstName || user?.lastName
+              ? `${user?.firstName} ${user?.lastName}`
+              : "Unknown",
+          email: user?.email,
+        };
+      }) ?? []
     );
-  }, [listUsersQuery.data]);
+  }, [listHouseholdMembersQuery.data?.content, listUsersQuery.data?.content]);
 
   return (
     <Card>
@@ -96,24 +105,25 @@ export function HouseholdDetailsCard({
           <TableHeader>
             <TableRow>
               <TableHead className="">Name</TableHead>
+              <TableHead className="">Email</TableHead>
               <TableHead>Actions</TableHead>
-              <TableHead>Kick</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {householdMembers.map((householdMember) => (
               <TableRow key={householdMember.id}>
                 <TableCell>{householdMember.name}</TableCell>
+                <TableCell>{householdMember.email}</TableCell>
                 <TableCell>
                   <Button asChild>
                     <Link href={`/households/${householdMember.id}`}>View</Link>
                   </Button>
-                </TableCell>
-                <TableCell>
+
                   <Button asChild>
                     <Link href={`/households/${householdMember.id}`}>Kick</Link>
                   </Button>
                 </TableCell>
+                <TableCell></TableCell>
               </TableRow>
             ))}
           </TableBody>

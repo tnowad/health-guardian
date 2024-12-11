@@ -9,5 +9,6 @@ public class UserResponse {
   String id;
   String email;
   String avatar;
-  String name;
+  String firstName;
+  String lastName;
 }
