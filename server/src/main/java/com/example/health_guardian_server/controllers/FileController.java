@@ -32,7 +32,7 @@ public class FileController {
 
   @PostMapping("/upload")
   public ResponseEntity<FileUploadResponse> uploadAvatar(
-      @RequestPart("avatar") MultipartFile avatar) {
+      @RequestPart("file") MultipartFile avatar) {
     String contentType = avatar.getContentType();
     String fileName = generateFileName(contentType.split("/")[0], contentType.split("/")[1]);
     try {
