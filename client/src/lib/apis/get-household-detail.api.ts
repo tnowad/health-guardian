@@ -2,11 +2,9 @@ import { queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../client";
 import { unauthorizedResponseSchema } from "../schemas/error.schema";
+import { householdSchema } from "../schemas/household.schema";
 
-export const getHouseholdDetailResponseSchema = z.object({
-  id: z.string().uuid(),
-  head: z.string().uuid(),
-});
+export const getHouseholdDetailResponseSchema = householdSchema;
 
 export type GetHouseholdDetailResponseSchema = z.infer<
   typeof getHouseholdDetailResponseSchema
@@ -27,17 +25,13 @@ export async function getHouseholdDetailApi(
   const response = await apiClient.get<GetHouseholdDetailResponseSchema>(
     `/households/${id}`,
   );
-  return getHouseholdDetailResponseSchema.parse(response.data);
+  return response.data;
 }
 
-export function useGetHouseholdDetailQuery(id: string) {
+export function createGetHouseholdDetailQueryOptions(id: string) {
   const queryKey = ["household-detail", id] as const;
-  return queryOptions<
-    GetHouseholdDetailResponseSchema,
-    GetHouseholdDetailErrorResponseSchema
-  >({
+  return queryOptions<GetHouseholdDetailResponseSchema>({
     queryKey,
-    enabled: !!id,
     queryFn: () => getHouseholdDetailApi(id),
   });
 }

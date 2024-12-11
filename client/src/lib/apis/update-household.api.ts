@@ -3,11 +3,9 @@ import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { z } from "zod";
 import { apiClient } from "../client";
+import { householdSchema } from "../schemas/household.schema";
 
-export const updateHouseholdBodySchema = z.object({
-  id: z.string().uuid(),
-  head: z.string().uuid(),
-});
+export const updateHouseholdBodySchema = householdSchema;
 
 export type UpdateHouseholdBodySchema = z.infer<
   typeof updateHouseholdBodySchema

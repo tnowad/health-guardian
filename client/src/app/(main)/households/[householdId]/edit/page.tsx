@@ -1,9 +1,8 @@
-import { HouseholdDetailsCard } from "./_components/household-details-card";
-
+import { UpdateHouseholdForm } from "./_components/update-household-form";
 type Params = Promise<{ householdId: string }>;
 
 export default async function Page({ params }: { params: Params }) {
   const { householdId } = await params;
 
-  return <HouseholdDetailsCard householdId={householdId} />;
+  return <UpdateHouseholdForm householdId={householdId} />;
 }
