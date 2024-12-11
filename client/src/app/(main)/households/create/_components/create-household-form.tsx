@@ -56,7 +56,6 @@ function UploadFile({ onChange }: UploadFileProps) {
 export function CreateHouseholdForm() {
   const { toast } = useToast();
   const router = useRouter();
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const currentUserInformationQuery = useSuspenseQuery(
     createGetCurrentUserInformationQueryOptions(),
   );
@@ -67,7 +66,7 @@ export function CreateHouseholdForm() {
   >({
     resolver: zodResolver(createHouseholdBodySchema),
     defaultValues: {
-      name: "",
+      name: "My Household",
       avatar: "",
       headId: currentUserInformationQuery.data?.userId,
     },
@@ -97,7 +96,7 @@ export function CreateHouseholdForm() {
         <CardTitle>Create Household</CardTitle>
       </CardHeader>
       <Form {...createHouseholdForm}>
-        <form onSubmit={createHouseholdForm.handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
           <CardContent className="space-y-4">
             <FormField
               control={createHouseholdForm.control}
@@ -127,7 +126,6 @@ export function CreateHouseholdForm() {
                       {...field}
                       onChange={(value) => {
                         field.onChange(value.id);
-                        setAvatarPreview(value.url);
                       }}
                     />
                   </FormControl>
@@ -138,24 +136,6 @@ export function CreateHouseholdForm() {
                 </FormItem>
               )}
             />
-
-            <div className="space-y-2">
-              <Label htmlFor="avatar">Avatar</Label>
-              <div className="flex items-center space-x-4">
-                <Avatar className="w-16 h-16">
-                  <AvatarImage
-                    src={avatarPreview || "/placeholder.svg?height=64&width=64"}
-                    alt="Avatar preview"
-                  />
-                  <AvatarFallback>AV</AvatarFallback>
-                </Avatar>
-                <UploadFile
-                  onChange={(file) => {
-                    setAvatarPreview(file.url);
-                  }}
-                />
-              </div>
-            </div>
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full">

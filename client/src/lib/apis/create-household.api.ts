@@ -5,9 +5,9 @@ import { z } from "zod";
 import { apiClient } from "../client";
 
 export const createHouseholdBodySchema = z.object({
-  name: z.string(),
+  name: z.string().min(1).max(255),
   headId: z.string().uuid(),
-  avatar: z.string().nullable(),
+  avatar: z.string().nullable().optional(),
 });
 
 export type CreateHouseholdBodySchema = z.infer<
