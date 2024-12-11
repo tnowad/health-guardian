@@ -123,7 +123,8 @@ public class HouseholdServiceImpl implements HouseholdService {
               return new ResourceNotFoundException(
                   "Household not found with id " + householdId);
             });
-
+    var householdMember = householdMemberRepository.findAllByHousehold(household);
+    householdMemberRepository.deleteAllInBatch(householdMember);
     householdRepository.delete(household);
     log.info("Household deleted with id: {}", householdId);
   }
