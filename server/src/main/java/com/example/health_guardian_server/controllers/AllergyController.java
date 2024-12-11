@@ -40,7 +40,7 @@ public class AllergyController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteAllergy(String id) {
+  public ResponseEntity<Void> deleteAllergy(@PathVariable String id) {
     allergyService.deleteAllergy(id);
     return ResponseEntity.noContent().build();
   }
