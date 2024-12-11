@@ -18,6 +18,18 @@ public class HouseholdSpecification implements Specification<Household> {
       Root<Household> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     List<Predicate> predicates = new ArrayList<>();
 
+    if (request.getName() != null && !request.getName().isEmpty()) {
+      predicates.add(criteriaBuilder.like(root.get("name"), "%" + request.getName() + "%"));
+    }
+
+    if (request.getHeadId() != null && !request.getHeadId().isEmpty()) {
+      predicates.add(criteriaBuilder.equal(root.get("head").get("id"), request.getHeadId()));
+    }
+
+    if (request.getIds() != null && request.getIds().length > 0) {
+      predicates.add(root.get("id").in((Object[]) request.getIds()));
+    }
+
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
   }
 }

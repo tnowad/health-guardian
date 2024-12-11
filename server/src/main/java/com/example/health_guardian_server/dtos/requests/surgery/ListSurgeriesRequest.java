@@ -4,6 +4,7 @@ import com.example.health_guardian_server.dtos.requests.PageableRequest;
 import com.example.health_guardian_server.dtos.requests.PageableWithIdsRequest;
 import com.example.health_guardian_server.entities.Surgery;
 import com.example.health_guardian_server.specifications.SurgerySpecification;
+import java.util.Date;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -15,11 +16,17 @@ public class ListSurgeriesRequest
 
   private Integer size = 10;
 
-  private String[] sortFields = new String[] {"id"};
+  private String[] sortFields = new String[] { "id" };
 
-  private Boolean[] desc = new Boolean[] {false};
+  private Boolean[] desc = new Boolean[] { false };
 
   private String userId;
+
+  private Date startDate;
+
+  private Date endDate;
+
+  private String description;
 
   @Override
   public Specification<Surgery> toSpecification() {

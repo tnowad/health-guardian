@@ -19,54 +19,44 @@ public class PrescriptionSpecification implements Specification<Prescription> {
   @Override
   public Predicate toPredicate(
       Root<Prescription> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-
     List<Predicate> predicates = new ArrayList<>();
 
-    // Filter by patient ID
-    if (request.getPatientId() != null && !request.getPatientId().isEmpty()) {
-      predicates.add(criteriaBuilder.equal(root.get("patient").get("id"), request.getPatientId()));
+    // Filter by user ID
+    if (request.getUserId() != null && !request.getUserId().isEmpty()) {
+      predicates.add(criteriaBuilder.equal(root.get("user").get("id"), request.getUserId()));
     }
 
-    // Filter by medication ID
-    if (request.getMedicationId() != null && !request.getMedicationId().isEmpty()) {
+    // Filter by issued by
+    if (request.getIssuedBy() != null && !request.getIssuedBy().isEmpty()) {
+      predicates.add(criteriaBuilder.like(root.get("issuedBy"), "%" + request.getIssuedBy() + "%"));
+    }
+
+    // Filter by valid until date
+    if (request.getValidUntil() != null) {
       predicates.add(
-          criteriaBuilder.equal(root.get("medication").get("id"), request.getMedicationId()));
+          criteriaBuilder.lessThanOrEqualTo(root.get("validUntil"), request.getValidUntil()));
     }
 
-    // Filter by prescribed by ID
-    if (request.getPrescribedById() != null && !request.getPrescribedById().isEmpty()) {
-      predicates.add(
-          criteriaBuilder.equal(root.get("prescribedBy").get("id"), request.getPrescribedById()));
-    }
-
-    // Filter by status
-    if (request.getStatus() != null && !request.getStatus().isEmpty()) {
+    // Filter by prescription status
+    if (request.getStatus() != null) {
       predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
     }
 
-    // // Filter by start date range
-    // if (request.getStartDateFrom() != null) {
-    // predicates.add(
-    // criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"),
-    // request.getStartDateFrom()));
-    // }
-    // if (request.getStartDateTo() != null) {
-    // predicates.add(
-    // criteriaBuilder.lessThanOrEqualTo(root.get("startDate"),
-    // request.getStartDateTo()));
-    // }
-    //
-    // // Filter by end date range
-    // if (request.getEndDateFrom() != null) {
-    // predicates.add(
-    // criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"),
-    // request.getEndDateFrom()));
-    // }
-    // if (request.getEndDateTo() != null) {
-    // predicates.add(
-    // criteriaBuilder.lessThanOrEqualTo(root.get("endDate"),
-    // request.getEndDateTo()));
-    // }
+    // Filter by date range (issued date)
+    if (request.getStartDate() != null) {
+      predicates.add(
+          criteriaBuilder.greaterThanOrEqualTo(root.get("issuedDate"), request.getStartDate()));
+    }
+
+    if (request.getEndDate() != null) {
+      predicates.add(
+          criteriaBuilder.lessThanOrEqualTo(root.get("issuedDate"), request.getEndDate()));
+    }
+
+    // Filter by specific IDs
+    if (request.getIds() != null && request.getIds().length > 0) {
+      predicates.add(root.get("id").in((Object[]) request.getIds()));
+    }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
   }

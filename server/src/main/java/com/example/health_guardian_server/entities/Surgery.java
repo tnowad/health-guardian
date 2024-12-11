@@ -1,9 +1,8 @@
 package com.example.health_guardian_server.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.Date;
+import lombok.*;
 
 @Entity
 @Table(name = "surgeries")
@@ -24,7 +23,7 @@ public class Surgery {
   @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
   private User user;
 
-  @Column
+  @Column(nullable = false)
   private Date date;
 
   @Column
