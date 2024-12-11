@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -9,13 +10,64 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import Image from "next/image";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createListHouseholdsQueryOptions } from "@/lib/apis/list-households.api";
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
-import { createListHouseholdMembersQueryOptions } from "@/lib/apis/list-household-members.api";
 import { createListAllergiesQueryOptions } from "@/lib/apis/list-allergies.api";
+import { useDeleteAllergyMutation } from "@/lib/apis/delete-allergy.api"; // Import the delete mutation
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+function DeleteAllergyButton({ allergyId }: { allergyId: string }) {
+  const [isDialogOpen, setDialogOpen] = useState(false); // State for controlling dialog visibility
+  const deleteMutation = useDeleteAllergyMutation({ id: allergyId }); // Mutation for deleting allergy
+
+  // Handle the deletion on confirmation
+  const handleDelete = () => {
+    deleteMutation.mutate (undefined, {
+      onSuccess: () => {
+        setDialogOpen(false); // Close dialog on success
+        // Optionally trigger refetch or other actions after deletion
+      },
+      onError: (error) => {
+        // Optionally handle error
+        console.error("Error deleting allergy:", error);
+      },
+    });
+  };
+
+  return (
+    <>
+      <AlertDialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+        <AlertDialogTrigger asChild>
+          <Button className="ml-2 text-red-500 hover:underline">Delete</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this allergy and remove your data from our system.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDialogOpen(false)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
+
 
 export default function AllergyScreen() {
   const currentUserInformationQuery = useSuspenseQuery(
@@ -30,6 +82,15 @@ export default function AllergyScreen() {
   console.log(listAllergiesQuery.error);
 
   const allergies = listAllergiesQuery.data?.content ?? [];
+
+  // Hook for deleting allergy
+  const deleteMutation = useDeleteAllergyMutation;
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this allergy?")) {
+      deleteMutation({ id });
+    }
+  };
 
   return (
     <Card>
@@ -46,9 +107,7 @@ export default function AllergyScreen() {
             <tr className="bg-gray-100">
               <th className="border border-gray-300 p-2">ID</th>
               <th className="border border-gray-300 p-2">Allergy Name</th>
-              <th className="border border-gray-300 p-2">
-                Reaction Description
-              </th>
+              <th className="border border-gray-300 p-2">Reaction Description</th>
               <th className="border border-gray-300 p-2">Severity</th>
               <th className="border border-gray-300 p-2">Action</th>
             </tr>
@@ -70,11 +129,17 @@ export default function AllergyScreen() {
                   <td className="border border-gray-300 p-2 text-center">
                     {currentUserInformationQuery.data.userId ===
                     allergy.userId ? (
-                      <Button asChild>
-                        <Link href={`/allergies/edit/${allergy.id}`} className="text-blue-500 hover:underline">
-                          Edit
-                        </Link>
-                      </Button>
+                      <>
+                        <Button asChild>
+                          <Link
+                            href={`/allergies/edit/${allergy.id}`}
+                            className="text-blue-500 hover:underline"
+                          >
+                            Edit
+                          </Link>
+                        </Button>
+                        <DeleteAllergyButton allergyId={allergy.id as string} />
+                      </>
                     ) : (
                       "-"
                     )}
