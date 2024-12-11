@@ -30,9 +30,10 @@ public class HouseholdServiceImpl implements HouseholdService {
     PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
     HouseholdSpecification specification = new HouseholdSpecification(request);
 
-    var households = householdRepository
-        .findAll(specification, pageRequest)
-        .map(householdMapper::toHouseholdResponse);
+    var households =
+        householdRepository
+            .findAll(specification, pageRequest)
+            .map(householdMapper::toHouseholdResponse);
 
     log.info("Fetched {} appointments", households.getTotalElements());
     return households;
@@ -64,14 +65,15 @@ public class HouseholdServiceImpl implements HouseholdService {
   public HouseholdResponse updateHousehold(String householdId, CreateHouseholdRequest request) {
 
     log.debug("Updating household with id: {}", householdId);
-    Household household = householdRepository
-        .findById(householdId)
-        .orElseThrow(
-            () -> {
-              log.error("Household not found with id: {}", householdId);
-              return new ResourceNotFoundException(
-                  "Household not found with id " + householdId);
-            });
+    Household household =
+        householdRepository
+            .findById(householdId)
+            .orElseThrow(
+                () -> {
+                  log.error("Household not found with id: {}", householdId);
+                  return new ResourceNotFoundException(
+                      "Household not found with id " + householdId);
+                });
 
     // household.setHead(userRe.getReferenceById(request.getHeadId()));
 
@@ -84,16 +86,29 @@ public class HouseholdServiceImpl implements HouseholdService {
   public void deleteHousehold(String householdId) {
 
     log.debug("Deleting household with id: {}", householdId);
-    Household household = householdRepository
+    Household household =
+        householdRepository
+            .findById(householdId)
+            .orElseThrow(
+                () -> {
+                  log.error("Household not found with id: {}", householdId);
+                  return new ResourceNotFoundException(
+                      "Household not found with id " + householdId);
+                });
+
+    householdRepository.delete(household);
+    log.info("Household deleted with id: {}", householdId);
+  }
+
+  @Override
+  public Household getHouseholdEntity(String householdId) {
+    log.debug("Fetching household with id: {}", householdId);
+    return householdRepository
         .findById(householdId)
         .orElseThrow(
             () -> {
               log.error("Household not found with id: {}", householdId);
-              return new ResourceNotFoundException(
-                  "Household not found with id " + householdId);
+              return new ResourceNotFoundException("Household not found with id " + householdId);
             });
-
-    householdRepository.delete(household);
-    log.info("Household deleted with id: {}", householdId);
   }
 }

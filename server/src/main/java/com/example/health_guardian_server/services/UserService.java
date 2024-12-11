@@ -17,6 +17,8 @@ public interface UserService {
 
   User saveUser(User user);
 
+  User getUserByEmail(String email);
+
   Page<UserResponse> listUsers(ListUsersRequest request);
 
   UserResponse createUser(CreateUserRequest request);

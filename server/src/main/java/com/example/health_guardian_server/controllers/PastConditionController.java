@@ -1,8 +1,8 @@
 package com.example.health_guardian_server.controllers;
 
-import com.example.health_guardian_server.dtos.requests.pass_condition.CreatePastConditionRequest;
-import com.example.health_guardian_server.dtos.requests.pass_condition.ListPastConditionsRequest;
-import com.example.health_guardian_server.dtos.responses.pass_condition.PastConditionResponse;
+import com.example.health_guardian_server.dtos.requests.past_condition.CreatePastConditionRequest;
+import com.example.health_guardian_server.dtos.requests.past_condition.ListPastConditionsRequest;
+import com.example.health_guardian_server.dtos.responses.past_condition.PastConditionResponse;
 import com.example.health_guardian_server.services.PastConditionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

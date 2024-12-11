@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class CreateHouseholdRequest {
-    private String headId;
+  private String name;
+  private String headId;
 }

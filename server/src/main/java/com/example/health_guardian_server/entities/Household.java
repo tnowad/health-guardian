@@ -1,9 +1,8 @@
 package com.example.health_guardian_server.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.List;
+import lombok.*;
 
 @Entity
 @Table(name = "households")
@@ -23,8 +22,7 @@ public class Household {
   @Column(nullable = false)
   private String name;
 
-  @Column
-  private String avatar;
+  @Column private String avatar;
 
   @ManyToOne
   @JoinColumn(name = "head", nullable = false, referencedColumnName = "id")

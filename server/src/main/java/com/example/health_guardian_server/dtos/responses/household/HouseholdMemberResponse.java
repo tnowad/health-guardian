@@ -13,5 +13,5 @@ public class HouseholdMemberResponse {
   private String id;
   private String householdId;
   private String userId;
-  private String relationshipToPatient;
+  String name;
 }

@@ -143,4 +143,16 @@ public class UserServiceImpl implements UserService {
     log.debug("User information response built successfully: {}", response);
     return response;
   }
+
+  @Override
+  public User getUserByEmail(String email) {
+    log.debug("Fetching user with email: {}", email);
+    User user = userRepository.findUserByEmail(email).get();
+    if (user == null) {
+      log.warn("User with email: {} not found", email);
+    } else {
+      log.info("User with email: {} found", email);
+    }
+    return user;
+  }
 }

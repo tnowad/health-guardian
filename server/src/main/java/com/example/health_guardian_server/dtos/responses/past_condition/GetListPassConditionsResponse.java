@@ -1,4 +1,4 @@
-package com.example.health_guardian_server.dtos.responses.pass_condition;
+package com.example.health_guardian_server.dtos.responses.past_condition;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

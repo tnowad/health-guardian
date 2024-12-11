@@ -38,12 +38,6 @@ public class HouseholdController {
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("/{householdId}")
-  public ResponseEntity<HouseholdResponse> getHousehold(@PathVariable String householdId) {
-    HouseholdResponse response = householdService.getHousehold(householdId);
-    return ResponseEntity.ok(response);
-  }
-
   @PutMapping("/{householdId}")
   public ResponseEntity<HouseholdResponse> updateHousehold(
       @PathVariable String householdId, @RequestBody CreateHouseholdRequest request) {
