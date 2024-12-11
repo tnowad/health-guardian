@@ -10,8 +10,8 @@ import { queryOptions } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 
 export const listSurgeriesQuerySchema = pageableRequestSchema.extend({
-    name: z.string().optional(),
-    location: z.string().optional(),
+    ids: z.array(z.string().uuid()).optional(),
+    userId: z.string().uuid().optional()
 });
 
 export type ListSurgeriesQuerySchema = z.infer<typeof listSurgeriesQuerySchema>;
@@ -36,10 +36,7 @@ export function createListSurgeriesQueryOptions(
 ) {
     const queryKey = ["surgeries", query] as const;
     return queryOptions<
-        ListSurgeriesResponseSchema,
-        ListSurgeriesErrorResponseSchema,
-        ListSurgeriesQuerySchema,
-        typeof queryKey
+        ListSurgeriesResponseSchema
     >({
         queryKey,
         queryFn: () => listSurgeriesApi(listSurgeriesQuerySchema.parse(query)),
