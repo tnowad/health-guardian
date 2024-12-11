@@ -16,4 +16,6 @@ public interface AllergyService {
 
   void deleteAllergy(String id);
 
+  Page<AllergyResponse> getAllAllergiesByUserId(String userId, ListAllergiesRequest request);
+
 }

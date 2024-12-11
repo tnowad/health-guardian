@@ -45,4 +45,9 @@ public class AllergyController {
     return ResponseEntity.noContent().build();
   }
 
+  @GetMapping("/user/{userId}")
+  public ResponseEntity<Page<AllergyResponse>> listAllergiesByUserId(String userId, ListAllergiesRequest request) {
+    Page<AllergyResponse> allergies = allergyService.getAllAllergiesByUserId(userId, request);
+    return ResponseEntity.ok(allergies);
+  }
 }
