@@ -41,4 +41,14 @@ public class PrescriptionController {
         prescriptionMapper.toPrescriptionResponse(prescription);
     return new ResponseEntity<>(prescriptionResponse, HttpStatus.OK);
   }
+
+  @PutMapping("/{prescriptionId}")
+  public ResponseEntity<PrescriptionResponse> updatePrescription(
+      @PathVariable String prescriptionId, @RequestBody CreatePrescriptionRequest request) {
+    Prescription prescription = prescriptionService.updatePrescription(prescriptionId, request);
+    PrescriptionResponse prescriptionResponse =
+        prescriptionMapper.toPrescriptionResponse(prescription);
+    return new ResponseEntity<>(prescriptionResponse, HttpStatus.OK);
+  }
+
 }

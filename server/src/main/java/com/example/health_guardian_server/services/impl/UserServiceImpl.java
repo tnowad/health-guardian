@@ -51,12 +51,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getUserById(String userId) {
     log.debug("Fetching user with userId: {}", userId);
-    User user = userRepository.findById(userId).orElse(null);
-    if (user == null) {
-      log.warn("User with userId: {} not found", userId);
-    } else {
-      log.info("User with userId: {} found", userId);
-    }
+    User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
     return user;
   }
 
@@ -74,10 +69,9 @@ public class UserServiceImpl implements UserService {
         "Listing users with pagination: page = {}, size = {}",
         request.getPage(),
         request.getSize());
-    Page<UserResponse> users =
-        userRepository
-            .findAll(request.toSpecification(), request.toPageable())
-            .map(userMapper::toUserResponse);
+    Page<UserResponse> users = userRepository
+        .findAll(request.toSpecification(), request.toPageable())
+        .map(userMapper::toUserResponse);
     log.info("Found {} users", users.getTotalElements());
     return users;
   }
@@ -97,8 +91,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserResponse updateUser(String userId, UpdateUserRequest request) {
     log.debug("Updating user with userId: {}", userId);
-    User user =
-        userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
     log.debug("User found: {}", user);
     user.setAvatar(request.getAvatar());
     User updatedUser = userRepository.save(user);
@@ -118,8 +111,7 @@ public class UserServiceImpl implements UserService {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     log.debug("Current authenticated username: {}", username);
 
-    User user =
-        userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
     log.debug("User found: {}", user.getEmail());
 
     return buildResponse(user);
