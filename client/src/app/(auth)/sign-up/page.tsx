@@ -65,7 +65,7 @@ export default function PatientSignUpPage() {
           description: data.message,
         });
         router.push(
-          "/email-verification?email=" +
+          "/email-verification?" +
             new URLSearchParams({ email: values.email }).toString(),
         );
       },
