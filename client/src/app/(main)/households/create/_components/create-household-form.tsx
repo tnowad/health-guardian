@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -14,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import {
   createHouseholdBodySchema,
@@ -32,26 +29,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useUploadFileMutation } from "@/lib/apis/upload-file.api";
-
-type UploadFileProps = {
-  onChange: ({ id, url }: { id: string; url: string }) => void;
-};
-function UploadFile({ onChange }: UploadFileProps) {
-  const uploadFileMutation = useUploadFileMutation();
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    const data = await uploadFileMutation.mutateAsync({ file });
-    onChange(data);
-  };
-  return <Input type="file" onChange={handleFileChange} />;
-}
+import { UploadFileInput } from "@/components/upload-file-input";
 
 export function CreateHouseholdForm() {
   const { toast } = useToast();
@@ -122,7 +100,7 @@ export function CreateHouseholdForm() {
                 <FormItem>
                   <FormLabel>Avatar</FormLabel>
                   <FormControl>
-                    <UploadFile
+                    <UploadFileInput
                       {...field}
                       onChange={(value) => {
                         field.onChange(value.id);
