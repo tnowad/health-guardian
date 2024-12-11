@@ -95,4 +95,17 @@ public class AllergyServiceImpl implements AllergyService {
     allergyRepository.deleteById(allergyId);
     log.info("Deleted allergy with id: {}", allergyId);
   }
+
+  @Override
+  public Page<AllergyResponse> getAllAllergiesByUserId(String userId, ListAllergiesRequest request) {
+    log.debug("Fetching all allergies with request: {}", request);
+    PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+    AllergySpecification specification = new AllergySpecification(request);
+
+    var allergies =
+        allergyRepository.findAll(specification, pageRequest).map(allergyMapper::toResponse);
+
+    log.info("Fetched {} allergies", allergies.getTotalElements());
+    return allergies;
+  }
 }

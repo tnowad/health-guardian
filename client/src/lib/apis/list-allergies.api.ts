@@ -46,3 +46,24 @@ export function createListAllergiesQueryOptions(
         throwOnError: isAxiosError,
     });
 }
+export async function listAllergiesByUserIdApi(userId: string, query: ListAllergiesQuerySchema) {
+    const response = await apiClient.get(`/allergies/user/${userId}`, query);
+    return listAllergiesResponseSchema.parse(response.data);
+}
+
+export function createListAllergiesByUserIdQueryOptions(
+    userId: string,
+    query: ListAllergiesQuerySchema,
+) {
+    const queryKey = ["userAllergies", userId, query] as const;
+    return queryOptions<
+        ListAllergiesResponseSchema,
+        ListAllergiesErrorResponseSchema,
+        ListAllergiesQuerySchema,
+        typeof queryKey
+    >({
+        queryKey,
+        queryFn: () => listAllergiesByUserIdApi(userId, listAllergiesQuerySchema.parse(query)),
+        throwOnError: isAxiosError,
+    });
+}
