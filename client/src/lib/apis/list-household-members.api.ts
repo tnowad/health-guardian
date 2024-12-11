@@ -9,15 +9,9 @@ import { apiClient } from "../client";
 import { queryOptions } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 
-export const listHouseholdMemebrsParamsSchema = z.object({
-  householdId: z.string().uuid().optional(),
-});
-export type ListHouseholdMemebrsParamsSchema = z.infer<
-  typeof listHouseholdMemebrsParamsSchema
->;
-
 export const listHouseholdMembersQuerySchema = pageableRequestSchema.extend({
   relationshipToPatient: z.string().optional(),
+  memberId: z.string().uuid().optional(),
 });
 export type ListHouseholdMembersQuerySchema = z.infer<
   typeof listHouseholdMembersQuerySchema
@@ -39,36 +33,23 @@ export type ListHouseholdMembersErrorResponseSchema = z.infer<
 >;
 
 export async function listHouseholdMembersApi(
-  params: ListHouseholdMemebrsParamsSchema,
   query: ListHouseholdMembersQuerySchema,
 ) {
   const response = await apiClient.get<ListHouseholdMembersResponseSchema>(
     `/household-members`,
-    {
-      ...query,
-      ...params,
-    },
+    query,
   );
   return response.data;
 }
 
 export function createListHouseholdMembersQueryOptions(
-  params: ListHouseholdMemebrsParamsSchema,
   query: ListHouseholdMembersQuerySchema,
 ) {
-  const queryKey = ["household-members", params, query] as const;
-  return queryOptions<
-    ListHouseholdMembersResponseSchema,
-    ListHouseholdMembersErrorResponseSchema,
-    ListHouseholdMembersQuerySchema,
-    typeof queryKey
-  >({
+  const queryKey = ["household-members", query] as const;
+  return queryOptions<ListHouseholdMembersResponseSchema, typeof queryKey>({
     queryKey,
     queryFn: () =>
-      listHouseholdMembersApi(
-        listHouseholdMemebrsParamsSchema.parse(params),
-        listHouseholdMembersQuerySchema.parse(query),
-      ),
+      listHouseholdMembersApi(listHouseholdMembersQuerySchema.parse(query)),
     throwOnError: isAxiosError,
   });
 }

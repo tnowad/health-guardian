@@ -5,30 +5,9 @@ import { queryOptions } from "@tanstack/react-query";
 
 export const currentUserResponseSchema = z.object({
   userId: z.string(),
-  role: z.enum(["STAFF", "MEDICAL_STAFF", "ADMIN"]),
   name: z.string(),
-  username: z.string(),
   email: z.string(),
   avatarUrl: z.string().nullable().optional(),
-  staff: z
-    .object({
-      id: z.string(),
-    })
-    .nullable()
-    .optional(),
-  medicalStaff: z
-    .object({
-      id: z.string(),
-      specialization: z.string(),
-    })
-    .nullable()
-    .optional(),
-  patient: z
-    .object({
-      id: z.string(),
-    })
-    .nullable()
-    .optional(),
 });
 export type CurrentUserResponseSchema = z.infer<
   typeof currentUserResponseSchema
