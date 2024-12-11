@@ -9,16 +9,13 @@ import com.example.health_guardian_server.mappers.HouseholdMapper;
 import com.example.health_guardian_server.repositories.HouseholdMemberRepository;
 import com.example.health_guardian_server.repositories.HouseholdRepository;
 import com.example.health_guardian_server.services.HouseholdService;
+import com.example.health_guardian_server.services.MinioClientService;
 import com.example.health_guardian_server.services.UserService;
-import com.example.health_guardian_server.specifications.HouseholdSpecification;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
-
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +28,7 @@ public class HouseholdServiceImpl implements HouseholdService {
   private final HouseholdMapper householdMapper;
   private final HouseholdMemberRepository householdMemberRepository;
   private final UserService userService;
+  private final MinioClientService minioClientService;
 
   @Override
   public Page<HouseholdResponse> listHouseholds(ListHouseholdsRequest request) {
@@ -40,7 +38,18 @@ public class HouseholdServiceImpl implements HouseholdService {
     var households = householdRepository
         .findAll(request.toSpecification(), request.toPageable())
         .map(householdMapper::toHouseholdResponse);
-
+    households.forEach(
+        household -> {
+          String defaultAvatarUrl = "https://default-avatar-url.com";
+          try {
+            String avatarUrl = minioClientService.getObjectUrl(household.getAvatar(), "files");
+            log.debug("Avatar URL retrieved for household {}: {}", household.getId(), avatarUrl);
+            household.setAvatar(avatarUrl);
+          } catch (Exception e) {
+            log.error("Error when retrieving avatar URL for household: {}", household.getId(), e);
+            household.setAvatar(defaultAvatarUrl); // Set URL mặc định nếu có lỗi
+          }
+        });
     log.info("Fetched {} appointments", households.getTotalElements());
     return households;
   }
@@ -55,10 +64,11 @@ public class HouseholdServiceImpl implements HouseholdService {
 
     log.debug("Setting household members with head user ID: {}", request.getHeadId());
     createdHousehold.setHouseholdMembers(
-        List.of(HouseholdMember.builder()
-            .household(createdHousehold)
-            .user(userService.getUserById(request.getHeadId()))
-            .build()));
+        List.of(
+            HouseholdMember.builder()
+                .household(createdHousehold)
+                .user(userService.getUserById(request.getHeadId()))
+                .build()));
 
     log.debug("Saving household to the repository...");
     createdHousehold = householdRepository.save(createdHousehold);
