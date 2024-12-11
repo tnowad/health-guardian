@@ -22,11 +22,12 @@ export default function AllergyScreen() {
     createGetCurrentUserInformationQueryOptions(),
   );
 
-
-  const listAllergiesQuery = useQuery( createListAllergiesQueryOptions({
-    userId: currentUserInformationQuery.data?.userId,
-  }),
+  const listAllergiesQuery = useQuery(
+    createListAllergiesQueryOptions({
+      userId: currentUserInformationQuery.data?.userId,
+    }),
   );
+  console.log(listAllergiesQuery.error);
 
   const allergies = listAllergiesQuery.data?.content ?? [];
 
@@ -45,7 +46,9 @@ export default function AllergyScreen() {
             <tr className="bg-gray-100">
               <th className="border border-gray-300 p-2">ID</th>
               <th className="border border-gray-300 p-2">Allergy Name</th>
-              <th className="border border-gray-300 p-2">Reaction Description</th>
+              <th className="border border-gray-300 p-2">
+                Reaction Description
+              </th>
               <th className="border border-gray-300 p-2">Severity</th>
               <th className="border border-gray-300 p-2">Action</th>
             </tr>
@@ -54,9 +57,7 @@ export default function AllergyScreen() {
             {allergies.length > 0 ? (
               allergies.map((allergy) => (
                 <tr key={allergy.id} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 p-2">
-                    {allergy.id}
-                  </td>
+                  <td className="border border-gray-300 p-2">{allergy.id}</td>
                   <td className="border border-gray-300 p-2">
                     {allergy.allergyName}
                   </td>
@@ -67,9 +68,10 @@ export default function AllergyScreen() {
                     {allergy.severity}
                   </td>
                   <td className="border border-gray-300 p-2 text-center">
-                    {currentUserInformationQuery.data.userId === allergy.userId ? (
-                      <Link 
-                        href={`/allergies/${allergy.id}`} 
+                    {currentUserInformationQuery.data.userId ===
+                    allergy.userId ? (
+                      <Link
+                        href={`/allergies/${allergy.id}`}
                         className="text-blue-500 hover:underline"
                       >
                         Edit
@@ -80,7 +82,7 @@ export default function AllergyScreen() {
                   </td>
                 </tr>
               ))
-            ) : ( 
+            ) : (
               <tr>
                 <td className="border border-gray-300 p-2" colSpan={5}>
                   No allergies found
@@ -93,4 +95,3 @@ export default function AllergyScreen() {
     </Card>
   );
 }
-
