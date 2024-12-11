@@ -12,8 +12,8 @@ public interface PrescriptionService {
   Prescription getPrescriptionById(String id);
 
   Prescription createPrescription(CreatePrescriptionRequest request);
-
-  Prescription updatePrescription(Prescription prescription);
+  
+  Prescription updatePrescription(String prescriptionId, CreatePrescriptionRequest request);
 
   void deletePrescription(String id);
 }
