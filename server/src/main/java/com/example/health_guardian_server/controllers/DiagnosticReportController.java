@@ -16,31 +16,31 @@ public class DiagnosticReportController {
   private final DiagnosticReportService diagnosticReportService;
 
   @GetMapping
-  public ResponseEntity<Page<DiagnosticReportResponse>> listDiagnosticReports(ListDiagnosticReportRequest request) {
+  public ResponseEntity<Page<DiagnosticReportResponse>> listDiagnosticReports(@ModelAttribute ListDiagnosticReportRequest request) {
     Page<DiagnosticReportResponse> diagnosticReports = diagnosticReportService.getAllDiagnosticReports(request);
     return ResponseEntity.ok(diagnosticReports);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<DiagnosticReportResponse> getDiagnosticReport(String id) {
+  public ResponseEntity<DiagnosticReportResponse> getDiagnosticReport(@PathVariable String id) {
     DiagnosticReportResponse diagnosticReport = diagnosticReportService.getDiagnosticReportById(id);
     return ResponseEntity.ok(diagnosticReport);
   }
 
   @PostMapping
-  public ResponseEntity<DiagnosticReportResponse> createDiagnosticReport(CreateDiagnosticReportRequest request) {
+  public ResponseEntity<DiagnosticReportResponse> createDiagnosticReport(@RequestBody CreateDiagnosticReportRequest request) {
     DiagnosticReportResponse diagnosticReport = diagnosticReportService.createDiagnosticReport(request);
     return ResponseEntity.ok(diagnosticReport);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<DiagnosticReportResponse> updateDiagnosticReport(String id, CreateDiagnosticReportRequest request) {
+  public ResponseEntity<DiagnosticReportResponse> updateDiagnosticReport(@PathVariable String id, @RequestBody CreateDiagnosticReportRequest request) {
     DiagnosticReportResponse diagnosticReport = diagnosticReportService.updateDiagnosticReport(id, request);
     return ResponseEntity.ok(diagnosticReport);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteDiagnosticReport(String id) {
+  public ResponseEntity<Void> deleteDiagnosticReport(@PathVariable String id) {
     diagnosticReportService.deleteDiagnosticReport(id);
     return ResponseEntity.noContent().build();
   }

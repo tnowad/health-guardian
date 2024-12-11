@@ -16,29 +16,29 @@ public class SurgeryController {
   private final SurgeryService surgeryService;
 
   @GetMapping
-  public ResponseEntity<Page<SurgeryResponse>> listSurgeries(ListSurgeriesRequest request) {
+  public ResponseEntity<Page<SurgeryResponse>> listSurgeries(@ModelAttribute ListSurgeriesRequest request) {
     Page<SurgeryResponse> surgeries = surgeryService.getAllSurgeries(request);
     return ResponseEntity.ok(surgeries);
   }
   @PostMapping
-  public ResponseEntity<SurgeryResponse> createSurgery(CreateSurgeryRequest request) {
+  public ResponseEntity<SurgeryResponse> createSurgery(@RequestBody CreateSurgeryRequest request) {
     SurgeryResponse surgery = surgeryService.createSurgery(request);
     return ResponseEntity.ok(surgery);
   }
   @GetMapping("/{id}")
-  public ResponseEntity<SurgeryResponse> getSurgery(String id) {
+  public ResponseEntity<SurgeryResponse> getSurgery(@PathVariable String id) {
     SurgeryResponse surgery = surgeryService.getSurgeryById(id);
     return ResponseEntity.ok(surgery);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<SurgeryResponse> updateSurgery(String id, CreateSurgeryRequest request) {
+  public ResponseEntity<SurgeryResponse> updateSurgery(@PathVariable String id,@RequestBody CreateSurgeryRequest request) {
     SurgeryResponse surgery = surgeryService.updateSurgery(id, request);
     return ResponseEntity.ok(surgery);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteSurgery(String id) {
+  public ResponseEntity<Void> deleteSurgery(@PathVariable String id) {
     surgeryService.deleteSurgery(id);
     return ResponseEntity.noContent().build();
   }
