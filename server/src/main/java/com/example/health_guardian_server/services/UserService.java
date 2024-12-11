@@ -6,6 +6,9 @@ import com.example.health_guardian_server.dtos.requests.user.UpdateUserRequest;
 import com.example.health_guardian_server.dtos.responses.user.CurrentUserInfomationResponse;
 import com.example.health_guardian_server.dtos.responses.user.UserResponse;
 import com.example.health_guardian_server.entities.User;
+
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 
 public interface UserService {
@@ -14,6 +17,8 @@ public interface UserService {
   User createUser(User user);
 
   User getUserById(String userId);
+
+  Optional<User> getOptionalUserById(String userId);
 
   User saveUser(User user);
 

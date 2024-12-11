@@ -14,6 +14,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -51,8 +54,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getUserById(String userId) {
     log.debug("Fetching user with userId: {}", userId);
-    User user =
-        userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
     return user;
   }
 
@@ -70,10 +72,9 @@ public class UserServiceImpl implements UserService {
         "Listing users with pagination: page = {}, size = {}",
         request.getPage(),
         request.getSize());
-    Page<UserResponse> users =
-        userRepository
-            .findAll(request.toSpecification(), request.toPageable())
-            .map(userMapper::toUserResponse);
+    Page<UserResponse> users = userRepository
+        .findAll(request.toSpecification(), request.toPageable())
+        .map(userMapper::toUserResponse);
     log.info("Found {} users", users.getTotalElements());
     return users;
   }
@@ -93,8 +94,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserResponse updateUser(String userId, UpdateUserRequest request) {
     log.debug("Updating user with userId: {}", userId);
-    User user =
-        userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
     log.debug("User found: {}", user);
     user.setAvatar(request.getAvatar());
     User updatedUser = userRepository.save(user);
@@ -114,8 +114,7 @@ public class UserServiceImpl implements UserService {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     log.debug("Current authenticated username: {}", username);
 
-    User user =
-        userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
     log.debug("User found: {}", user.getEmail());
 
     return buildResponse(user);
@@ -148,6 +147,18 @@ public class UserServiceImpl implements UserService {
       log.warn("User with email: {} not found", email);
     } else {
       log.info("User with email: {} found", email);
+    }
+    return user;
+  }
+
+  @Override
+  public Optional<User> getOptionalUserById(String userId) {
+    log.debug("Fetching user with userId: {}", userId);
+    Optional<User> user = userRepository.findById(userId);
+    if (user.isEmpty()) {
+      log.warn("User with userId: {} not found", userId);
+    } else {
+      log.info("User with userId: {} found", userId);
     }
     return user;
   }

@@ -97,7 +97,7 @@ public class AuthServiceImpl implements AuthService {
   public SignUpResponse signUp(SignUpRequest request) {
     log.info("Sign-up attempt for email: {}", request.getEmail());
     if (localProviderService.getLocalProviderByEmail(request.getEmail()) != null
-        || userService.getUserById(request.getEmail()) != null) {
+        || userService.getOptionalUserById(request.getEmail()).isPresent()) {
       log.warn("Sign-up failed: Email already in use: {}", request.getEmail());
       throw new RuntimeException("Email already in use");
     }
