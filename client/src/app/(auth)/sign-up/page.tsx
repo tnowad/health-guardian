@@ -72,7 +72,7 @@ export default function PatientSignUpPage() {
           description: "An error occurred while signing up.",
         });
       },
-    }),
+    })
   );
 
   return (
