@@ -58,29 +58,4 @@ public class AppointmentController {
     SimpleResponse simpleResponse = AppointmentMapper.toAppointmentSimpleResponse(appointment);
     return new ResponseEntity<>(simpleResponse, HttpStatus.OK);
   }
-
-  // @PostMapping("/send")
-  // public ResponseEntity<String> sendNotification() {
-  // for (Appointment appointment : appointmentService.get()) {
-  // User user = userService.getUserById(appointment.getPatient().getId());
-  // Account account = accountService.getAccountByUserId(user.getId());
-  // if (account.getExternalProviders() != null) {
-  // for (ExternalProvider provider : account.getExternalProviders()) {
-  // notificationService.sendEmail(provider.getProviderUserEmail(),
-  // "Notification", "Your
-  // next appointment is coming up soon!: " + appointment.getAppointmentDate());
-  // }
-  // }
-  // if (account.getLocalProviders() != null) {
-  // for (ExternalProvider provider : account.getExternalProviders()) {
-  // notificationService.sendEmail(provider.getProviderUserEmail(),
-  // "Notification", "Your
-  // next appointment is coming up soon!: " + appointment.getAppointmentDate());
-  // }
-  // }
-  // }
-  //
-  // return ResponseEntity.ok("Emails sent to all Users that have appointments");
-  // }
-
 }

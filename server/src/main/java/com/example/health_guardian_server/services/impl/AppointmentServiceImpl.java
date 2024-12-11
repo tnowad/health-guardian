@@ -65,8 +65,16 @@ public class AppointmentServiceImpl implements AppointmentService {
   public AppointmentResponse createAppointment(CreateAppointmentRequest createAppointmentRequest) {
     log.debug("Creating appointment: {}", createAppointmentRequest);
     Appointment createdAppointment = appointmentMapper.toAppointment(createAppointmentRequest);
-    Optional<User> user = userRepository.findById(createAppointmentRequest.getUserId());
-    createdAppointment.setUser(user.get());
+    User user =
+      userRepository
+        .findById(createAppointmentRequest.getUserId())
+        .orElseThrow(
+          () -> {
+            log.error("User not found with id: {}", createAppointmentRequest.getUserId());
+            return new ResourceNotFoundException(
+              "Appointment not found with id " + createAppointmentRequest.getUserId());
+          });
+    createdAppointment.setUser(user);
     Appointment appointment = appointmentRepository.save(createdAppointment);
     log.info("Appointment created with id: {}", createdAppointment.getId());
     return appointmentMapper.toResponse(appointment);

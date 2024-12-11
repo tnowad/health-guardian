@@ -64,8 +64,16 @@ public class VisitSummaryServiceImpl implements VisitSummaryService {
   public VisitSummaryResponse createVisitSummary(CreateVisitSummaryRequest request) {
     log.debug("Creating visit summary: {}", request);
     VisitSummary createdVisitSummary = visitSummaryMapper.toVisitSummary(request);
-    Optional<User> user = userRepository.findById(request.getUserId());
-    createdVisitSummary.setUser(user.get());
+    User user =
+      userRepository
+        .findById(request.getUserId())
+        .orElseThrow(
+          () -> {
+            log.error("User not found with id: {}", request.getUserId());
+            return new ResourceNotFoundException(
+              "User not found with id " + request.getUserId());
+          });
+    createdVisitSummary.setUser(user);
     VisitSummary visitSummary = visitSummaryRepository.save(createdVisitSummary);
     log.info("Visit summary created with id: {}", createdVisitSummary.getId());
     return visitSummaryMapper.toVisitSummaryResponse(visitSummary);
@@ -84,9 +92,18 @@ public class VisitSummaryServiceImpl implements VisitSummaryService {
               "Visit summary not found with id " + visitSummaryId);
           });
 
-    VisitSummary updatedVisitSummary = visitSummaryMapper.toVisitSummary(request);
-    updatedVisitSummary.setUser(existingVisitSummary.getUser());
+    User user =
+      userRepository
+        .findById(request.getUserId())
+        .orElseThrow(
+          () -> {
+            log.error("User not found with id: {}", request.getUserId());
+            return new ResourceNotFoundException(
+              "User not found with id " + request.getUserId());
+          });
 
+    VisitSummary updatedVisitSummary = visitSummaryMapper.toVisitSummary(request);
+    updatedVisitSummary.setUser(user);
     VisitSummary visitSummary = visitSummaryRepository.save(updatedVisitSummary);
     log.info("Visit summary updated with id: {}", request.getId());
     return visitSummaryMapper.toVisitSummaryResponse(visitSummary);
