@@ -50,8 +50,7 @@ public class HouseholdMemberController {
   @PutMapping("/{householdMemberId}")
   public ResponseEntity<HouseholdMemberResponse> updateHouseholdMember(
       @PathVariable String householdMemberId, @RequestBody CreateHouseholdMemberRequest request) {
-    HouseholdMemberResponse response =
-        householdMemberService.updateHouseholdMember(householdMemberId, request);
+    HouseholdMemberResponse response = householdMemberService.updateHouseholdMember(householdMemberId, request);
     return ResponseEntity.ok(response);
   }
 

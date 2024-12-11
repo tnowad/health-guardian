@@ -1,32 +1,19 @@
 package com.example.health_guardian_server.services.impl;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.kafka.common.errors.ResourceNotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
 import com.example.health_guardian_server.dtos.requests.prescription.CreatePrescriptionItemRequest;
-import com.example.health_guardian_server.dtos.requests.prescription.CreatePrescriptionRequest;
 import com.example.health_guardian_server.dtos.requests.prescription.ListPrescriptionItemRequest;
-import com.example.health_guardian_server.dtos.requests.prescription.ListPrescriptionRequest;
 import com.example.health_guardian_server.dtos.responses.prescription.PrescriptionItemResponse;
-import com.example.health_guardian_server.dtos.responses.prescription.PrescriptionResponse;
 import com.example.health_guardian_server.entities.Prescription;
 import com.example.health_guardian_server.entities.PrescriptionItem;
-import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.mappers.PrescriptionItemMapper;
 import com.example.health_guardian_server.repositories.PrescriptionItemRepository;
-import com.example.health_guardian_server.repositories.UserRepository;
 import com.example.health_guardian_server.services.PrescriptionItemService;
 import com.example.health_guardian_server.services.PrescriptionService;
-import com.example.health_guardian_server.specifications.PrescriptionItemSpecification;
-import com.example.health_guardian_server.specifications.PrescriptionSpecification;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -39,9 +26,11 @@ public class PrescriptionItemServiceImpl implements PrescriptionItemService {
   private final PrescriptionItemMapper prescriptionItemMapper;
 
   @Override
-  public Page<PrescriptionItemResponse> getAllPrescriptionItems(ListPrescriptionItemRequest request) {
+  public Page<PrescriptionItemResponse> getAllPrescriptionItems(
+      ListPrescriptionItemRequest request) {
     log.debug("Fetching all visit summaries with request: {}", request);
-    return prescriptionItemRepository.findAll(request.toSpecification(), request.toPageable())
+    return prescriptionItemRepository
+        .findAll(request.toSpecification(), request.toPageable())
         .map(prescriptionItemMapper::toPrescriptionItemResponse);
   }
 
@@ -93,17 +82,18 @@ public class PrescriptionItemServiceImpl implements PrescriptionItemService {
   }
 
   @Override
-  public PrescriptionItem updatePrescriptionItem(String prescriptionItemId, CreatePrescriptionItemRequest request) {
+  public PrescriptionItem updatePrescriptionItem(
+      String prescriptionItemId, CreatePrescriptionItemRequest request) {
     log.debug("Updating visit summary with id: {}", prescriptionItemId);
     PrescriptionItem prescriptionItem = prescriptionItemRepository
         .findById(prescriptionItemId)
         .orElseThrow(
             () -> {
               log.error("PrescriptionItem not found with id: {}", prescriptionItemId);
-              return new RuntimeException("PrescriptionItem not found with id: " + prescriptionItemId);
+              return new RuntimeException(
+                  "PrescriptionItem not found with id: " + prescriptionItemId);
             });
     prescriptionItemMapper.toPrescriptionItem(request);
     return prescriptionItemRepository.save(prescriptionItem);
   }
-
 }
