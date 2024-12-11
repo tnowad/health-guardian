@@ -2,6 +2,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Bell, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NotificationSchema } from "@/lib/schemas/(notification)/notification.schema";
+import { useUpdateStatusNotificationMutation } from "@/lib/apis/(notification)/update-status-notifications.api";
+import { useToast } from "@/hooks/use-toast";
 
 interface Notification {
   id: string;
@@ -12,12 +14,44 @@ interface Notification {
 
 interface NotificationListProps {
   notifications: NotificationSchema[];
-  toggleRead: (id: string) => void;
+}
+
+type NotificationStatusButtonProps = {
+  id: string;
+  status?: boolean;
+};
+
+export function NotificationStatusButton({
+  id,
+  status,
+}: NotificationStatusButtonProps) {
+  const { toast } = useToast();
+
+  const mutation = useUpdateStatusNotificationMutation({ Id: id });
+
+  const handleToggleStatus = async () => {
+    await mutation.mutateAsync({ readStatus: !status });
+    toast({
+      title: `Notification marked as ${!status ? "read" : "unread"}`,
+    });
+  };
+
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      aria-label={status ? "Mark as unread" : "Mark as read"}
+      onClick={handleToggleStatus}
+    >
+      <CheckCircle
+        className={`h-5 w-5 ${status ? "text-green-500" : "text-gray-300"}`}
+      />
+    </Button>
+  );
 }
 
 export default function NotificationList({
   notifications,
-  toggleRead,
 }: NotificationListProps) {
   return (
     <div className="space-y-4">
@@ -46,20 +80,11 @@ export default function NotificationList({
                 </p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => toggleRead(notification.id)}
-              aria-label={
-                notification.readStatus ? "Mark as unread" : "Mark as read"
-              }
-            >
-              <CheckCircle
-                className={`h-5 w-5 ${
-                  notification.readStatus ? "text-green-500" : "text-gray-300"
-                }`}
-              />
-            </Button>
+
+            <NotificationStatusButton
+              id={notification.id}
+              status={notification.readStatus}
+            />
           </CardContent>
         </Card>
       ))}

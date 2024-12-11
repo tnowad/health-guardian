@@ -3,6 +3,7 @@ package com.example.health_guardian_server.controllers;
 import com.example.health_guardian_server.dtos.requests.notification.CreateNotificationRequest;
 import com.example.health_guardian_server.dtos.requests.notification.ListNotificationRequest;
 import com.example.health_guardian_server.dtos.requests.notification.UpdateNotificationRequest;
+import com.example.health_guardian_server.dtos.requests.notification.UpdateStatusNotificationRequest;
 import com.example.health_guardian_server.dtos.requests.visit_summary.CreateVisitSummaryRequest;
 import com.example.health_guardian_server.dtos.requests.visit_summary.ListVisitSummaryRequest;
 import com.example.health_guardian_server.dtos.requests.visit_summary.UpdateVisitSummaryRequest;
@@ -64,8 +65,9 @@ public class NotificationController {
     return new ResponseEntity<>(notificationService.deleteNotification(id), HttpStatus.OK);
   }
 
-  @PatchMapping("/{id}")
-  public ResponseEntity<UpdateStatusNotificationResponse> updateStatusNotification(@PathVariable String id) {
-    return new ResponseEntity<>(notificationService.updateStatusNotification(id), HttpStatus.OK);
+  @PutMapping("/{id}/read-status")
+  public ResponseEntity<UpdateStatusNotificationResponse> updateStatusNotification(
+    @PathVariable String id, @RequestBody UpdateStatusNotificationRequest request) {
+    return new ResponseEntity<>(notificationService.updateStatusNotification(id, request), HttpStatus.OK);
   }
 }

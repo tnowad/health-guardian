@@ -3,6 +3,7 @@ package com.example.health_guardian_server.services;
 import com.example.health_guardian_server.dtos.requests.notification.CreateNotificationRequest;
 import com.example.health_guardian_server.dtos.requests.notification.ListNotificationRequest;
 import com.example.health_guardian_server.dtos.requests.notification.UpdateNotificationRequest;
+import com.example.health_guardian_server.dtos.requests.notification.UpdateStatusNotificationRequest;
 import com.example.health_guardian_server.dtos.requests.visit_summary.CreateVisitSummaryRequest;
 import com.example.health_guardian_server.dtos.requests.visit_summary.ListVisitSummaryRequest;
 import com.example.health_guardian_server.dtos.requests.visit_summary.UpdateVisitSummaryRequest;
@@ -26,5 +27,5 @@ public interface NotificationService {
 
   SimpleResponse deleteNotification(String id);
 
-  UpdateStatusNotificationResponse updateStatusNotification(String id);
+  UpdateStatusNotificationResponse updateStatusNotification(String id, UpdateStatusNotificationRequest request);
 }

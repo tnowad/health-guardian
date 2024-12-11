@@ -4,6 +4,7 @@ import com.example.health_guardian_server.configurations.BrevoConfig;
 import com.example.health_guardian_server.dtos.requests.notification.CreateNotificationRequest;
 import com.example.health_guardian_server.dtos.requests.notification.ListNotificationRequest;
 import com.example.health_guardian_server.dtos.requests.notification.UpdateNotificationRequest;
+import com.example.health_guardian_server.dtos.requests.notification.UpdateStatusNotificationRequest;
 import com.example.health_guardian_server.dtos.responses.SimpleResponse;
 import com.example.health_guardian_server.dtos.responses.notification.NotificationResponse;
 import com.example.health_guardian_server.dtos.responses.notification.UpdateStatusNotificationResponse;
@@ -167,7 +168,7 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   @Override
-  public UpdateStatusNotificationResponse updateStatusNotification(String id) {
+  public UpdateStatusNotificationResponse updateStatusNotification(String id, UpdateStatusNotificationRequest request) {
     log.debug("Updating status notification with id: {}", id);
     Notification existingNotification =
       notificationRepository
@@ -179,14 +180,14 @@ public class NotificationServiceImpl implements NotificationService {
               "Notification not found with id " + id);
           });
     boolean readStatus = existingNotification.isReadStatus();
-    existingNotification.setReadStatus(!readStatus);
+    existingNotification.setReadStatus(request.isReadStatus());
     notificationRepository.save(existingNotification);
     log.info("Status Notification updated with id: {}", id);
 
     UpdateStatusNotificationResponse updateStatusNotificationResponse
       = UpdateStatusNotificationResponse.builder()
       .id(existingNotification.getId())
-      .message("Status of notification changed to: " + !readStatus)
+      .message("Status of notification changed from: " + readStatus + " to " + request.isReadStatus())
       .build();
 
     return updateStatusNotificationResponse;

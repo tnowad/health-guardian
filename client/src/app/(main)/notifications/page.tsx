@@ -50,22 +50,11 @@ export default function NotificationsPage() {
 
   const notifications = listNotificationsQuery.data?.content ?? [];
 
-  const toggleRead = (id: string) => {
-    notifications.map((notification) =>
-      notification.id === id
-        ? { ...notification, read: !notification.readStatus }
-        : notification
-    );
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <Header />
       {notifications.length > 0 ? (
-        <NotificationList
-          notifications={notifications}
-          toggleRead={toggleRead}
-        />
+        <NotificationList notifications={notifications} />
       ) : (
         <EmptyState />
       )}
