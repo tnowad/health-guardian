@@ -1,9 +1,8 @@
 import { z } from "zod";
 
-// Prescription Item Schema
 export const prescriptionItemSchema = z.object({
   id: z.string().uuid(),
-  prescriptionId: z.string().uuid(), // corresponds to the Prescription entity relationship
+  prescriptionId: z.string().uuid(),
   dosage: z.string().optional(),
   medicationName: z.string(),
   image: z.string().optional(),
@@ -17,5 +16,4 @@ export const prescriptionItemSchema = z.object({
   status: z.enum(["ACTIVE", "COMPLETED", "EXPIRED"]),
 });
 
-// Type for PrescriptionItem Schema
 export type PrescriptionItemSchema = z.infer<typeof prescriptionItemSchema>;
