@@ -29,9 +29,65 @@ import {
 import { useMemo } from "react";
 import { createGetHouseholdDetailQueryOptions } from "@/lib/apis/get-household-detail.api";
 import { useToast } from "@/hooks/use-toast";
+import { useDeleteHouseholdMutation } from "@/lib/apis/delete-household.api";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 type HouseholdDetailsCardProps = {
   householdId: string;
 };
+
+export function DeleteHouseholdButton({
+  householdId,
+}: {
+  householdId: string;
+}) {
+  const { toast } = useToast();
+  const deleteHouseholdMutation = useDeleteHouseholdMutation({
+    id: householdId,
+  });
+
+  const onDelete = () =>
+    deleteHouseholdMutation.mutate(undefined, {
+      onSuccess() {
+        toast({
+          title: "Household deleted",
+          description: "Your household has been deleted successfully",
+        });
+      },
+    });
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button>Delete</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 export function HouseholdDetailsCard({
   householdId,
 }: HouseholdDetailsCardProps) {
@@ -86,6 +142,7 @@ export function HouseholdDetailsCard({
         <Button>
           <Link href={`/households/${householdId}/edit`}>Edit</Link>
         </Button>
+
         <Button
           onClick={() => {
             window.navigator.clipboard.writeText(
@@ -99,6 +156,8 @@ export function HouseholdDetailsCard({
         >
           Invite Member
         </Button>
+
+        <DeleteHouseholdButton householdId={householdId} />
       </CardHeader>
       <CardContent>
         <Table>
