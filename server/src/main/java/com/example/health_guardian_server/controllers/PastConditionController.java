@@ -16,30 +16,30 @@ public class PastConditionController {
   private final PastConditionService pastConditionService;
 
   @GetMapping
-  public ResponseEntity<Page<PastConditionResponse>> listPastConditions(ListPastConditionsRequest request) {
+  public ResponseEntity<Page<PastConditionResponse>> listPastConditions(@ModelAttribute ListPastConditionsRequest request) {
     Page<PastConditionResponse> pastConditions = pastConditionService.getAllPastConditions(request);
     return ResponseEntity.ok(pastConditions);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<PastConditionResponse> getPastCondition(String id) {
+  public ResponseEntity<PastConditionResponse> getPastCondition(@PathVariable String id) {
     PastConditionResponse pastCondition = pastConditionService.getPastConditionById(id);
     return ResponseEntity.ok(pastCondition);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deletePastCondition(String id) {
+  public ResponseEntity<Void> deletePastCondition(@PathVariable String id) {
     pastConditionService.deletePastCondition(id);
     return ResponseEntity.noContent().build();
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<PastConditionResponse> updatePastCondition(String id, CreatePastConditionRequest request) {
+  public ResponseEntity<PastConditionResponse> updatePastCondition(@PathVariable String id,@RequestBody CreatePastConditionRequest request) {
     PastConditionResponse pastCondition = pastConditionService.updatePastCondition(id, request);
     return ResponseEntity.ok(pastCondition);
   }
   @PostMapping
-  public ResponseEntity<PastConditionResponse> createPastCondition(CreatePastConditionRequest request) {
+  public ResponseEntity<PastConditionResponse> createPastCondition(@RequestBody CreatePastConditionRequest request) {
     PastConditionResponse pastCondition = pastConditionService.createPastCondition(request);
     return ResponseEntity.ok(pastCondition);
   }

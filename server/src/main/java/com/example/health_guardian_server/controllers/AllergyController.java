@@ -16,7 +16,7 @@ public class AllergyController {
   private final AllergyService allergyService;
 
   @GetMapping
-  public ResponseEntity<Page<AllergyResponse>> listAllergies(ListAllergiesRequest request) {
+  public ResponseEntity<Page<AllergyResponse>> listAllergies(@ModelAttribute ListAllergiesRequest request) {
     Page<AllergyResponse> allergies = allergyService.getAllAllergies(request);
     return ResponseEntity.ok(allergies);
   }
@@ -28,13 +28,13 @@ public class AllergyController {
   }
 
   @PostMapping
-  public ResponseEntity<AllergyResponse> createAllergy(CreateAllergyRequest request) {
+  public ResponseEntity<AllergyResponse> createAllergy(@RequestBody CreateAllergyRequest request) {
     AllergyResponse allergy = allergyService.createAllergy(request);
     return ResponseEntity.ok(allergy);
   }
 
   @PutMapping
-  public ResponseEntity<AllergyResponse> updateAllergy(String id, CreateAllergyRequest request) {
+  public ResponseEntity<AllergyResponse> updateAllergy(@PathVariable String id, @RequestBody CreateAllergyRequest request) {
     AllergyResponse allergy = allergyService.updateAllergy(id, request);
     return ResponseEntity.ok(allergy);
   }

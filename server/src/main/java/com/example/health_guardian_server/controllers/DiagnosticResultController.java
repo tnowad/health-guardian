@@ -16,31 +16,31 @@ public class DiagnosticResultController {
   private final DiagnosticResultService diagnosticResultService;
 
   @GetMapping
-  public ResponseEntity<Page<DiagnosticResultResponse>> listDiagnosticResults(ListDiagnosticResultRequest request) {
+  public ResponseEntity<Page<DiagnosticResultResponse>> listDiagnosticResults(@ModelAttribute ListDiagnosticResultRequest request) {
     Page<DiagnosticResultResponse> diagnosticResults = diagnosticResultService.getAllDiagnosticResultsListDiagnosticResultsRequest(request);
     return ResponseEntity.ok(diagnosticResults);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<DiagnosticResultResponse> getDiagnosticResult(String id) {
+  public ResponseEntity<DiagnosticResultResponse> getDiagnosticResult(@PathVariable String id) {
     DiagnosticResultResponse diagnosticResult = diagnosticResultService.getDiagnosticResultById(id);
     return ResponseEntity.ok(diagnosticResult);
   }
 
   @PostMapping
-  public ResponseEntity<DiagnosticResultResponse> createDiagnosticResult(CreateDiagnosticResultRequest request) {
+  public ResponseEntity<DiagnosticResultResponse> createDiagnosticResult(@RequestBody CreateDiagnosticResultRequest request) {
     DiagnosticResultResponse diagnosticResult = diagnosticResultService.createDiagnosticResult(request);
     return ResponseEntity.ok(diagnosticResult);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<DiagnosticResultResponse> updateDiagnosticResult(String id, CreateDiagnosticResultRequest request) {
+  public ResponseEntity<DiagnosticResultResponse> updateDiagnosticResult(@PathVariable String id, @RequestBody CreateDiagnosticResultRequest request) {
     DiagnosticResultResponse diagnosticResult = diagnosticResultService.updateDiagnosticResult(id, request);
     return ResponseEntity.ok(diagnosticResult);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteDiagnosticResult(String id) {
+  public ResponseEntity<Void> deleteDiagnosticResult(@PathVariable String id) {
     diagnosticResultService.deleteDiagnosticResult(id);
     return ResponseEntity.noContent().build();
   }
