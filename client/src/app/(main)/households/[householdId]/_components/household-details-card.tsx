@@ -55,15 +55,18 @@ export function HouseholdDetailsCard({
     return (
       listUsersQuery.data?.content.map((user) => ({
         id: user.id,
-        name: user.name,
+        name: user.firstName + " " + user.lastName,
       })) ?? []
     );
   }, [listUsersQuery.data]);
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="col-end-2">
         <CardTitle>My Households</CardTitle>
+        <Button asChild>
+          <Link href={`/households-member`}>Add new member</Link>
+        </Button>
       </CardHeader>
       <CardContent>
         <Table>
@@ -71,6 +74,7 @@ export function HouseholdDetailsCard({
             <TableRow>
               <TableHead className="">Name</TableHead>
               <TableHead>Actions</TableHead>
+              <TableHead>Kick</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -80,6 +84,11 @@ export function HouseholdDetailsCard({
                 <TableCell>
                   <Button asChild>
                     <Link href={`/households/${householdMember.id}`}>View</Link>
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button asChild>
+                    <Link href={`/households/${householdMember.id}`}>Kick</Link>
                   </Button>
                 </TableCell>
               </TableRow>

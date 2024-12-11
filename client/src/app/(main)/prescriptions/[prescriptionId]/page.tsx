@@ -11,7 +11,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarIcon, PillIcon, ClockIcon } from "lucide-react";
-import { Prescription, PrescriptionItem } from "./types/prescription";
 
 // Mock data for demonstration
 const mockPrescription: Prescription = {
