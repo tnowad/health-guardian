@@ -25,6 +25,9 @@ public class Notification {
   @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
   private User user;
 
+  @Column
+  private String title;
+
   @Column(name = "notification_type")
   @Enumerated(EnumType.STRING)
   private NotificationType notificationType;

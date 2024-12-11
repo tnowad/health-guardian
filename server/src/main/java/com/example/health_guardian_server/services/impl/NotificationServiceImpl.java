@@ -6,6 +6,7 @@ import com.example.health_guardian_server.dtos.requests.notification.ListNotific
 import com.example.health_guardian_server.dtos.requests.notification.UpdateNotificationRequest;
 import com.example.health_guardian_server.dtos.responses.SimpleResponse;
 import com.example.health_guardian_server.dtos.responses.notification.NotificationResponse;
+import com.example.health_guardian_server.dtos.responses.notification.UpdateStatusNotificationResponse;
 import com.example.health_guardian_server.entities.Notification;
 import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.entities.VisitSummary;
@@ -163,5 +164,31 @@ public class NotificationServiceImpl implements NotificationService {
     notificationRepository.delete(existingNotification);
     log.info("Notification deleted with id: {}", id);
     return NotificationMapper.toNotificationSimpleResponse(existingNotification);
+  }
+
+  @Override
+  public UpdateStatusNotificationResponse updateStatusNotification(String id) {
+    log.debug("Updating status notification with id: {}", id);
+    Notification existingNotification =
+      notificationRepository
+        .findById(id)
+        .orElseThrow(
+          () -> {
+            log.error("Notification not found with id: {}", id);
+            return new ResourceNotFoundException(
+              "Notification not found with id " + id);
+          });
+    boolean readStatus = existingNotification.isReadStatus();
+    existingNotification.setReadStatus(!readStatus);
+    notificationRepository.save(existingNotification);
+    log.info("Status Notification updated with id: {}", id);
+
+    UpdateStatusNotificationResponse updateStatusNotificationResponse
+      = UpdateStatusNotificationResponse.builder()
+      .id(existingNotification.getId())
+      .message("Status of notification changed to: " + !readStatus)
+      .build();
+
+    return updateStatusNotificationResponse;
   }
 }

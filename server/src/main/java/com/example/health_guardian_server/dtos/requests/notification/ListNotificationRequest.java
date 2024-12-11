@@ -25,6 +25,8 @@ public class ListNotificationRequest
 
   private String userId;
 
+  private String title;
+
   private NotificationType notificationType;
 
   private Timestamp startDate;

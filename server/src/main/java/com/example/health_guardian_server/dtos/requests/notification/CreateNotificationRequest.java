@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 public class CreateNotificationRequest {
   private String userId;
+  private String title;
   private NotificationType notificationType;
   private Date notificationDate;
   private boolean readStatus;

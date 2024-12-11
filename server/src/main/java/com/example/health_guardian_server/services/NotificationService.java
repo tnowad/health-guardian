@@ -8,6 +8,7 @@ import com.example.health_guardian_server.dtos.requests.visit_summary.ListVisitS
 import com.example.health_guardian_server.dtos.requests.visit_summary.UpdateVisitSummaryRequest;
 import com.example.health_guardian_server.dtos.responses.SimpleResponse;
 import com.example.health_guardian_server.dtos.responses.notification.NotificationResponse;
+import com.example.health_guardian_server.dtos.responses.notification.UpdateStatusNotificationResponse;
 import com.example.health_guardian_server.dtos.responses.visit_summary.VisitSummaryResponse;
 import org.springframework.data.domain.Page;
 
@@ -24,4 +25,6 @@ public interface NotificationService {
   NotificationResponse updateNotification(String id, UpdateNotificationRequest request);
 
   SimpleResponse deleteNotification(String id);
+
+  UpdateStatusNotificationResponse updateStatusNotification(String id);
 }

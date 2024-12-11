@@ -148,6 +148,7 @@ public class SeedServiceImpl implements SeedService {
       for (int i = 0; i < 25; i++) {
         Notification notification = Notification.builder()
             .user(x)
+            .title(faker.lorem().sentence(20))
             .notificationType(
                 NotificationType.class
                     .getEnumConstants()[new Random().nextInt(NotificationType.class.getEnumConstants().length)])
@@ -182,111 +183,127 @@ public class SeedServiceImpl implements SeedService {
     // Family History
     List<FamilyHistory> familyHistories = new ArrayList<>();
     for (User x : users) {
-      FamilyHistory familyHistory = FamilyHistory.builder()
+      for (int i = 0; i < 20; i++) {
+        FamilyHistory familyHistory = FamilyHistory.builder()
           .user(x)
           .relation(faker.relationships().any())
           .condition(faker.lorem().sentence(10))
           .description(faker.lorem().sentence(20))
           .build();
-      familyHistories.add(familyHistory);
+        familyHistories.add(familyHistory);
+      }
     }
     familyHistoryRepository.saveAll(familyHistories);
 
     // Immunization
     List<Immunization> immunizations = new ArrayList<>();
     for (User x : users) {
-      Immunization immunization = Immunization.builder()
+      for (int i = 0; i < 20; i++){
+        Immunization immunization = Immunization.builder()
           .user(x)
           .vaccinationDate(faker.date().past(60, TimeUnit.DAYS))
           .vaccineName(faker.medical().medicineName())
           .batchNumber(faker.idNumber().valid())
           .notes(faker.lorem().sentence(20))
           .build();
-      immunizations.add(immunization);
+        immunizations.add(immunization);
+      }
     }
     immunizationRepository.saveAll(immunizations);
 
     // Allergies
     List<Allergy> allergies = new ArrayList<>();
     for (User x : users) {
-      Allergy allergy = Allergy.builder()
+      for (int i = 0; i < 20; i++) {
+        Allergy allergy = Allergy.builder()
           .user(x)
           .allergyName(faker.medical().diseaseName())
           .severity(faker.lorem().sentence(10))
           .reactionDescription(faker.lorem().sentence(20))
           .build();
-      allergies.add(allergy);
+        allergies.add(allergy);
+      }
     }
     allergyRepository.saveAll(allergies);
 
     // Surgery
     List<Surgery> surgeries = new ArrayList<>();
     for (User x : users) {
-      Surgery surgery = Surgery.builder()
+      for (int i = 0; i < 20; i++) {
+        Surgery surgery = Surgery.builder()
           .user(x)
           .date(faker.date().past(90, TimeUnit.DAYS))
           .description(faker.lorem().sentence(10))
           .notes(faker.lorem().sentence(20))
           .build();
-      surgeries.add(surgery);
+        surgeries.add(surgery);
+      }
     }
     surgeryRepository.saveAll(surgeries);
 
     // PhysicianNote
     List<PhysicianNote> physicianNotes = new ArrayList<>();
     for (User x : users) {
-      PhysicianNote physicianNote = PhysicianNote.builder()
+      for (int i = 0; i < 20; i++) {
+        PhysicianNote physicianNote = PhysicianNote.builder()
           .user(x)
           .date(faker.date().past(50, TimeUnit.DAYS))
           .note(faker.medical().symptoms())
           .build();
-      physicianNotes.add(physicianNote);
+        physicianNotes.add(physicianNote);
+      }
     }
     physicianNoteRepository.saveAll(physicianNotes);
 
     // DiagnosticReport
     List<DiagnosticReport> diagnosticReports = new ArrayList<>();
     for (User x : users) {
-      DiagnosticReport diagnosticReport = DiagnosticReport.builder()
+      for (int i = 0; i < 20; i++) {
+        DiagnosticReport diagnosticReport = DiagnosticReport.builder()
           .user(x)
           .reportDate(faker.date().past(60, TimeUnit.DAYS))
           .reportType(
-              ReportType.class
-                  .getEnumConstants()[new Random().nextInt(ReportType.class.getEnumConstants().length)])
+            ReportType.class
+              .getEnumConstants()[new Random().nextInt(ReportType.class.getEnumConstants().length)])
           .summary(faker.lorem().sentence(20))
           .notes(faker.lorem().sentence(20))
           .build();
-      diagnosticReports.add(diagnosticReport);
+        diagnosticReports.add(diagnosticReport);
+      }
     }
     diagnosticReportRepository.saveAll(diagnosticReports);
 
     // DiagnosticResult
     List<DiagnosticResult> diagnosticResults = new ArrayList<>();
     for (User x : users) {
-      DiagnosticResult diagnosticResult = DiagnosticResult.builder()
+      for (int i = 0; i < 20; i++) {
+        DiagnosticResult diagnosticResult = DiagnosticResult.builder()
           .user(x)
           .testName(faker.medical().diseaseName())
           .resultDate(faker.date().past(50, TimeUnit.DAYS))
           .resultValue(faker.lorem().sentence(20))
           .notes(faker.lorem().sentence(20))
           .build();
-      diagnosticResults.add(diagnosticResult);
+        diagnosticResults.add(diagnosticResult);
+      }
     }
     diagnosticResultRepository.saveAll(diagnosticResults);
 
     // Prescription
     List<Prescription> prescriptions = new ArrayList<>();
     for (User x : users) {
-      Prescription prescription = Prescription.builder()
+      for (int i = 0; i < 20; i++) {
+        Prescription prescription = Prescription.builder()
           .user(x)
           .issuedBy("Doctor" + faker.name().fullName())
           .issuedDate(new Timestamp(faker.date().past(30, TimeUnit.DAYS).getTime()))
           .validUntil(faker.date().future(30, TimeUnit.DAYS))
           .status(
-              PrescriptionStatus.class
-                  .getEnumConstants()[new Random().nextInt(PrescriptionStatus.class.getEnumConstants().length)])
+            PrescriptionStatus.class
+              .getEnumConstants()[new Random().nextInt(PrescriptionStatus.class.getEnumConstants().length)])
           .build();
-      prescriptions.add(prescription);
+        prescriptions.add(prescription);
+      }
     }
     prescriptionRepository.saveAll(prescriptions);
 
@@ -317,33 +334,37 @@ public class SeedServiceImpl implements SeedService {
     // Appointment
     List<Appointment> appointments = new ArrayList<>();
     for (User x : users) {
-      Appointment appointment = Appointment.builder()
+      for (int i = 0; i < 20; i++) {
+        Appointment appointment = Appointment.builder()
           .user(x)
           .appointmentDate(faker.date().future(30, TimeUnit.DAYS))
           .reason(faker.lorem().sentence(20))
           .address(faker.address().fullAddress())
           .status(
-              AppointmentStatus.class
-                  .getEnumConstants()[new Random().nextInt(AppointmentStatus.class.getEnumConstants().length)])
+            AppointmentStatus.class
+              .getEnumConstants()[new Random().nextInt(AppointmentStatus.class.getEnumConstants().length)])
           .notes(faker.lorem().sentence(20))
           .build();
-      appointments.add(appointment);
+        appointments.add(appointment);
+      }
     }
     appointmentRepository.saveAll(appointments);
 
     // VisitSummary
     List<VisitSummary> visitSummaries = new ArrayList<>();
     for (User x : users) {
-      VisitSummary visitSummary = VisitSummary.builder()
+      for (int i = 0; i < 20; i++) {
+        VisitSummary visitSummary = VisitSummary.builder()
           .user(x)
           .visitDate(faker.date().past(30, TimeUnit.DAYS))
           .visitType(
-              VisitSummaryType.class
-                  .getEnumConstants()[new Random().nextInt(VisitSummaryType.class.getEnumConstants().length)])
+            VisitSummaryType.class
+              .getEnumConstants()[new Random().nextInt(VisitSummaryType.class.getEnumConstants().length)])
           .summary(faker.lorem().sentence(20))
           .notes(faker.lorem().sentence(20))
           .build();
-      visitSummaries.add(visitSummary);
+        visitSummaries.add(visitSummary);
+      }
     }
     visitSummaryRepository.saveAll(visitSummaries);
 

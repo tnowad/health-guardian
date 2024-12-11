@@ -8,6 +8,7 @@ import com.example.health_guardian_server.dtos.requests.visit_summary.ListVisitS
 import com.example.health_guardian_server.dtos.requests.visit_summary.UpdateVisitSummaryRequest;
 import com.example.health_guardian_server.dtos.responses.SimpleResponse;
 import com.example.health_guardian_server.dtos.responses.notification.NotificationResponse;
+import com.example.health_guardian_server.dtos.responses.notification.UpdateStatusNotificationResponse;
 import com.example.health_guardian_server.dtos.responses.visit_summary.VisitSummaryResponse;
 import com.example.health_guardian_server.entities.Notification;
 import com.example.health_guardian_server.services.NotificationService;
@@ -45,21 +46,26 @@ public class NotificationController {
   }
 
   @PostMapping
-  public ResponseEntity<NotificationResponse> createVisitSummary(
+  public ResponseEntity<NotificationResponse> createNotification(
     @RequestBody CreateNotificationRequest request) {
     NotificationResponse notification = notificationService.createNotification(request);
     return new ResponseEntity<>(notification, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<NotificationResponse> updateAppointment(
+  public ResponseEntity<NotificationResponse> updateNotification(
     @PathVariable String id, @RequestBody UpdateNotificationRequest request) {
     NotificationResponse notification = notificationService.updateNotification(id, request);
     return new ResponseEntity<>(notification, HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<SimpleResponse> deleteAppointment(@PathVariable String id) {
+  public ResponseEntity<SimpleResponse> deleteNotification(@PathVariable String id) {
     return new ResponseEntity<>(notificationService.deleteNotification(id), HttpStatus.OK);
+  }
+
+  @PatchMapping("/{id}")
+  public ResponseEntity<UpdateStatusNotificationResponse> updateStatusNotification(@PathVariable String id) {
+    return new ResponseEntity<>(notificationService.updateStatusNotification(id), HttpStatus.OK);
   }
 }
