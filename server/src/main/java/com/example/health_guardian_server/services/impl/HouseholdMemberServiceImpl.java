@@ -90,6 +90,11 @@ public class HouseholdMemberServiceImpl implements HouseholdMemberService {
   }
 
   @Override
+  public void deleteHouseholdMember(String householdMemberId) {
+
+  }
+
+  @Override
   public void deleteHouseholdMember(String householdMemberId, String householdId) {
     log.debug("Deleting household member with id: {}", householdMemberId);
     var household = householdService.getHouseholdEntity(householdId);
