@@ -2,7 +2,9 @@ package com.example.health_guardian_server.dtos.requests.prescription;
 
 import com.example.health_guardian_server.dtos.requests.PageableRequest;
 import com.example.health_guardian_server.entities.Prescription;
+import com.example.health_guardian_server.entities.enums.PrescriptionStatus;
 import com.example.health_guardian_server.specifications.PrescriptionSpecification;
+import java.util.Date;
 import lombok.Data;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,29 +14,27 @@ import org.springframework.data.jpa.domain.Specification;
 @Data
 public class ListPrescriptionRequest implements PageableRequest<Prescription> {
 
+  private String[] ids;
+
   private Integer page = 0;
 
   private Integer size = 10;
 
-  private String[] sortFields = new String[] {"startDate"};
+  private String[] sortFields = new String[] { "startDate" };
 
-  private Boolean[] desc = new Boolean[] {false};
+  private Boolean[] desc = new Boolean[] { false };
 
-  private String patientId;
+  private String userId;
 
-  private String medicationId;
+  private String issuedBy;
 
-  private String prescribedById;
+  private Date validUntil;
 
-  private String status;
+  private PrescriptionStatus status;
 
-  // private Date startDateFrom;
-  //
-  // private Date startDateTo;
-  //
-  // private Date endDateFrom;
-  //
-  // private Date endDateTo;
+  private Date startDate;
+
+  private Date endDate;
 
   @Override
   public Specification<Prescription> toSpecification() {
@@ -50,11 +50,5 @@ public class ListPrescriptionRequest implements PageableRequest<Prescription> {
           page, size, isDescending ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending());
     }
     return PageRequest.of(page, size);
-  }
-
-  @Override
-  public String[] getIds() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getIds'");
   }
 }

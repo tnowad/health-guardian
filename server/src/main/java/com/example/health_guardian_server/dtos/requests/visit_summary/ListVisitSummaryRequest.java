@@ -13,25 +13,27 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-
 import java.util.Date;
 
 @Data
-public class ListVisitSummaryRequest implements PageableRequest<VisitSummary>, PageableWithIdsRequest<String> {
+public class ListVisitSummaryRequest
+    implements PageableRequest<VisitSummary>, PageableWithIdsRequest<String> {
 
-  String[] ids;
+  private Integer page;
 
-  private Integer page = 0;
+  private Integer size;
 
-  private Integer size = 10;
+  private String[] sortFields;
 
-  private String[] sortFields = new String[] {"visitDate"};
+  private Boolean[] desc;
 
-  private Boolean[] desc = new Boolean[] {false};
+  private String[] ids;
 
-  public String userId;
+  private String userId;
 
-  public Date visitDate;
+  private Date startDate;
+
+  private Date endDate;
 
   private VisitSummaryType visitType;
 
@@ -43,7 +45,6 @@ public class ListVisitSummaryRequest implements PageableRequest<VisitSummary>, P
   public Specification<VisitSummary> toSpecification() {
     return new VisitSummarySpecification(this);
   }
-
   @Override
   public Pageable toPageable() {
     if (sortFields != null && sortFields.length > 0) {
@@ -54,4 +55,5 @@ public class ListVisitSummaryRequest implements PageableRequest<VisitSummary>, P
     }
     return PageRequest.of(page, size); // Default page and size if no sorting
   }
+
 }

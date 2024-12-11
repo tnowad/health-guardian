@@ -12,15 +12,20 @@ public class ListAllergiesRequest
     implements PageableRequest<Allergy>, PageableWithIdsRequest<String> {
 
   String[] ids;
+
   private Integer page = 0;
 
   private Integer size = 10;
 
-  private String[] sortFields = new String[] {"id"};
+  private String[] sortFields = new String[] { "id" };
 
-  private Boolean[] desc = new Boolean[] {false};
+  private Boolean[] desc = new Boolean[] { false };
 
   private String userId;
+
+  private String allergyName;
+
+  private String severity;
 
   @Override
   public Specification<Allergy> toSpecification() {

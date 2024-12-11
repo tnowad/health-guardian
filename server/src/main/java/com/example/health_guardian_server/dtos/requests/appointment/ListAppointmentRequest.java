@@ -15,25 +15,29 @@ import org.springframework.data.jpa.domain.Specification;
 @Data
 public class ListAppointmentRequest
     implements PageableRequest<Appointment>, PageableWithIdsRequest<String> {
-  String[] ids;
+  private Integer page;
 
-  private Integer page = 0;
+  private Integer size;
 
-  private Integer size = 10;
+  private String[] sortFields;
 
-  private String[] sortFields = new String[] {"appointmentDate"};
+  private Boolean[] desc;
 
-  private Boolean[] desc = new Boolean[] {false};
+  private String[] ids;
 
-  private String patientId;
+  private String userId;
 
-  private String doctorId;
+  private Date startDate;
 
-  private Date appointmentDate;
+  private Date endDate;
 
-  private String reasonForVisit;
+  private String reason;
+
+  private String address;
 
   private AppointmentStatus status;
+
+  private String notes;
 
   @Override
   public Specification<Appointment> toSpecification() {

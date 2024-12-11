@@ -16,40 +16,41 @@ public class AppointmentSpecification implements Specification<Appointment> {
   @Override
   public Predicate toPredicate(
       Root<Appointment> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-
     List<Predicate> predicates = new ArrayList<>();
+
+    if (request.getUserId() != null && !request.getUserId().isEmpty()) {
+      predicates.add(criteriaBuilder.equal(root.get("user").get("id"), request.getUserId()));
+    }
+
+    if (request.getStartDate() != null) {
+      predicates.add(
+          criteriaBuilder.greaterThanOrEqualTo(
+              root.get("appointmentDate"), request.getStartDate()));
+    }
+
+    if (request.getEndDate() != null) {
+      predicates.add(
+          criteriaBuilder.lessThanOrEqualTo(root.get("appointmentDate"), request.getEndDate()));
+    }
+
+    if (request.getReason() != null && !request.getReason().isEmpty()) {
+      predicates.add(criteriaBuilder.like(root.get("reason"), "%" + request.getReason() + "%"));
+    }
+
+    if (request.getAddress() != null && !request.getAddress().isEmpty()) {
+      predicates.add(criteriaBuilder.like(root.get("address"), "%" + request.getAddress() + "%"));
+    }
+
+    if (request.getStatus() != null) {
+      predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
+    }
+
+    if (request.getNotes() != null && !request.getNotes().isEmpty()) {
+      predicates.add(criteriaBuilder.like(root.get("notes"), "%" + request.getNotes() + "%"));
+    }
 
     if (request.getIds() != null && request.getIds().length > 0) {
       predicates.add(root.get("id").in((Object[]) request.getIds()));
-    }
-
-    // Filter by patient ID
-    if (request.getPatientId() != null && !request.getPatientId().isEmpty()) {
-      predicates.add(criteriaBuilder.equal(root.get("patient").get("id"), request.getPatientId()));
-    }
-
-    // Filter by doctor ID
-    if (request.getDoctorId() != null && !request.getDoctorId().isEmpty()) {
-      predicates.add(criteriaBuilder.equal(root.get("doctor").get("id"), request.getDoctorId()));
-    }
-
-    // Filter by appointment date
-    if (request.getAppointmentDate() != null) {
-      predicates.add(
-          criteriaBuilder.equal(root.get("appointmentDate"), request.getAppointmentDate()));
-    }
-
-    // Filter by reason for visit
-    if (request.getReasonForVisit() != null && !request.getReasonForVisit().isEmpty()) {
-      predicates.add(
-          criteriaBuilder.like(
-              criteriaBuilder.lower(root.get("reasonForVisit")),
-              "%" + request.getReasonForVisit().toLowerCase() + "%"));
-    }
-
-    // Filter by appointment status
-    if (request.getStatus() != null) {
-      predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
     }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

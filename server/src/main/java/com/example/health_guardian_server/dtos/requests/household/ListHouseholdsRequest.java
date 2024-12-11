@@ -10,16 +10,19 @@ import org.springframework.data.jpa.domain.Specification;
 @Data
 public class ListHouseholdsRequest
     implements PageableRequest<Household>, PageableWithIdsRequest<String> {
-  String[] ids;
-  private Integer page = 0;
+  private Integer page;
 
-  private Integer size = 10;
+  private Integer size;
 
-  private String[] sortFields = new String[] {"id"};
+  private String[] sortFields;
 
-  private Boolean[] desc = new Boolean[] {false};
+  private Boolean[] desc;
 
-  private String headPatientId;
+  private String[] ids;
+
+  private String name;
+
+  private String headId;
 
   @Override
   public Specification<Household> toSpecification() {

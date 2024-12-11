@@ -8,10 +8,10 @@ import com.example.health_guardian_server.dtos.enums.VerificationType;
 import com.example.health_guardian_server.dtos.requests.auth.RefreshTokenRequest;
 import com.example.health_guardian_server.dtos.requests.auth.SignInRequest;
 import com.example.health_guardian_server.dtos.requests.auth.SignUpRequest;
-import com.example.health_guardian_server.dtos.responses.user.GetCurrentUserPermissionsResponse;
 import com.example.health_guardian_server.dtos.responses.auth.RefreshTokenResponse;
 import com.example.health_guardian_server.dtos.responses.auth.SignInResponse;
 import com.example.health_guardian_server.dtos.responses.auth.SignUpResponse;
+import com.example.health_guardian_server.dtos.responses.user.GetCurrentUserPermissionsResponse;
 import com.example.health_guardian_server.entities.LocalProvider;
 import com.example.health_guardian_server.entities.User;
 import com.example.health_guardian_server.entities.Verification;
@@ -125,10 +125,10 @@ public class AuthServiceImpl implements AuthService {
             .user(user)
             .isVerified(false)
             .build());
-    kafkaTemplate.send(KAFKA_TOPIC_SEND_MAIL, "VERIFY_EMAIL_BY_CODE:" + request.getEmail());
-
+    sendEmail(request.getEmail(), VERIFY_EMAIL_BY_CODE);
     log.info("Sign-up successful for email: {}", request.getEmail());
-    return SignUpResponse.builder().message("Sign up successfully\nPlease verify code in your mail. Thank you!")
+    return SignUpResponse.builder()
+        .message("Sign up successfully\nPlease verify code in your mail. Thank you!")
         .build();
   }
 
@@ -137,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
     Verification verification = (code != null)
         ? verificationRepository
             .findByCode(code)
-            .orElseThrow(() -> new RuntimeException("Invalid verification"))
+            .orElseThrow(() -> new RuntimeException("Wrong code"))
         : verificationRepository
             .findById(token)
             .orElseThrow(() -> new RuntimeException("Invalid verification"));
@@ -188,14 +188,7 @@ public class AuthServiceImpl implements AuthService {
             .build());
 
     kafkaTemplate.send(
-        KAFKA_TOPIC_SEND_MAIL,
-        verificationType
-            + ":"
-            + email
-            + ":"
-            + verification.getToken()
-            + ":"
-            + verification.getCode());
+        KAFKA_TOPIC_SEND_MAIL, verificationType + ":" + email + ":" + verification.getCode());
   }
 
   public static String generateVerificationCode(int length) {
