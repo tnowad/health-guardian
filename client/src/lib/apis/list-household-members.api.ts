@@ -12,6 +12,7 @@ import { isAxiosError } from "axios";
 export const listHouseholdMembersQuerySchema = pageableRequestSchema.extend({
   relationshipToPatient: z.string().optional(),
   memberId: z.string().uuid().optional(),
+  householdId: z.string().uuid().optional(),
 });
 export type ListHouseholdMembersQuerySchema = z.infer<
   typeof listHouseholdMembersQuerySchema

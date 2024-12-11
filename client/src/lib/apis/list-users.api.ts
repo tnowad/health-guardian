@@ -26,18 +26,16 @@ export type ListUsersErrorResponseSchema = z.infer<
 >;
 
 export async function listUsersApi(query: ListUsersQuerySchema) {
-  const response = await apiClient.get("/users", query);
-  return listUsersResponseSchema.parse(response.data);
+  const response = await apiClient.get<ListUsersResponseSchema>(
+    "/users",
+    query,
+  );
+  return response.data;
 }
 
 export function createListUsersQueryOptions(query: ListUsersQuerySchema) {
   const queryKey = ["users", query] as const;
-  return queryOptions<
-    ListUsersResponseSchema,
-    ListUsersErrorResponseSchema,
-    ListUsersQuerySchema,
-    typeof queryKey
-  >({
+  return queryOptions<ListUsersResponseSchema>({
     queryKey,
     queryFn: () => listUsersApi(listUsersQuerySchema.parse(query)),
     throwOnError: isAxiosError,
