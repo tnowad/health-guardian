@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 @RequiredArgsConstructor
 public class AllergySpecification implements Specification<Allergy> {
+
   private final ListAllergiesRequest request;
 
   @Override
@@ -23,6 +24,22 @@ public class AllergySpecification implements Specification<Allergy> {
     // Filter by user ID
     if (request.getUserId() != null && !request.getUserId().isEmpty()) {
       predicates.add(criteriaBuilder.equal(root.get("user").get("id"), request.getUserId()));
+    }
+
+    // Filter by allergy name (partial match)
+    if (request.getAllergyName() != null && !request.getAllergyName().isEmpty()) {
+      predicates.add(
+          criteriaBuilder.like(root.get("allergyName"), "%" + request.getAllergyName() + "%"));
+    }
+
+    // Filter by severity
+    if (request.getSeverity() != null && !request.getSeverity().isEmpty()) {
+      predicates.add(criteriaBuilder.equal(root.get("severity"), request.getSeverity()));
+    }
+
+    // Filter by specific IDs
+    if (request.getIds() != null && request.getIds().length > 0) {
+      predicates.add(root.get("id").in((Object[]) request.getIds()));
     }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

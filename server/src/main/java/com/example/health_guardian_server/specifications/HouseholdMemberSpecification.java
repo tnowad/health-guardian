@@ -1,7 +1,6 @@
 package com.example.health_guardian_server.specifications;
 
 import com.example.health_guardian_server.dtos.requests.household.ListHouseholdMembersRequest;
-import com.example.health_guardian_server.entities.Household;
 import com.example.health_guardian_server.entities.HouseholdMember;
 import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
@@ -19,18 +18,17 @@ public class HouseholdMemberSpecification implements Specification<HouseholdMemb
       Root<HouseholdMember> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     List<Predicate> predicates = new ArrayList<>();
 
-    // Filter by household ID
     if (request.getHouseholdId() != null && !request.getHouseholdId().isEmpty()) {
-      Join<HouseholdMember, Household> householdJoin = root.join("household");
-      predicates.add(criteriaBuilder.equal(householdJoin.get("id"), request.getHouseholdId()));
-    }
-    // Filter by relationship to patient
-    if (request.getRelationshipToPatient() != null
-        && !request.getRelationshipToPatient().isEmpty()) {
       predicates.add(
-          criteriaBuilder.like(
-              criteriaBuilder.lower(root.get("relationshipToPatient")),
-              "%" + request.getRelationshipToPatient().toLowerCase() + "%"));
+          criteriaBuilder.equal(root.get("household").get("id"), request.getHouseholdId()));
+    }
+
+    if (request.getUserId() != null && !request.getUserId().isEmpty()) {
+      predicates.add(criteriaBuilder.equal(root.get("user").get("id"), request.getUserId()));
+    }
+
+    if (request.getIds() != null && request.getIds().length > 0) {
+      predicates.add(root.get("id").in((Object[]) request.getIds()));
     }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

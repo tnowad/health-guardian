@@ -1,7 +1,7 @@
 package com.example.health_guardian_server.specifications;
 
-import com.example.health_guardian_server.dtos.requests.pass_condition.ListPastConditionsRequest;
-import com.example.health_guardian_server.entities.PastCondition;
+import com.example.health_guardian_server.dtos.requests.physican_note.ListPhysicianNotesRequest;
+import com.example.health_guardian_server.entities.PhysicianNote;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -12,13 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 @RequiredArgsConstructor
-public class PastConditionSpecification implements Specification<PastCondition> {
-
-  private final ListPastConditionsRequest request;
+public class PhysicianNoteSpecification implements Specification<PhysicianNote> {
+  private final ListPhysicianNotesRequest request;
 
   @Override
   public Predicate toPredicate(
-      Root<PastCondition> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+      Root<PhysicianNote> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     List<Predicate> predicates = new ArrayList<>();
 
     // Filter by user ID
@@ -26,21 +25,19 @@ public class PastConditionSpecification implements Specification<PastCondition> 
       predicates.add(criteriaBuilder.equal(root.get("user").get("id"), request.getUserId()));
     }
 
-    // Filter by condition name (partial match)
-    if (request.getCondition() != null && !request.getCondition().isEmpty()) {
-      predicates.add(
-          criteriaBuilder.like(root.get("condition"), "%" + request.getCondition() + "%"));
+    // Filter by note (partial match)
+    if (request.getNote() != null && !request.getNote().isEmpty()) {
+      predicates.add(criteriaBuilder.like(root.get("note"), "%" + request.getNote() + "%"));
     }
 
-    // Filter by diagnosis date range
+    // Filter by date range
     if (request.getStartDate() != null) {
       predicates.add(
-          criteriaBuilder.greaterThanOrEqualTo(root.get("dateDiagnosed"), request.getStartDate()));
+          criteriaBuilder.greaterThanOrEqualTo(root.get("date"), request.getStartDate()));
     }
 
     if (request.getEndDate() != null) {
-      predicates.add(
-          criteriaBuilder.lessThanOrEqualTo(root.get("dateDiagnosed"), request.getEndDate()));
+      predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), request.getEndDate()));
     }
 
     // Filter by specific IDs

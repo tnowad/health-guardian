@@ -25,6 +25,27 @@ public class SurgerySpecification implements Specification<Surgery> {
       predicates.add(criteriaBuilder.equal(root.get("user").get("id"), request.getUserId()));
     }
 
+    // Filter by surgery description (partial match)
+    if (request.getDescription() != null && !request.getDescription().isEmpty()) {
+      predicates.add(
+          criteriaBuilder.like(root.get("description"), "%" + request.getDescription() + "%"));
+    }
+
+    // Filter by surgery date range
+    if (request.getStartDate() != null) {
+      predicates.add(
+          criteriaBuilder.greaterThanOrEqualTo(root.get("date"), request.getStartDate()));
+    }
+
+    if (request.getEndDate() != null) {
+      predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), request.getEndDate()));
+    }
+
+    // Filter by specific IDs
+    if (request.getIds() != null && request.getIds().length > 0) {
+      predicates.add(root.get("id").in((Object[]) request.getIds()));
+    }
+
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
   }
 }

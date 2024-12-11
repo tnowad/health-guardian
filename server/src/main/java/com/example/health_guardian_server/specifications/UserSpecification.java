@@ -13,27 +13,36 @@ import org.springframework.data.jpa.domain.Specification;
 
 @RequiredArgsConstructor
 public class UserSpecification implements Specification<User> {
-  String search;
-  String type;
-  String[] ids;
-
-  public UserSpecification(ListUsersRequest request) {
-    this.search = request.getSearch();
-    this.type = request.getType();
-    this.ids = request.getIds();
-  }
+  private final ListUsersRequest request;
 
   @Override
   public Predicate toPredicate(
       Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     List<Predicate> predicates = new ArrayList<>();
 
-    if (search != null && !search.isEmpty()) {
-      predicates.add(criteriaBuilder.like(root.get("id"), "%" + search + "%"));
+    if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+      predicates.add(criteriaBuilder.like(root.get("email"), "%" + request.getEmail() + "%"));
     }
 
-    if (type != null && !type.isEmpty()) {
-      predicates.add(criteriaBuilder.equal(root.get("type"), type));
+    if (request.getFirstName() != null && !request.getFirstName().isEmpty()) {
+      predicates.add(
+          criteriaBuilder.like(root.get("firstName"), "%" + request.getFirstName() + "%"));
+    }
+
+    if (request.getLastName() != null && !request.getLastName().isEmpty()) {
+      predicates.add(criteriaBuilder.like(root.get("lastName"), "%" + request.getLastName() + "%"));
+    }
+
+    if (request.getAddress() != null && !request.getAddress().isEmpty()) {
+      predicates.add(criteriaBuilder.like(root.get("address"), "%" + request.getAddress() + "%"));
+    }
+
+    if (request.getGender() != null) {
+      predicates.add(criteriaBuilder.equal(root.get("gender"), request.getGender()));
+    }
+
+    if (request.getIds() != null && request.getIds().length > 0) {
+      predicates.add(root.get("id").in((Object[]) request.getIds()));
     }
 
     return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
