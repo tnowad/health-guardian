@@ -27,8 +27,8 @@ export const listSurgeriesErrorResponseSchema = z.discriminatedUnion("type", [
 export type ListSurgeriesErrorResponseSchema = z.infer<typeof listSurgeriesErrorResponseSchema>;
 
 export async function listSurgeriesApi(query: ListSurgeriesQuerySchema) {
-    const response = await apiClient.get("/surgeries", query);
-    return listSurgeriesResponseSchema.parse(response.data);
+    const response = await apiClient.get<ListSurgeriesResponseSchema>("/surgeries", query);
+    return response.data;
 }
 
 export function createListSurgeriesQueryOptions(

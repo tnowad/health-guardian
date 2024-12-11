@@ -70,12 +70,11 @@ export default function AllergyScreen() {
                   <td className="border border-gray-300 p-2 text-center">
                     {currentUserInformationQuery.data.userId ===
                     allergy.userId ? (
-                      <Link
-                        href={`/allergies/${allergy.id}`}
-                        className="text-blue-500 hover:underline"
-                      >
-                        Edit
-                      </Link>
+                      <Button asChild>
+                        <Link href={`/allergies/edit/${allergy.id}`} className="text-blue-500 hover:underline">
+                          Edit
+                        </Link>
+                      </Button>
                     ) : (
                       "-"
                     )}
