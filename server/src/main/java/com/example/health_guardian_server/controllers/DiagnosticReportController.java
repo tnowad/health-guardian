@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/diagnostic-responses")
+@RequestMapping("/diagnostic-reports")
 public class DiagnosticReportController {
   private final DiagnosticReportService diagnosticReportService;
 
   @GetMapping
-  public ResponseEntity<Page<DiagnosticReportResponse>> listDiagnosticReports(@ModelAttribute ListDiagnosticReportRequest request) {
+  public ResponseEntity<Page<DiagnosticReportResponse>> listDiagnosticReports(
+      @ModelAttribute ListDiagnosticReportRequest request) {
     Page<DiagnosticReportResponse> diagnosticReports = diagnosticReportService.getAllDiagnosticReports(request);
     return ResponseEntity.ok(diagnosticReports);
   }
@@ -28,13 +29,15 @@ public class DiagnosticReportController {
   }
 
   @PostMapping
-  public ResponseEntity<DiagnosticReportResponse> createDiagnosticReport(@RequestBody CreateDiagnosticReportRequest request) {
+  public ResponseEntity<DiagnosticReportResponse> createDiagnosticReport(
+      @RequestBody CreateDiagnosticReportRequest request) {
     DiagnosticReportResponse diagnosticReport = diagnosticReportService.createDiagnosticReport(request);
     return ResponseEntity.ok(diagnosticReport);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<DiagnosticReportResponse> updateDiagnosticReport(@PathVariable String id, @RequestBody CreateDiagnosticReportRequest request) {
+  public ResponseEntity<DiagnosticReportResponse> updateDiagnosticReport(@PathVariable String id,
+      @RequestBody CreateDiagnosticReportRequest request) {
     DiagnosticReportResponse diagnosticReport = diagnosticReportService.updateDiagnosticReport(id, request);
     return ResponseEntity.ok(diagnosticReport);
   }

@@ -6,7 +6,7 @@ import { unauthorizedResponseSchema } from "@/lib/schemas/error.schema";
 import { apiClient } from "@/lib/client";
 
 export const deleteAppointmentParamsSchema = z.object({
-  appointmentId: z.string().uuid(),
+  Id: z.string().uuid(),
 });
 export type DeleteAppointmentParamsSchema = z.infer<
   typeof deleteAppointmentParamsSchema
@@ -32,7 +32,7 @@ export async function deleteAppointmentApi(
   params: DeleteAppointmentParamsSchema
 ): Promise<DeleteAppointmentResponseSchema> {
   const response = await apiClient.delete<DeleteAppointmentResponseSchema>(
-    `/appointments/${params.appointmentId}`
+    `/appointments/${params.Id}`
   );
   return deleteAppointmentResponseSchema.parse(response.data);
 }
