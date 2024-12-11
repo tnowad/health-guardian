@@ -50,11 +50,11 @@ const data = {
         },
         {
           title: "Household",
-          url: "#",
+          url: "/households",
         },
         {
           title: "Notification",
-          url: "#",
+          url: "/notifications",
         },
       ],
     },
@@ -65,23 +65,23 @@ const data = {
       items: [
         {
           title: "Medical History",
-          url: "#",
+          url: "/medical-history",
         },
         {
           title: "Prescription",
-          url: "#",
+          url: "/prescriptions",
         },
         {
           title: "Physician Notes",
-          url: "#",
+          url: "/physician-notes",
         },
         {
           title: "Surgeries",
-          url: "#",
+          url: "/surgeries",
         },
         {
           title: "Vaccination",
-          url: "#",
+          url: "/vacinations",
         },
       ],
     },
@@ -92,19 +92,19 @@ const data = {
       items: [
         {
           title: "Past Conditions",
-          url: "#",
+          url: "/past-conditions",
         },
         {
           title: "Allergies",
-          url: "#",
+          url: "/allergies",
         },
         {
           title: "Family History",
-          url: "#",
+          url: "/family-history",
         },
         {
           title: "Diagnosis Results",
-          url: "#",
+          url: "/diagnois-results",
         },
       ],
     },
@@ -131,7 +131,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const getCurrentUserInformationQuery = useQuery(
-    createGetCurrentUserInformationQueryOptions()
+    createGetCurrentUserInformationQueryOptions(),
   );
 
   const user = {

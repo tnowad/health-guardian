@@ -11,10 +11,12 @@ import { isAxiosError } from "axios";
 
 export const listPrescriptionsQuerySchema = pageableRequestSchema.extend({
   ids: z.array(z.string().uuid()).optional(),
-  patientId: z.string().uuid().optional(),
-  medicationId: z.string().uuid().optional(),
-  prescribedById: z.string().uuid().optional(),
-  status: z.enum(["active", "inactive"]).optional(),
+  userId: z.string().uuid().optional(),
+  issuedBy: z.string().uuid().optional(),
+  validUntil: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  status: z.enum(["ACTIVE", "COMPLETED", "EXPIRED"]).optional(),
 });
 export type ListPrescriptionsQuerySchema = z.infer<
   typeof listPrescriptionsQuerySchema
@@ -37,8 +39,11 @@ export type ListPrescriptionsErrorResponseSchema = z.infer<
 export async function listPrescriptionsApi(
   query: ListPrescriptionsQuerySchema,
 ) {
-  const response = await apiClient.get("/prescriptions", query);
-  return listPrescriptionsResponseSchema.parse(response.data);
+  const response = await apiClient.get<ListPrescriptionsResponseSchema>(
+    "/prescriptions",
+    query,
+  );
+  return response.data;
 }
 
 export function createListPrescriptionsQueryOptions(
@@ -50,6 +55,6 @@ export function createListPrescriptionsQueryOptions(
     queryFn: () =>
       listPrescriptionsApi(listPrescriptionsQuerySchema.parse(query)),
     throwOnError: isAxiosError,
-    enabled: !!query.patientId,
+    enabled: !!query.userId,
   });
 }
