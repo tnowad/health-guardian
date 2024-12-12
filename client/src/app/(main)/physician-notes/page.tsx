@@ -40,48 +40,25 @@ export interface PhysicianNote {
   note: string;
 }
 
-export const physicianNotesData: PhysicianNote[] = [
-  {
-    id: "PN001",
-    date: new Date(2023, 5, 15),
-    note: "Patient reported improvement in sleep patterns. Recommended continuing current medication.",
-  },
-  {
-    id: "PN002",
-    date: new Date(2023, 5, 20),
-    note: "Follow-up on blood pressure. Readings have stabilized. Advised on importance of regular exercise.",
-  },
-  {
-    id: "PN003",
-    date: new Date(2023, 5, 25),
-    note: "Discussed diet modifications to help manage cholesterol levels. Scheduled lipid panel for next month.",
-  },
-  {
-    id: "PN004",
-    date: new Date(2023, 6, 1),
-    note: "Annual physical examination. All vitals within normal range. Recommended flu shot for upcoming season.",
-  },
-];
-
 export default function PhysicianNotesScreen() {
   //   const [physicianNotes, setPhysicianNotes] =
   //     useState<PhysicianNote[]>(physicianNotesData);
 
   const currentUserInformationQuery = useSuspenseQuery(
-    createGetCurrentUserInformationQueryOptions()
+    createGetCurrentUserInformationQueryOptions(),
   );
 
   const listPhysicianNotesQuery = useQuery(
     createListPhysicianNotesQueryOptions({
       userId: currentUserInformationQuery.data?.userId,
-    })
+    }),
   );
 
   const physicianNotes = listPhysicianNotesQuery.data?.content ?? [];
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<PhysicianNoteSchema | null>(
-    null
+    null,
   );
   const [newNote, setNewNote] = useState<Partial<PhysicianNoteSchema>>({
     id: "",
@@ -89,10 +66,10 @@ export default function PhysicianNotesScreen() {
     note: "",
   });
   const [filterStartDate, setFilterStartDate] = useState<Date | undefined>(
-    undefined
+    undefined,
   );
   const [filterEndDate, setFilterEndDate] = useState<Date | undefined>(
-    undefined
+    undefined,
   );
   const [filterNote, setFilterNote] = useState("");
   const [filteredNotes, setFilteredNotes] =
@@ -121,8 +98,8 @@ export default function PhysicianNotesScreen() {
           physicianNotes.map((note) =>
             note.id === editingNote.id
               ? { ...note, ...(newNote as PhysicianNoteSchema) }
-              : note
-          )
+              : note,
+          ),
         );
       } else {
         setPhysicianNotes([...physicianNotes, newNote as PhysicianNoteSchema]);
@@ -142,7 +119,7 @@ export default function PhysicianNotesScreen() {
       (note) =>
         (!filterStartDate || note.date >= filterStartDate) &&
         (!filterEndDate || note.date <= filterEndDate) &&
-        note.note.toLowerCase().includes(filterNote.toLowerCase())
+        note.note.toLowerCase().includes(filterNote.toLowerCase()),
     );
     setFilteredNotes(filtered);
   };
