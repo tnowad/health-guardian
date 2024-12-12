@@ -40,7 +40,7 @@ export default function ListPrescriptions() {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Your Prescriptions</h1>
       <Button asChild className="w-full">
-        <Link href={`/households/create`}>Create new prescription</Link>
+        <Link href={`/prescriptions/create`}>Create new prescription</Link>
       </Button>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
