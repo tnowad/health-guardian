@@ -11,9 +11,13 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 import { createListSurgeriesQueryOptions } from "@/lib/apis/list-surgeries.api"; // Custom API for surgeries
 import { SurgerySchema } from "@/lib/schemas/surgery.schema"; // Import the Surgery schema
-
+import { useSearchParams } from "next/navigation";
 export default function SurgeryScreen() {
   // Get current user information
+
+  const searchParams = useSearchParams()
+  const userIdSearch = searchParams.get('as')
+
   const currentUserInformationQuery = useSuspenseQuery(
     createGetCurrentUserInformationQueryOptions()
   );
@@ -21,7 +25,7 @@ export default function SurgeryScreen() {
   // Get list of surgeries for the user
   const listSurgeriesQuery = useQuery(
     createListSurgeriesQueryOptions({
-      userId: currentUserInformationQuery.data?.userId,
+        userId: userIdSearch ||  currentUserInformationQuery.data?.userId,
     })
   );
 

@@ -4,7 +4,11 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createListAllergiesQueryOptions } from "@/lib/apis/list-allergies.api";
 import { createListDiagnosticReportsQueryOptions } from "@/lib/apis/list-diagnostic-report.api";
 import { createListFamilyHistoriesQueryOptions } from "@/lib/apis/(family-history)/list-family-histories.api";
+import { useSearchParams } from 'next/navigation'
+
 export default function MedicalStatus() {
+  const searchParams = useSearchParams()
+  const userIdSearch = searchParams.get('as')
 
   const currentUserInformationQuery = useSuspenseQuery(
     createGetCurrentUserInformationQueryOptions(),
@@ -12,19 +16,19 @@ export default function MedicalStatus() {
 
   const listAllergiesQuery = useQuery(
     createListAllergiesQueryOptions({
-      userId: currentUserInformationQuery.data?.userId,
+      userId: userIdSearch ||  currentUserInformationQuery.data?.userId,
     }),
   );
 
   const listDiagnosesQuery = useQuery(
     createListDiagnosticReportsQueryOptions({
-      userId: currentUserInformationQuery.data?.userId,
+      userId: userIdSearch ||  currentUserInformationQuery.data?.userId,
     }),
   );
 
   const listHistoryQuery = useQuery(
     createListFamilyHistoriesQueryOptions({
-      userId: currentUserInformationQuery.data?.userId,
+      userId: userIdSearch ||  currentUserInformationQuery.data?.userId,
     }),
   );
 

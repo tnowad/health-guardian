@@ -11,9 +11,13 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 import { createListImmunizationsQueryOptions } from "@/lib/apis/list-immunizations.api"; // Custom API for surgeries
 import { ImmunizationSchema } from "@/lib/schemas/immunization.schema"; // Import the Surgery schema
-
+import { useSearchParams } from "next/navigation";
 export default function VaccinationScreen() {
   // Get current user information
+
+    const searchParams = useSearchParams()
+    const userIdSearch = searchParams.get('as')
+
   const currentUserInformationQuery = useSuspenseQuery(
     createGetCurrentUserInformationQueryOptions()
   );
@@ -21,7 +25,7 @@ export default function VaccinationScreen() {
   // Get list of surgeries for the user
   const listSurgeriesQuery = useQuery(
     createListImmunizationsQueryOptions({
-      userId: currentUserInformationQuery.data?.userId,
+        userId: userIdSearch ||  currentUserInformationQuery.data?.userId,
     })
   );
 
