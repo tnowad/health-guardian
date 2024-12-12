@@ -1,9 +1,8 @@
 package com.example.health_guardian_server.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.Date;
+import lombok.*;
 
 @Entity
 @Table(name = "diagnostic_results")
@@ -35,4 +34,7 @@ public class DiagnosticResult {
 
   @Column
   private String notes;
+
+  @Column
+  private String file;
 }

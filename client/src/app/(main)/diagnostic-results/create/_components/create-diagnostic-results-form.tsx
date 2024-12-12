@@ -142,7 +142,7 @@ export function CreateDiagnosticResultsForm() {
             />
             <FormField
               control={createDiagnosticResultsForm.control}
-              name="files"
+              name="file"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Avatar</FormLabel>

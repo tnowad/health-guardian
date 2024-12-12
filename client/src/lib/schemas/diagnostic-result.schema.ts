@@ -6,7 +6,7 @@ export const diagnosticResultSchema = z.object({
   testName: z.string(),
   resultDate: z.string().datetime(),
   resultValue: z.string(),
-  files: z.array(z.string()).optional(),
+  file: z.string().optional(),
   notes: z.string().optional(),
 });
 

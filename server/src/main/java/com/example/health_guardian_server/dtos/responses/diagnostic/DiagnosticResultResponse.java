@@ -1,11 +1,10 @@
 package com.example.health_guardian_server.dtos.responses.diagnostic;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Builder
 @Data
@@ -18,4 +17,5 @@ public class DiagnosticResultResponse {
   private Date resultDate;
   private String resultValue;
   private String notes;
+  private String file;
 }

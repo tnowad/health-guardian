@@ -8,13 +8,13 @@ import { createListDiagnosticResultsQueryOptions } from "@/lib/apis/list-diagnos
 
 export default function DiagnosticResultScreen() {
   const currentUserInformationQuery = useSuspenseQuery(
-    createGetCurrentUserInformationQueryOptions()
+    createGetCurrentUserInformationQueryOptions(),
   );
 
   const listDiagnosticReportsQuery = useQuery(
     createListDiagnosticResultsQueryOptions({
       userId: currentUserInformationQuery.data?.userId,
-    })
+    }),
   );
 
   if (listDiagnosticReportsQuery.error) {
@@ -41,7 +41,7 @@ export default function DiagnosticResultScreen() {
       </CardHeader>
       <CardContent>
         <Button asChild>
-          <Link href="/diagnostic-reports/create">
+          <Link href="/diagnostic-results/create">
             Create new diagnostic results
           </Link>
         </Button>
@@ -76,10 +76,10 @@ export default function DiagnosticResultScreen() {
                   </td>
                   <td className="border border-gray-300 p-2 text-center">
                     {currentUserInformationQuery.data.userId ===
-                    report.userId ? (
+                      report.userId ? (
                       <Button asChild>
                         <Link
-                          href={`/diagnostic-reports/edit/${report.id}`}
+                          href={`/diagnostic-results/edit/${report.id}`}
                           className="text-blue-500 hover:underline"
                         >
                           Edit

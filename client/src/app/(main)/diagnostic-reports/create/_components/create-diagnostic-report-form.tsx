@@ -168,27 +168,6 @@ export function CreateDiagnosticReportForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={createDiagnosticReportForm.control}
-              name="files"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Avatar</FormLabel>
-                  <FormControl>
-                    <UploadFileInput
-                      {...field}
-                      onChange={(value) => {
-                        field.onChange(value.id);
-                      }}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Upload an image to represent your household.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full">
