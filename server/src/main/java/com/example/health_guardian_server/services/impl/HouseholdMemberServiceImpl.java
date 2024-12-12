@@ -96,7 +96,10 @@ public class HouseholdMemberServiceImpl implements HouseholdMemberService {
 
   @Override
   public void deleteHouseholdMember(String householdMemberId) {
-
+    householdMemberRepository.findById(householdMemberId).orElseThrow(
+      () -> new ResourceNotFoundException("Household member not found with id " + householdMemberId)
+    );
+    householdMemberRepository.deleteById(householdMemberId);
   }
 
   @Override
