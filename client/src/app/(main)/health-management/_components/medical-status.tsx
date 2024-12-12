@@ -1,18 +1,39 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-interface MedicalInfo {
-  diagnoses: string[];
-  allergies: string[];
-  history: string[];
-}
-
-const mockMedicalInfo: MedicalInfo = {
-  diagnoses: ["Hypertension", "Type 2 Diabetes"],
-  allergies: ["Penicillin", "Peanuts"],
-  history: ["Appendectomy (2015)", "Fractured left arm (2010)"],
-};
-
+import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { createListAllergiesQueryOptions } from "@/lib/apis/list-allergies.api";
+import { createListDiagnosticReportsQueryOptions } from "@/lib/apis/list-diagnostic-report.api";
+import { createListFamilyHistoriesQueryOptions } from "@/lib/apis/(family-history)/list-family-histories.api";
 export default function MedicalStatus() {
+
+  const currentUserInformationQuery = useSuspenseQuery(
+    createGetCurrentUserInformationQueryOptions(),
+  );
+
+  const listAllergiesQuery = useQuery(
+    createListAllergiesQueryOptions({
+      userId: currentUserInformationQuery.data?.userId,
+    }),
+  );
+
+  const listDiagnosesQuery = useQuery(
+    createListDiagnosticReportsQueryOptions({
+      userId: currentUserInformationQuery.data?.userId,
+    }),
+  );
+
+  const listHistoryQuery = useQuery(
+    createListFamilyHistoriesQueryOptions({
+      userId: currentUserInformationQuery.data?.userId,
+    }),
+  );
+
+  const allergies = listAllergiesQuery.data?.content ?? [];
+
+  const diagnoses = listDiagnosesQuery.data?.content ?? [];
+
+  const histories = listHistoryQuery.data?.content ?? [];
+
   return (
     <div className="grid gap-6 md:grid-cols-3">
       <Card>
@@ -21,8 +42,8 @@ export default function MedicalStatus() {
         </CardHeader>
         <CardContent>
           <ul className="list-disc pl-5">
-            {mockMedicalInfo.diagnoses.map((diagnosis, index) => (
-              <li key={index}>{diagnosis}</li>
+            {diagnoses.map((diagnosis) => (
+              <li>{diagnosis.summary}</li>
             ))}
           </ul>
         </CardContent>
@@ -33,8 +54,8 @@ export default function MedicalStatus() {
         </CardHeader>
         <CardContent>
           <ul className="list-disc pl-5">
-            {mockMedicalInfo.allergies.map((allergy, index) => (
-              <li key={index}>{allergy}</li>
+            {allergies.map((allergy) => (
+              <li >{allergy.allergyName}</li>
             ))}
           </ul>
         </CardContent>
@@ -45,8 +66,8 @@ export default function MedicalStatus() {
         </CardHeader>
         <CardContent>
           <ul className="list-disc pl-5">
-            {mockMedicalInfo.history.map((item, index) => (
-              <li key={index}>{item}</li>
+            {histories.map((history) => (
+              <li >{history.description}</li>
             ))}
           </ul>
         </CardContent>
