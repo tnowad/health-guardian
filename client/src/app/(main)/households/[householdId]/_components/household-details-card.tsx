@@ -262,7 +262,7 @@ export function HouseholdDetailsCard({
                       <DropdownMenuLabel>Member Actions</DropdownMenuLabel>
                       <DropdownMenuItem>
                         <Link
-                          href={`/households/${member.id}`}
+                          href={`/health-management?as=${member.id}`}
                           className="flex items-center"
                         >
                           <Home className="mr-2 h-4 w-4" />
