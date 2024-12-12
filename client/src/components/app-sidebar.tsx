@@ -81,7 +81,7 @@ const data = {
         },
         {
           title: "Vaccination",
-          url: "/vacinations",
+          url: "/immunizations",
         },
       ],
     },
