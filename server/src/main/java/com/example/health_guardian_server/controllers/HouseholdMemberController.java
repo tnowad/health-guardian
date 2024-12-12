@@ -55,8 +55,8 @@ public class HouseholdMemberController {
   }
 
   @DeleteMapping("/{householdMemberId}")
-  public ResponseEntity<Void> deleteHouseholdMember(@PathVariable String householdMemberId) {
+  public ResponseEntity<SimpleResponse> deleteHouseholdMember(@PathVariable String householdMemberId) {
     householdMemberService.deleteHouseholdMember(householdMemberId);
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.ok(SimpleResponse.builder().message("kick member successful").build());
   }
 }
