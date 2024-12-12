@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarIcon } from "lucide-react";
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 import { createListPrescriptionsQueryOptions } from "@/lib/apis/list-prescriptions.api";
+import { Button } from "@/components/ui/button";
 
 export default function ListPrescriptions() {
   const currentUserInformationQuery = useSuspenseQuery(
@@ -38,6 +39,10 @@ export default function ListPrescriptions() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Your Prescriptions</h1>
+      <Button asChild className="w-full">
+        <Link href={`/households/create`}>Create new prescription</Link>
+      </Button>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {prescriptions.map((prescription) => (
           <Link

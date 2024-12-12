@@ -56,10 +56,11 @@ export default function HouseholdScreen() {
           {households.map((household) => (
             <Card key={household.id} className="flex-row">
               <CardHeader>
-                <AspectRatio ratio={1}>
+                <AspectRatio ratio={1 / 1}>
                   <Image
                     src={household.avatar ?? "/household-avatar.png"}
                     alt="Household Avatar"
+                    className="w-full h-full object-cover"
                     width={300}
                     height={300}
                   />

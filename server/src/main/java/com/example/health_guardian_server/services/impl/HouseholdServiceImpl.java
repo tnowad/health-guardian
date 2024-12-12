@@ -2,12 +2,15 @@ package com.example.health_guardian_server.services.impl;
 
 import com.example.health_guardian_server.dtos.requests.household.CreateHouseholdRequest;
 import com.example.health_guardian_server.dtos.requests.household.ListHouseholdsRequest;
+import com.example.health_guardian_server.dtos.responses.household.HouseholdMemberResponse;
 import com.example.health_guardian_server.dtos.responses.household.HouseholdResponse;
 import com.example.health_guardian_server.entities.Household;
 import com.example.health_guardian_server.entities.HouseholdMember;
 import com.example.health_guardian_server.mappers.HouseholdMapper;
+import com.example.health_guardian_server.mappers.HouseholdMemberMapper;
 import com.example.health_guardian_server.repositories.HouseholdMemberRepository;
 import com.example.health_guardian_server.repositories.HouseholdRepository;
+import com.example.health_guardian_server.services.HouseholdMemberService;
 import com.example.health_guardian_server.services.HouseholdService;
 import com.example.health_guardian_server.services.MinioClientService;
 import com.example.health_guardian_server.services.UserService;
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +33,9 @@ public class HouseholdServiceImpl implements HouseholdService {
   private final HouseholdMemberRepository householdMemberRepository;
   private final UserService userService;
   private final MinioClientService minioClientService;
-
+  private final HouseholdMemberMapper householdMemberMapper;
   @Override
   public Page<HouseholdResponse> listHouseholds(ListHouseholdsRequest request) {
-
     log.debug("Fetching all appointments with request: {}", request);
 
     var households = householdRepository
@@ -127,6 +130,15 @@ public class HouseholdServiceImpl implements HouseholdService {
     householdMemberRepository.deleteAllInBatch(householdMember);
     householdRepository.delete(household);
     log.info("Household deleted with id: {}", householdId);
+  }
+
+  @Override
+  public HouseholdMemberResponse joinHousehold(String householdId, String userId) {
+    var user = userService.getOptionalUserById(userId).orElseThrow(
+      () -> new ResourceNotFoundException("User with id " + userId + " not found"));
+    var household = householdRepository.findById(householdId).orElseThrow(() -> new ResourceNotFoundException("Household not found with id " + householdId));
+
+    return householdMemberMapper.toHouseholdMemberResponse(householdMemberRepository.save(HouseholdMember.builder().household(household).user(user).build()));
   }
 
   @Override
