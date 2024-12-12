@@ -1,11 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
@@ -29,7 +24,9 @@ export default function DiagnosticResultScreen() {
           <CardTitle>Error</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-red-500">Failed to load diagnostic reports. Please try again later.</p>
+          <p className="text-red-500">
+            Failed to load diagnostic reports. Please try again later.
+          </p>
         </CardContent>
       </Card>
     );
@@ -40,11 +37,13 @@ export default function DiagnosticResultScreen() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>My Diagnostic Reports</CardTitle>
+        <CardTitle>My Diagnostic Results</CardTitle>
       </CardHeader>
       <CardContent>
         <Button asChild>
-          <Link href="/diagnostic-reports/create">Create new diagnostic report</Link>
+          <Link href="/diagnostic-reports/create">
+            Create new diagnostic results
+          </Link>
         </Button>
 
         <table className="w-full table-auto mt-4 border-collapse border border-gray-300">
@@ -63,12 +62,21 @@ export default function DiagnosticResultScreen() {
               diagnosticReports.map((report) => (
                 <tr key={report.id} className="hover:bg-gray-50">
                   <td className="border border-gray-300 p-2">{report.id}</td>
-                  <td className="border border-gray-300 p-2">{report.testName}</td>
-                  <td className="border border-gray-300 p-2">{report.resultDate}</td>
-                  <td className="border border-gray-300 p-2">{report.resultValue}</td>
-                  <td className="border border-gray-300 p-2">{report.notes ?? "-"}</td>
+                  <td className="border border-gray-300 p-2">
+                    {report.testName}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {report.resultDate}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {report.resultValue}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {report.notes ?? "-"}
+                  </td>
                   <td className="border border-gray-300 p-2 text-center">
-                    {currentUserInformationQuery.data.userId === report.userId ? (
+                    {currentUserInformationQuery.data.userId ===
+                    report.userId ? (
                       <Button asChild>
                         <Link
                           href={`/diagnostic-reports/edit/${report.id}`}

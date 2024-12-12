@@ -81,7 +81,7 @@ const data = {
         },
         {
           title: "Vaccination",
-          url: "/vacinations",
+          url: "/immunizations",
         },
       ],
     },
@@ -105,6 +105,10 @@ const data = {
         {
           title: "Diagnostic Reports",
           url: "/diagnostic-reports",
+        },
+        {
+          title: "Diagnostic Results",
+          url: "/diagnostic-results",
         },
       ],
     },
@@ -131,7 +135,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const getCurrentUserInformationQuery = useQuery(
-    createGetCurrentUserInformationQueryOptions(),
+    createGetCurrentUserInformationQueryOptions()
   );
 
   const user = {
