@@ -37,12 +37,13 @@ import {
 } from "@/components/ui/select";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
+import { UploadFileInput } from "@/components/upload-file-input";
 
 export function CreateDiagnosticReportForm() {
   const { toast } = useToast();
   const router = useRouter();
   const currentUserInformationQuery = useSuspenseQuery(
-    createGetCurrentUserInformationQueryOptions()
+    createGetCurrentUserInformationQueryOptions(),
   );
 
   const createDiagnosticReportMutation = useCreateDiagnosticReportMutation();
@@ -73,7 +74,7 @@ export function CreateDiagnosticReportForm() {
             "An error occurred while creating your diagnostic report",
         });
       },
-    })
+    }),
   );
 
   return (
@@ -162,6 +163,27 @@ export function CreateDiagnosticReportForm() {
                   </FormControl>
                   <FormDescription>
                     Optional field for additional notes.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={createDiagnosticReportForm.control}
+              name="files"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Avatar</FormLabel>
+                  <FormControl>
+                    <UploadFileInput
+                      {...field}
+                      onChange={(value) => {
+                        field.onChange(value.id);
+                      }}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Upload an image to represent your household.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

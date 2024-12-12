@@ -11,6 +11,7 @@ export const diagnosticReportSchema = z.object({
     "ECG",
     "GENERAL_CHECKUP",
   ]),
+  files: z.array(z.string()).optional(),
   summary: z.string().optional(),
   notes: z.string().optional(),
 });

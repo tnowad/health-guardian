@@ -15,7 +15,6 @@ import { useToast } from "@/hooks/use-toast";
 import {
   useCreateDiagnosticResultMutation,
   createDiagnosticResultBodySchema,
-  DiagnosticResultSchema,
 } from "@/lib/apis/create-diagnostic-result.api";
 import { useRouter } from "next/navigation";
 import {
@@ -27,6 +26,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { UploadFileInput } from "@/components/upload-file-input";
+import { diagnosticResultSchema } from "@/lib/schemas/diagnostic-result.schema";
+import { z } from "zod";
 
 export type DiagnosticResultSchema = z.infer<typeof diagnosticResultSchema>;
 
@@ -133,6 +135,27 @@ export function CreateDiagnosticResultsForm() {
                   </FormControl>
                   <FormDescription>
                     Optional field for additional notes about the result.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={createDiagnosticResultsForm.control}
+              name="files"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Avatar</FormLabel>
+                  <FormControl>
+                    <UploadFileInput
+                      {...field}
+                      onChange={(value) => {
+                        field.onChange(value.id);
+                      }}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Upload an image to represent your household.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

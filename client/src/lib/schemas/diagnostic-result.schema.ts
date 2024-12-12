@@ -6,8 +6,8 @@ export const diagnosticResultSchema = z.object({
   testName: z.string(),
   resultDate: z.string().datetime(),
   resultValue: z.string(),
+  files: z.array(z.string()).optional(),
   notes: z.string().optional(),
 });
 
 export type DiagnosticResultSchema = z.infer<typeof diagnosticResultSchema>;
-
