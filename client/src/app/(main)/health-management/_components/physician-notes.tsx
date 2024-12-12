@@ -167,7 +167,7 @@ export default function PhysicianNotesScreen() {
                 <TableHead>ID</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Note</TableHead>
-                <TableHead>Actions</TableHead>
+                
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -176,24 +176,7 @@ export default function PhysicianNotesScreen() {
                   <TableCell>{note.id}</TableCell>
                   <TableCell>{format(note.date, "PPP")}</TableCell>
                   <TableCell>{note.note}</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditNote(note)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleRemoveNote(note.id)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  </TableCell>
+                  
                 </TableRow>
               ))}
             </TableBody>
