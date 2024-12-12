@@ -137,28 +137,28 @@ export function HouseholdDetailsCard({
   const [isInviteLinkCopied, setIsInviteLinkCopied] = useState(false);
 
   const getHouseholdDetails = useQuery(
-    createGetHouseholdDetailQueryOptions(householdId),
+    createGetHouseholdDetailQueryOptions(householdId)
   );
 
   const listHouseholdMembersQuery = useQuery(
     createListHouseholdMembersQueryOptions({
       householdId,
-    }),
+    })
   );
 
   const listUsersQuery = useQuery(
     createListUsersQueryOptions({
       ids: listHouseholdMembersQuery.data?.content.map(
-        (householdMember) => householdMember.userId,
+        (householdMember) => householdMember.userId
       ),
-    }),
+    })
   );
 
   const householdMembers = useMemo(() => {
     return (
       listHouseholdMembersQuery.data?.content.map((householdMember) => {
         const user = listUsersQuery.data?.content.find(
-          (user) => user.id === householdMember.userId,
+          (user) => user.id === householdMember.userId
         );
         return {
           id: householdMember.id,
@@ -168,6 +168,7 @@ export function HouseholdDetailsCard({
               : "Unknown",
           email: user?.email,
           avatar: user?.avatar,
+          userId: user?.id,
         };
       }) ?? []
     );
@@ -260,9 +261,9 @@ export function HouseholdDetailsCard({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Member Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem asChild>
                         <Link
-                          href={`/health-management?as=${member.id}`}
+                          href={`/health-management?as=${member.userId}`}
                           className="flex items-center"
                         >
                           <Home className="mr-2 h-4 w-4" />
