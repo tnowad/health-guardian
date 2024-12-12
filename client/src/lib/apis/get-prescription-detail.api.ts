@@ -28,7 +28,7 @@ export async function getPrescriptionDetailApi(
   return getPrescriptionDetailResponseSchema.parse(response.data);
 }
 
-export function useGetPrescriptionDetailQuery(id: string) {
+export function createGetPrescriptionDetailQueryOptions(id: string) {
   const queryKey = ["prescription-detail", id] as const;
   return queryOptions<
     GetPrescriptionDetailResponseSchema,
@@ -39,4 +39,3 @@ export function useGetPrescriptionDetailQuery(id: string) {
     queryFn: () => getPrescriptionDetailApi(id),
   });
 }
-
