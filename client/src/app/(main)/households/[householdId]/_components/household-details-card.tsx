@@ -1,4 +1,6 @@
 "use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,19 +10,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import Image from "next/image";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { createListHouseholdsQueryOptions } from "@/lib/apis/list-households.api";
-import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 import { createListHouseholdMembersQueryOptions } from "@/lib/apis/list-household-members.api";
 import { createListUsersQueryOptions } from "@/lib/apis/list-users.api";
-
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -30,7 +25,6 @@ import { useMemo } from "react";
 import { createGetHouseholdDetailQueryOptions } from "@/lib/apis/get-household-detail.api";
 import { useToast } from "@/hooks/use-toast";
 import { useDeleteHouseholdMutation } from "@/lib/apis/delete-household.api";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,15 +36,31 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  Clipboard,
+  Home,
+  Pencil,
+  Trash,
+  UserMinus,
+  UserPlus,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 type HouseholdDetailsCardProps = {
   householdId: string;
 };
 
-export function DeleteHouseholdButton({
-  householdId,
-}: {
-  householdId: string;
-}) {
+function DeleteHouseholdButton({ householdId }: { householdId: string }) {
   const { toast } = useToast();
   const deleteHouseholdMutation = useDeleteHouseholdMutation({
     id: householdId,
@@ -69,14 +79,17 @@ export function DeleteHouseholdButton({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button>Delete</Button>
+        <Button variant="destructive" size="sm">
+          <Trash className="mr-2 h-4 w-4" />
+          Delete Household
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            household and remove all associated data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -92,18 +105,16 @@ export function HouseholdDetailsCard({
   householdId,
 }: HouseholdDetailsCardProps) {
   const { toast } = useToast();
-  const currentUserInformationQuery = useSuspenseQuery(
-    createGetCurrentUserInformationQueryOptions(),
+  const [isInviteLinkCopied, setIsInviteLinkCopied] = useState(false);
+
+  const getHouseholdDetails = useQuery(
+    createGetHouseholdDetailQueryOptions(householdId),
   );
 
   const listHouseholdMembersQuery = useQuery(
     createListHouseholdMembersQueryOptions({
       householdId,
     }),
-  );
-
-  const getHouseholdDetails = useQuery(
-    createGetHouseholdDetailQueryOptions(householdId),
   );
 
   const listUsersQuery = useQuery(
@@ -127,36 +138,60 @@ export function HouseholdDetailsCard({
               ? `${user?.firstName} ${user?.lastName}`
               : "Unknown",
           email: user?.email,
+          avatar: user?.avatar,
         };
       }) ?? []
     );
   }, [listHouseholdMembersQuery.data?.content, listUsersQuery.data?.content]);
 
+  const copyInviteLink = () => {
+    const inviteLink = `http://localhost:3000/households/${householdId}/join`;
+    window.navigator.clipboard.writeText(inviteLink);
+    setIsInviteLinkCopied(true);
+    toast({
+      title: "Invite link copied",
+      description: "The invite link has been copied to your clipboard",
+    });
+    setTimeout(() => setIsInviteLinkCopied(false), 3000);
+  };
+
   return (
-    <Card>
-      <CardHeader className="col-end-2">
-        <CardTitle>
-          {getHouseholdDetails.data?.name ?? "Household Details"}
-        </CardTitle>
-        <div className="ml-auto space-x-2">
-          <Button>
-            <Link href={`/households/${householdId}/edit`}>Edit</Link>
+    <Card className="w-full mx-auto">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div className="space-y-1">
+          <CardTitle className="text-2xl">
+            {getHouseholdDetails.data?.name ?? (
+              <Skeleton className="h-8 w-[200px]" />
+            )}
+          </CardTitle>
+          <CardDescription>
+            Manage your household members and settings
+          </CardDescription>
+        </div>
+        <div className="flex space-x-2">
+          <Button asChild size="sm">
+            <Link href={`/households/${householdId}/edit`}>
+              <Pencil className="mr-2 h-4 w-4" />
+              Edit
+            </Link>
           </Button>
-
           <Button
-            onClick={() => {
-              window.navigator.clipboard.writeText(
-                "http://localhost:3000/households/" + householdId + "/join",
-              );
-              toast({
-                title: "Link copied",
-                description: "The link has been copied to your clipboard",
-              });
-            }}
+            size="sm"
+            variant={isInviteLinkCopied ? "secondary" : "outline"}
+            onClick={copyInviteLink}
           >
-            Invite Member
+            {isInviteLinkCopied ? (
+              <>
+                <Clipboard className="mr-2 h-4 w-4" />
+                Copied!
+              </>
+            ) : (
+              <>
+                <UserPlus className="mr-2 h-4 w-4" />
+                Invite Member
+              </>
+            )}
           </Button>
-
           <DeleteHouseholdButton householdId={householdId} />
         </div>
       </CardHeader>
@@ -164,26 +199,55 @@ export function HouseholdDetailsCard({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="">Name</TableHead>
-              <TableHead className="">Email</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="w-[250px]">Member</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {householdMembers.map((householdMember) => (
-              <TableRow key={householdMember.id}>
-                <TableCell>{householdMember.name}</TableCell>
-                <TableCell>{householdMember.email}</TableCell>
-                <TableCell>
-                  <Button asChild>
-                    <Link href={`/households/${householdMember.id}`}>View</Link>
-                  </Button>
-
-                  <Button asChild>
-                    <Link href={`/households/${householdMember.id}`}>Kick</Link>
-                  </Button>
+            {householdMembers.map((member) => (
+              <TableRow key={member.id}>
+                <TableCell className="font-medium">
+                  <div className="flex items-center space-x-3">
+                    <Avatar>
+                      <AvatarImage src={member.avatar} alt={member.name} />
+                      <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p>{member.name}</p>
+                      <Badge variant="outline" className="mt-1">
+                        Member
+                      </Badge>
+                    </div>
+                  </div>
                 </TableCell>
-                <TableCell></TableCell>
+                <TableCell>{member.email}</TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        Actions
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Member Actions</DropdownMenuLabel>
+                      <DropdownMenuItem>
+                        <Link
+                          href={`/households/${member.id}`}
+                          className="flex items-center"
+                        >
+                          <Home className="mr-2 h-4 w-4" />
+                          View Profile
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-destructive">
+                        <UserMinus className="mr-2 h-4 w-4" />
+                        Remove from Household
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
