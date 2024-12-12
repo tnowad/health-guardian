@@ -57,6 +57,11 @@ public class HouseholdMemberServiceImpl implements HouseholdMemberService {
   }
 
   @Override
+  public HouseholdMemberResponse createHouseholdMember(HouseholdMember request) {
+    return householdMemberMapper.toHouseholdMemberResponse(householdMemberRepository.save(request));
+  }
+
+  @Override
   public HouseholdMemberResponse getHouseholdMember(String householdMemberId) {
 
     log.debug("Fetching household member with id: {}", householdMemberId);

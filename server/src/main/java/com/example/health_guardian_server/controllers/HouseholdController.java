@@ -1,7 +1,10 @@
 package com.example.health_guardian_server.controllers;
 
 import com.example.health_guardian_server.dtos.requests.household.CreateHouseholdRequest;
+import com.example.health_guardian_server.dtos.requests.household.JoinHouseholdRequest;
 import com.example.health_guardian_server.dtos.requests.household.ListHouseholdsRequest;
+import com.example.health_guardian_server.dtos.responses.SimpleResponse;
+import com.example.health_guardian_server.dtos.responses.household.HouseholdMemberResponse;
 import com.example.health_guardian_server.dtos.responses.household.HouseholdResponse;
 import com.example.health_guardian_server.services.HouseholdService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +45,12 @@ public class HouseholdController {
   public ResponseEntity<HouseholdResponse> getHousehold(@PathVariable String householdId) {
     HouseholdResponse response = householdService.getHousehold(householdId);
     return ResponseEntity.ok(response);
+  }
+
+  @PostMapping("/{householdId}/join")
+  public ResponseEntity<SimpleResponse> joinHousehold(@PathVariable String householdId, @RequestBody JoinHouseholdRequest joinHouseholdRequest) {
+    HouseholdMemberResponse response = householdService.joinHousehold(householdId, joinHouseholdRequest.getUserId());
+    return ResponseEntity.ok(SimpleResponse.builder().message("Joined household").build());
   }
 
   @PutMapping("/{householdId}")
