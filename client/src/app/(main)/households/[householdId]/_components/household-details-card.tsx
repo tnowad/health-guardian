@@ -138,26 +138,27 @@ export function HouseholdDetailsCard({
         <CardTitle>
           {getHouseholdDetails.data?.name ?? "Household Details"}
         </CardTitle>
+        <div className="ml-auto space-x-2">
+          <Button>
+            <Link href={`/households/${householdId}/edit`}>Edit</Link>
+          </Button>
 
-        <Button>
-          <Link href={`/households/${householdId}/edit`}>Edit</Link>
-        </Button>
+          <Button
+            onClick={() => {
+              window.navigator.clipboard.writeText(
+                "http://localhost:3000/households/" + householdId + "/join",
+              );
+              toast({
+                title: "Link copied",
+                description: "The link has been copied to your clipboard",
+              });
+            }}
+          >
+            Invite Member
+          </Button>
 
-        <Button
-          onClick={() => {
-            window.navigator.clipboard.writeText(
-              "http://localhost:3000/households/" + householdId + "/join",
-            );
-            toast({
-              title: "Link copied",
-              description: "The link has been copied to your clipboard",
-            });
-          }}
-        >
-          Invite Member
-        </Button>
-
-        <DeleteHouseholdButton householdId={householdId} />
+          <DeleteHouseholdButton householdId={householdId} />
+        </div>
       </CardHeader>
       <CardContent>
         <Table>

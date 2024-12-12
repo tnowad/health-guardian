@@ -1,4 +1,4 @@
-package com.example.health_guardian_server.dtos.requests.physican_note;
+package com.example.health_guardian_server.dtos.requests.physician_note;
 
 import com.example.health_guardian_server.dtos.requests.PageableRequest;
 import com.example.health_guardian_server.dtos.requests.PageableWithIdsRequest;
