@@ -59,15 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       )}
       loadingFallback={() => (
-        <div className="w-screen h-screen flex justify-center items-center">
-          <Image
-            src={LoadingImage}
-            alt="loading"
-            width={200}
-            height={200}
-            loading="eager"
-          />
-        </div>
+        <div className="w-screen h-screen flex justify-center items-center"></div>
       )}
     >
       <MainLayout>
