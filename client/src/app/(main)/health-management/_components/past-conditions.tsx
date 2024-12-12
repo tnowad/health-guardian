@@ -41,7 +41,7 @@ export default function PastConditions(){
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Aggregated Side Effects</CardTitle>
+        <CardTitle>My Past Conditions</CardTitle>
       </CardHeader>
       <CardContent>
 
