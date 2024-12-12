@@ -6,17 +6,22 @@ import { Button } from "@/components/ui/button";
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createListPrescriptionsQueryOptions } from "@/lib/apis/list-prescriptions.api";
-
+import { useSearchParams } from 'next/navigation'
 
 
 export default function PrescriptionsList() {
+
+  const searchParams = useSearchParams()
+  const userIdSearch = searchParams.get('as')
+
+
   const currentUserInformationQuery = useSuspenseQuery(
     createGetCurrentUserInformationQueryOptions(),
   );
 
   const listprescriptionsQuery = useQuery( 
     createListPrescriptionsQueryOptions({
-      userId: currentUserInformationQuery.data?.userId,
+       userId: userIdSearch ||  currentUserInformationQuery.data?.userId,
     }),
   );
 

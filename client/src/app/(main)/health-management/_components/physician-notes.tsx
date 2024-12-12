@@ -33,7 +33,7 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 import { createListPhysicianNotesQueryOptions } from "@/lib/apis/(physician-note)/physician-note.api";
 import { PhysicianNoteSchema } from "@/lib/schemas/(physician-note)/physician-note.schema";
-
+import { useSearchParams } from 'next/navigation'
 export interface PhysicianNote {
   id: string;
   date: Date;
@@ -67,13 +67,17 @@ export default function PhysicianNotesScreen() {
   //   const [physicianNotes, setPhysicianNotes] =
   //     useState<PhysicianNote[]>(physicianNotesData);
 
+
+    const searchParams = useSearchParams()
+    const userIdSearch = searchParams.get('as')
+
   const currentUserInformationQuery = useSuspenseQuery(
     createGetCurrentUserInformationQueryOptions()
   );
 
   const listPhysicianNotesQuery = useQuery(
     createListPhysicianNotesQueryOptions({
-      userId: currentUserInformationQuery.data?.userId,
+        userId: userIdSearch ||  currentUserInformationQuery.data?.userId,
     })
   );
 

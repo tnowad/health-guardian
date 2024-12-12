@@ -21,8 +21,11 @@ import {
 import { createGetCurrentUserInformationQueryOptions } from "@/lib/apis/get-current-user-information.api";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createListPastConditionsQueryOptions} from "@/lib/apis/list-past-conditions.api";
-
+import { useSearchParams } from 'next/navigation'
 export default function PastConditions(){
+
+    const searchParams = useSearchParams()
+    const userIdSearch = searchParams.get('as')
 
     const currentUserInformationQuery = useSuspenseQuery(
         createGetCurrentUserInformationQueryOptions(),
@@ -30,7 +33,7 @@ export default function PastConditions(){
 
     const listPastConditionsQuery = useQuery(
         createListPastConditionsQueryOptions({
-          userId: currentUserInformationQuery.data?.userId,
+            userId: userIdSearch ||  currentUserInformationQuery.data?.userId,
         }),
       );
     
