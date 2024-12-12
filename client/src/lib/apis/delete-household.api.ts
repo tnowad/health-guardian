@@ -42,6 +42,7 @@ export function useDeleteHouseholdMutation(
       deleteHouseholdApi(deleteHouseholdParamsSchema.parse(params)),
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["households"] });
+      queryClient.invalidateQueries({ queryKey: ["household-members"] });
     },
     throwOnError: isAxiosError,
   });

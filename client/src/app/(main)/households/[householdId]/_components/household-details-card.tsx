@@ -55,6 +55,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDeleteHouseholdMemberMutation } from "@/lib/apis/delete-household-member.api";
 
 type HouseholdDetailsCardProps = {
   householdId: string;
@@ -98,6 +99,34 @@ function DeleteHouseholdButton({ householdId }: { householdId: string }) {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+
+export function DeleteMemberButton({ memberId }: { memberId: string }) {
+  const { toast } = useToast();
+
+  const deleteHouseholdMemberMutation = useDeleteHouseholdMemberMutation({
+    id: memberId,
+  });
+
+  const onDeleteHouseholdMember = () =>
+    deleteHouseholdMemberMutation.mutate(undefined, {
+      onSuccess() {
+        toast({
+          title: "Member removed",
+          description: "The household member has been removed successfully",
+        });
+      },
+    });
+
+  return (
+    <DropdownMenuItem
+      className="text-destructive"
+      onClick={() => onDeleteHouseholdMember()}
+    >
+      <UserMinus className="mr-2 h-4 w-4" />
+      Remove from Household
+    </DropdownMenuItem>
   );
 }
 
@@ -241,10 +270,7 @@ export function HouseholdDetailsCard({
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive">
-                        <UserMinus className="mr-2 h-4 w-4" />
-                        Remove from Household
-                      </DropdownMenuItem>
+                      <DeleteMemberButton memberId={member.id} />
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
