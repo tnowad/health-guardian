@@ -64,10 +64,6 @@ const data = {
       icon: Bot,
       items: [
         {
-          title: "Medical History",
-          url: "/medical-history",
-        },
-        {
           title: "Prescription",
           url: "/prescriptions",
         },
