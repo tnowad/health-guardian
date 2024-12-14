@@ -10,14 +10,15 @@ function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000,
+        staleTime: 60,
+        refetchOnWindowFocus: true,
         throwOnError: (error) => {
           if (isAxiosError(error)) return true;
           if (error instanceof ZodError) {
             console.error(
               "ZodError",
               error.errors.map((e) => e.message),
-              error,
+              error
             );
           }
           return false;
@@ -30,7 +31,7 @@ function makeQueryClient() {
             console.error(
               "ZodError",
               error.errors.map((e) => e.message),
-              error,
+              error
             );
           }
           return false;
